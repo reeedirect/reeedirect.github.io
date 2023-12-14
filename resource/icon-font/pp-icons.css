@@ -1,0 +1,185 @@
+@font-face {
+    font-family: "pp-icons";
+    src: url("./pp-icons.eot?9f04de88a5b915bee9ae8f954f87319b?#iefix") format("embedded-opentype"),
+url("./pp-icons.woff2?9f04de88a5b915bee9ae8f954f87319b") format("woff2"),
+url("./pp-icons.woff?9f04de88a5b915bee9ae8f954f87319b") format("woff"),
+url("./pp-icons.ttf?9f04de88a5b915bee9ae8f954f87319b") format("truetype"),
+url("./pp-icons.svg?9f04de88a5b915bee9ae8f954f87319b#pp-icons") format("svg");
+}
+
+i[class^="icon-"]:before, i[class*=" icon-"]:before {
+    font-family: pp-icons !important;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-QQ:before {
+    content: "\f101";
+}
+.icon-WeChat:before {
+    content: "\f102";
+}
+.icon-back:before {
+    content: "\f103";
+}
+.icon-bilibili:before {
+    content: "\f104";
+}
+.icon-block:before {
+    content: "\f105";
+}
+.icon-blockUser:before {
+    content: "\f106";
+}
+.icon-box:before {
+    content: "\f107";
+}
+.icon-camera:before {
+    content: "\f108";
+}
+.icon-chatService:before {
+    content: "\f109";
+}
+.icon-close:before {
+    content: "\f10a";
+}
+.icon-confirm:before {
+    content: "\f10b";
+}
+.icon-content:before {
+    content: "\f10c";
+}
+.icon-delete:before {
+    content: "\f10d";
+}
+.icon-discuss:before {
+    content: "\f10e";
+}
+.icon-downArrow:before {
+    content: "\f10f";
+}
+.icon-download:before {
+    content: "\f110";
+}
+.icon-edit:before {
+    content: "\f111";
+}
+.icon-enter:before {
+    content: "\f112";
+}
+.icon-failed:before {
+    content: "\f113";
+}
+.icon-fullScreen:before {
+    content: "\f114";
+}
+.icon-home:before {
+    content: "\f115";
+}
+.icon-interaction:before {
+    content: "\f116";
+}
+.icon-language:before {
+    content: "\f117";
+}
+.icon-leftArrow:before {
+    content: "\f118";
+}
+.icon-lock:before {
+    content: "\f119";
+}
+.icon-lockLocked:before {
+    content: "\f11a";
+}
+.icon-magazine:before {
+    content: "\f11b";
+}
+.icon-membership:before {
+    content: "\f11c";
+}
+.icon-mute:before {
+    content: "\f11d";
+}
+.icon-myShow:before {
+    content: "\f11e";
+}
+.icon-nextAd:before {
+    content: "\f11f";
+}
+.icon-pause:before {
+    content: "\f120";
+}
+.icon-play:before {
+    content: "\f121";
+}
+.icon-prevAd:before {
+    content: "\f122";
+}
+.icon-product:before {
+    content: "\f123";
+}
+.icon-replay:before {
+    content: "\f124";
+}
+.icon-reply:before {
+    content: "\f125";
+}
+.icon-report:before {
+    content: "\f126";
+}
+.icon-scrollDown:before {
+    content: "\f127";
+}
+.icon-scrollToTop:before {
+    content: "\f128";
+}
+.icon-settings:before {
+    content: "\f129";
+}
+.icon-sideArea:before {
+    content: "\f12a";
+}
+.icon-sound:before {
+    content: "\f12b";
+}
+.icon-success:before {
+    content: "\f12c";
+}
+.icon-taobao:before {
+    content: "\f12d";
+}
+.icon-trailer:before {
+    content: "\f12e";
+}
+.icon-unlock:before {
+    content: "\f12f";
+}
+.icon-upArrow:before {
+    content: "\f130";
+}
+.icon-upArrowLarge:before {
+    content: "\f131";
+}
+.icon-userCenter:before {
+    content: "\f132";
+}
+.icon-validationCode:before {
+    content: "\f133";
+}
+.icon-watch:before {
+    content: "\f134";
+}
+.icon-weibo:before {
+    content: "\f135";
+}
+.icon-whatIs:before {
+    content: "\f136";
+}
+.icon-youtube:before {
+    content: "\f137";
+}
