@@ -2038,8 +2038,7 @@
               <div>
                 <div class="HeaderView_avatarSection__1lxp2"><span
                     class="Avatar_w40__3KCHP Avatar_avatar__33rUO HeaderView_avatar__9IRj5" title="reeedirect"><img
-                      class="Avatar_img__9sg0P" src="/media/avatars/1.png"
-                      alt="reeedirect 的头像"></span>
+                      class="Avatar_img__9sg0P" src="/media/avatars/1.png" alt="reeedirect 的头像"></span>
                   <div class="UserMenuView_bubbleContainer__WodPp">
                     <div class="Bubble_bubble__1jNwX Bubble_topMiddle__KcPnA UserMenuView_bubble__1gPpd">
                       <div class="Bubble_content__nd76s">
@@ -2088,12 +2087,74 @@
                     <div class="" style="font-size: 66.3733px;">知识可视化的创作方法</div>
                   </div>
                 </div>
-                <div class="Header_subtitle__1ybiU">
+
+                <!--<div class="Header_subtitle__1ybiU">
                   <div class="" style="font-size: 17.1px;">采访团队成员，记录幕后故事。从文稿到动效，一支科普视频是怎么做出来的？（图、文、视频内容，非交互视频）<button
                       class="Header_introductionButton__3aZvc" type="button"><i
                         class="icon-trailer Icon_w20__IBHmM Icon_inherit__ZPO9F Icon_ppIcon__2yqK4"></i>介绍</button>
                   </div>
+                </div>-->
+
+                <!--<div class="Header_subtitle__1ybiU">
+                  <div class="" style="font-size: 17.1px;">采访团队成员，记录幕后故事。从文稿到动效，一支科普视频是怎么做出来的</div>
+                  <button class="Header_introductionButton__3aZvc" type="button" onclick="window.location.href='/1.html';">
+                    <i class="icon-trailer Icon_w20__IBHmM Icon_inherit__ZPO9F Icon_ppIcon__2yqK4"></i>介绍
+                  </button>
+                </div>-->
+
+
+
+                <!--<div class="Header_subtitle__1ybiU">
+                  <div class="" style="font-size: 17.1px;">采访团队成员，记录幕后故事。从文稿到动效，一支科普视频是怎么做出来的</div>
+                  <button class="Header_introductionButton__3aZvc" type="button"
+                    onclick="showImageInNewWindow(https://media.paperclipclub.net/show/1628678278_286865.png)">
+                    <i class="icon-trailer Icon_w20__IBHmM Icon_inherit__ZPO9F Icon_ppIcon__2yqK4"></i>介绍
+                  </button>
+                </div>-->
+
+
+
+
+                <div class="Header_subtitle__1ybiU">
+                  <div class="" style="font-size: 17.1px;">采访团队成员，记录幕后故事。从文稿到动效，一支科普视频是怎么做出来的
+                    <button class="Header_introductionButton__3aZvc" type="button" onclick="showPopup()">
+                      <i class="icon-trailer Icon_w20__IBHmM Icon_inherit__ZPO9F Icon_ppIcon__2yqK4"></i>介绍
+                    </button>
+                  </div>
                 </div>
+
+                <!--<script>
+                  function showImageInNewWindow(imageUrl) {
+                    // 创建一个新的浏览器窗口  
+                    var newWindow = window.open('', '_blank', 'width=500,height=500');
+
+                    // 检查新窗口是否成功打开  
+                    if (newWindow) {
+                      // 在新窗口中加载图片  
+                      newWindow.document.write('<html><head><title>图片预览</title></head><body><img src="' + imageUrl + '" alt="预览图片" style="max-width: 100%; height: auto;"></body></html> <!--');
+                      // 关闭文档流，这样图片就能正确显示  
+                      newWindow.document.close();
+                    } else {
+                      alert('由于浏览器设置，无法打开新窗口。');
+                    }
+                  }  
+                </script>-->
+
+                <script>
+                  function showPopup() {
+                    // 创建一个新窗口
+                    var popup = window.open('', '_blank', 'width=880,height=1320');
+
+                    // 在新窗口中展示外部图片
+                    popup.document.write('<img src="/media/show/1628678278_286865.png" alt="External Image">');
+                  }
+                </script>
+
+
+
+
+
+
               </header>
             </div>
             <div class="CoverView_volumeListContainer__14e6S">
@@ -2104,16 +2165,21 @@
                     <div class="CoverCard_cardDecoration__yVaaf"><i class="CoverCard_line__cMjHG"></i><i
                         class="CoverCard_dot__79xLK"></i></div>
                     <div class="CoverCard_main__Y9_rB">
-                      <p class="CoverCard_titleContainer__-nvCi" style="font-size: calc(13.3333px + 0.888889vw);">
+                      <a class="CoverCard_titleContainer__-nvCi" href="/1.html"
+                        style="font-size: calc(13.3333px + 0.888889vw);">Vol. 001</a>
+
+
+                      <!-- <p class="CoverCard_titleContainer__-nvCi" style="font-size: calc(13.3333px + 0.888889vw);">
                         <span>Vol. 001</span>
-                      </p><button type="button" color="content"
+                      </p> --><button type="button" color="content"
                         class="Button_button__2hu_L Button_content__YHfW1 Button_middle__3QZMn Button_text__2OKqs CoverCard_coverContainer__2UcEH">
                         <div class="Button_contentContainer__1Iald CoverCard_coverContainerContent__317e-">
                           <div class="TiltContainer_tiltContainer__wDJ7p CoverCard_heightFix__26gTd">
                             <div class="CoverCard_heightFix__26gTd" style="will-change: transform;">
-                              <div class="CoverCard_coverWrapper__1qGdt"><img class="CoverCard_coverImage__3MGnB"
-                                  src="/media/1624353539_434609.jpeg" alt="封面" data-pp-cover="true"
-                                  data-pp-cover-hidden="0">
+                              <div class="CoverCard_coverWrapper__1qGdt">
+                                <img class="CoverCard_coverImage__3MGnB" src="/media/show/1624353539_434609.jpeg"
+                                  alt="封面" data-pp-cover="true" data-pp-cover-hidden="0"
+                                  onclick="window.location.href='/1.html'">
                                 <div class="ScaleContainer_container__2OVHW CoverCard_scaleContainer__3OHDP">
                                   <div class="ScaleContainer_content__gthNi CoverCard_scaleContainerContent__1ZrGv"
                                     title="一起做二维码"
@@ -2147,7 +2213,7 @@
                           <div class="TiltContainer_tiltContainer__wDJ7p CoverCard_heightFix__26gTd">
                             <div class="CoverCard_heightFix__26gTd" style="will-change: transform;">
                               <div class="CoverCard_coverWrapper__1qGdt"><img class="CoverCard_coverImage__3MGnB"
-                                  src="/media/1624353548_489586.jpeg" alt="封面" data-pp-cover="true"
+                                  src="/media/show/1624353548_489586.jpeg" alt="封面" data-pp-cover="true"
                                   data-pp-cover-hidden="0">
                                 <div class="ScaleContainer_container__2OVHW CoverCard_scaleContainer__3OHDP">
                                   <div class="ScaleContainer_content__gthNi CoverCard_scaleContainerContent__1ZrGv"
@@ -2182,7 +2248,7 @@
                           <div class="TiltContainer_tiltContainer__wDJ7p CoverCard_heightFix__26gTd">
                             <div class="CoverCard_heightFix__26gTd" style="will-change: transform;">
                               <div class="CoverCard_coverWrapper__1qGdt"><img class="CoverCard_coverImage__3MGnB"
-                                  src="/media/1624353556_557421.jpeg" alt="封面" data-pp-cover="true"
+                                  src="/media/show/1624353556_557421.jpeg" alt="封面" data-pp-cover="true"
                                   data-pp-cover-hidden="0">
                                 <div class="ScaleContainer_container__2OVHW CoverCard_scaleContainer__3OHDP">
                                   <div class="ScaleContainer_content__gthNi CoverCard_scaleContainerContent__1ZrGv"
@@ -2217,7 +2283,7 @@
                           <div class="TiltContainer_tiltContainer__wDJ7p CoverCard_heightFix__26gTd">
                             <div class="CoverCard_heightFix__26gTd">
                               <div class="CoverCard_coverWrapper__1qGdt"><img class="CoverCard_coverImage__3MGnB"
-                                  src="/media/1624353563_490526.jpeg" alt="封面" data-pp-cover="true"
+                                  src="/media/show/1624353563_490526.jpeg" alt="封面" data-pp-cover="true"
                                   data-pp-cover-hidden="0">
                                 <div class="ScaleContainer_container__2OVHW CoverCard_scaleContainer__3OHDP">
                                   <div class="ScaleContainer_content__gthNi CoverCard_scaleContainerContent__1ZrGv"
@@ -2252,7 +2318,7 @@
                           <div class="TiltContainer_tiltContainer__wDJ7p CoverCard_heightFix__26gTd">
                             <div class="CoverCard_heightFix__26gTd">
                               <div class="CoverCard_coverWrapper__1qGdt"><img class="CoverCard_coverImage__3MGnB"
-                                  src="/media/1624353570_172835.jpeg" alt="封面" data-pp-cover="true"
+                                  src="/media/show/1624353570_172835.jpeg" alt="封面" data-pp-cover="true"
                                   data-pp-cover-hidden="0">
                                 <div class="ScaleContainer_container__2OVHW CoverCard_scaleContainer__3OHDP">
                                   <div class="ScaleContainer_content__gthNi CoverCard_scaleContainerContent__1ZrGv"
@@ -2287,7 +2353,7 @@
                           <div class="TiltContainer_tiltContainer__wDJ7p CoverCard_heightFix__26gTd">
                             <div class="CoverCard_heightFix__26gTd">
                               <div class="CoverCard_coverWrapper__1qGdt"><img class="CoverCard_coverImage__3MGnB"
-                                  src="/media/1624353577_168791.jpeg" alt="封面" data-pp-cover="true"
+                                  src="/media/show/1624353577_168791.jpeg" alt="封面" data-pp-cover="true"
                                   data-pp-cover-hidden="0">
                                 <div class="ScaleContainer_container__2OVHW CoverCard_scaleContainer__3OHDP">
                                   <div class="ScaleContainer_content__gthNi CoverCard_scaleContainerContent__1ZrGv"
@@ -2323,7 +2389,7 @@
                           <div class="TiltContainer_tiltContainer__wDJ7p CoverCard_heightFix__26gTd">
                             <div class="CoverCard_heightFix__26gTd">
                               <div class="CoverCard_coverWrapper__1qGdt"><img class="CoverCard_coverImage__3MGnB"
-                                  src="/media/1624426671_002989.jpeg" alt="封面" data-pp-cover="true"
+                                  src="/media/show/1624426671_002989.jpeg" alt="封面" data-pp-cover="true"
                                   data-pp-cover-hidden="0">
                                 <div class="ScaleContainer_container__2OVHW CoverCard_scaleContainer__3OHDP">
                                   <div class="ScaleContainer_content__gthNi CoverCard_scaleContainerContent__1ZrGv"
@@ -2544,7 +2610,7 @@
     </div>
     <div tabindex="0" data-test="sentinelEnd"></div>
   </div> -->
-  
+
 </body>
 
 </html>

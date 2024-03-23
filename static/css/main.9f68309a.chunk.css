@@ -7496,7 +7496,7 @@ a:hover .HeaderView_home__39-3l {
 }
 
 .CoverCard_cardBody__52rDE {
-    width: calc(33.33333vw - 32px);
+    /*width: calc(33.33333vw - 32px);*/
     height: 100%;
     color: var(--content-normal);
     box-sizing: border-box;
