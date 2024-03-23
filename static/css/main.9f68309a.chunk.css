@@ -880,7 +880,7 @@ a:visited .Icon_dim__367S5 {
 
 .HeaderView_header__3t938 {
     top: 0;
-    height: 55px;
+    /* height: 55px; */
     position: fixed;
     display: flex;
     z-index: 20;
