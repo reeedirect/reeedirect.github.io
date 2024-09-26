@@ -1,0 +1,48 @@
+# ====================Begin===================================
+try:
+    salary = float(input())
+    insurance = float(input())
+    taxf = float(input())
+
+    if salary <= 0 or insurance < 0 or taxf <= 0:
+        print("error")
+    else:
+        taxable_income = salary - insurance - taxf
+        if taxable_income <= 0:
+            tax = 0.00
+        else:
+            if taxable_income <= 3000:
+                tax_rate = 0.03
+                quick_deduction = 0
+            elif taxable_income <= 12000:
+                tax_rate = 0.10
+                quick_deduction = 210
+            elif taxable_income <= 25000:
+                tax_rate = 0.20
+                quick_deduction = 1410
+            elif taxable_income <= 35000:
+                tax_rate = 0.25
+                quick_deduction = 2660
+            elif taxable_income <= 55000:
+                tax_rate = 0.30
+                quick_deduction = 4410
+            elif taxable_income <= 80000:
+                tax_rate = 0.35
+                quick_deduction = 7160
+            else:
+                tax_rate = 0.45
+                quick_deduction = 15160
+            tax = taxable_income * tax_rate - quick_deduction
+        net_salary = salary - insurance - tax
+        print(f"应缴税款{tax:.2f}元，实发工资{net_salary:.2f}元。")
+
+except ValueError:
+    print("error")
+
+
+
+    
+
+    # ======================End=================================
+
+
