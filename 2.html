@@ -1,49 +1,69 @@
-<pre><code># ====================Begin===================================
-try:
-    salary = float(input())
-    insurance = float(input())
-    taxf = float(input())
+<pre><code>
+[2.1]# 本程序计算小球上抛在不同时间点的高度
+v0 = 25     # 小球上抛的初速度
+g = 9.8     # 地球重力加速度
 
-    if salary <= 0 or insurance < 0 or taxf <= 0:
-        print("error")
-    else:
-        taxable_income = salary - insurance - taxf
-        if taxable_income <= 0:
-            tax = 0.00
-        else:
-            if taxable_income <= 3000:
-                tax_rate = 0.03
-                quick_deduction = 0
-            elif taxable_income <= 12000:
-                tax_rate = 0.10
-                quick_deduction = 210
-            elif taxable_income <= 25000:
-                tax_rate = 0.20
-                quick_deduction = 1410
-            elif taxable_income <= 35000:
-                tax_rate = 0.25
-                quick_deduction = 2660
-            elif taxable_income <= 55000:
-                tax_rate = 0.30
-                quick_deduction = 4410
-            elif taxable_income <= 80000:
-                tax_rate = 0.35
-                quick_deduction = 7160
-            else:
-                tax_rate = 0.45
-                quick_deduction = 15160
-            tax = taxable_income * tax_rate - quick_deduction
-        net_salary = salary - insurance - tax
-        print(f"应缴税款{tax:.2f}元，实发工资{net_salary:.2f}元。")
-
-except ValueError:
-    print("error")
+t = int(input())
+#   请在此添加实现代码   #
+# ********** Begin *********#
+h=25*t-0.5*g*t**2
+print(h)
+# ********** End **********#
 
 
+[2.2]
+# 本程序进行华氏温度和摄氏温度之间的转换
+# 请通过换算公式来计算相应的摄氏温度值，需给出Python表达式
+# 最终输出格式为：华氏**度=摄氏**度
 
-    
+F = float(input())    # 华氏温度
 
-    # ======================End=================================
+#   请在此添加实现代码   #
+# ********** Begin *********#
+C=(F-32)*5/9
+print(f'华氏{F:.2f}度=摄氏{C:.2f}度')
+# ********** End **********#
 
+
+[2.3]
+# 计算小球在空气中向下作阻力落体运动中随时间的速度变化情况
+# 1.导入需要的函数
+# 2.根据落体运动速度方程计算某时刻小球的速度
+# 3.根据落体运动位置方程计算某时刻小球的位置
+# 4.格式化输出计算结果
+
+g = 9.8   # 单位：米/秒平方，重力加速度
+m = 0.25  # 单位：千克
+u = 0.5
+t = int(input()) # 单位：秒
+
+#   请在此添加实现代码   #
+# ********** Begin *********#
+from math import sqrt,tanh,log,cosh
+v=sqrt(m*g/u)*tanh(sqrt(u*g/m)*t)
+x=m/u*log(cosh(sqrt(u*g/m)*t))
+print(f'当t={t}秒时，速度v={v:.2f}米/秒')
+print(f'{t}秒后，小球位置为向下{x:.2f}米')
+# ********** End **********#
+
+
+[2.4]
+# 本程序计算小球向上斜抛在不同时间点的高度
+
+theta = int(input())  # 单位：角度
+
+#   请在此添加实现代码   #
+# ********** Begin *********#
+from math import tan,cos,radians
+v0=25/3.6
+g=9.8
+y0=1
+x=0.5
+theta=radians(theta)
+y=x*tan(theta)-(1/(2*v0**2))*(g*x**2/cos(theta)**2)+y0
+
+
+print(f'y值计算结果为：{y:.5f}米')
+# ********** End **********#
 
 </code></pre>
