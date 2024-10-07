@@ -21,10 +21,11 @@
     <label for="codeSelect">Choose a code snippet:</label>
     <select id="codeSelect">
         <option value="">--Select--</option>
-        <option value="code1">Code Snippet 1</option>
-        <option value="code2">Code Snippet 2</option>
-        <option value="code3">Code Snippet 3</option>
-        <option value="code4">Code Snippet 4</option>
+        <option value="code1">2.1</option>
+        <option value="code2">2.2</option>
+        <option value="code3">2.3</option>
+        <option value="code4">2.4</option>
+        <option value="code5">3.1</option>
     </select>
 
 
@@ -114,6 +115,21 @@ print(f'y值计算结果为：{y:.5f}米')
 
 
     
+    <div id="code5" class="code-block">
+        <code>
+year=eval(input("输入年号"))
+#代码开始
+if year%4==0 and year%100!=0 or year%400==0:
+    print('闰年')
+else:
+    print('平年')
+
+
+#代码结束
+        </code>
+    </div>
+
+
 
     <script>
         document.getElementById('codeSelect').addEventListener('change', function() {
