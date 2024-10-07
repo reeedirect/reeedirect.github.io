@@ -1,5 +1,37 @@
-<pre><code>
-[2.1]# 本程序计算小球上抛在不同时间点的高度
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Display</title>
+    <style>
+        .code-block {
+            display: none;
+            background-color: #f5f5f5;
+            border: 1px solid #ccc;
+            padding: 10px;
+            white-space: pre;
+            font-family: monospace;
+        }
+    </style>
+</head>
+
+<body>
+
+    <label for="codeSelect">Choose a code snippet:</label>
+    <select id="codeSelect">
+        <option value="">--Select--</option>
+        <option value="code1">Code Snippet 1</option>
+        <option value="code2">Code Snippet 2</option>
+        <option value="code3">Code Snippet 3</option>
+        <option value="code4">Code Snippet 4</option>
+    </select>
+
+
+
+    <div id="code1" class="code-block">
+        <code>
+# 本程序计算小球上抛在不同时间点的高度
 v0 = 25     # 小球上抛的初速度
 g = 9.8     # 地球重力加速度
 
@@ -9,9 +41,13 @@ t = int(input())
 h=25*t-0.5*g*t**2
 print(h)
 # ********** End **********#
+        </code>
+    </div>
 
 
-[2.2]
+
+    <div id="code2" class="code-block">
+        <code>
 # 本程序进行华氏温度和摄氏温度之间的转换
 # 请通过换算公式来计算相应的摄氏温度值，需给出Python表达式
 # 最终输出格式为：华氏**度=摄氏**度
@@ -23,9 +59,13 @@ F = float(input())    # 华氏温度
 C=(F-32)*5/9
 print(f'华氏{F:.2f}度=摄氏{C:.2f}度')
 # ********** End **********#
+        </code>
+    </div>
 
 
-[2.3]
+
+  <div id="code3" class="code-block">
+        <code>
 # 计算小球在空气中向下作阻力落体运动中随时间的速度变化情况
 # 1.导入需要的函数
 # 2.根据落体运动速度方程计算某时刻小球的速度
@@ -45,9 +85,13 @@ x=m/u*log(cosh(sqrt(u*g/m)*t))
 print(f'当t={t}秒时，速度v={v:.2f}米/秒')
 print(f'{t}秒后，小球位置为向下{x:.2f}米')
 # ********** End **********#
+        </code>
+    </div>
 
 
-[2.4]
+
+    <div id="code4" class="code-block">
+        <code>
 # 本程序计算小球向上斜抛在不同时间点的高度
 
 theta = int(input())  # 单位：角度
@@ -65,5 +109,23 @@ y=x*tan(theta)-(1/(2*v0**2))*(g*x**2/cos(theta)**2)+y0
 
 print(f'y值计算结果为：{y:.5f}米')
 # ********** End **********#
+        </code>
+    </div>
 
-</code></pre>
+
+    
+
+    <script>
+        document.getElementById('codeSelect').addEventListener('change', function() {
+            const codeBlocks = document.querySelectorAll('.code-block');
+            codeBlocks.forEach(block => block.style.display = 'none');
+
+            const selectedValue = this.value;
+            if (selectedValue) {
+                document.getElementById(selectedValue).style.display = 'block';
+            }
+        });
+    </script>
+
+</body>
+</html>
