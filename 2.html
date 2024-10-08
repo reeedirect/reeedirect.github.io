@@ -25,11 +25,12 @@
         <option value="code2">2.2</option>
         <option value="code3">2.3</option>
         <option value="code4">2.4</option>
-        <option value="code6">3.1</option>
-        <option value="code7">3.1</option>
-        <option value="code8">3.1</option>
-        <option value="code9">3.1</option>
-        <option value="code10">3.1</option>
+        <option value="code5">3.1</option>
+        <option value="code6">3.2</option>
+        <option value="code7">3.3</option>
+        <option value="code8">3.4</option>
+        <option value="code9">3.5</option>
+        <option value="code10">3.6</option>
     </select>
 
 
@@ -137,21 +138,6 @@ else:
 
     <div id="code6" class="code-block">
         <code>
-year=eval(input("输入年号"))
-#代码开始
-if year%4==0 and year%100!=0 or year%400==0:
-    print('闰年')
-else:
-    print('平年')
-
-#代码结束
-        </code>
-    </div>
-
-
-
-    <div id="code7" class="code-block">
-        <code>
 w=eval(input("请输入重量"))
 #代码开始
 from math import ceil
@@ -166,9 +152,8 @@ print("费用{}".format(f))
     </div>
 
 
-        
 
-    <div id="code8" class="code-block">
+    <div id="code7" class="code-block">
         <code>
 s=eval(input("输入成绩"))
 #代码开始
@@ -186,9 +171,9 @@ print('等级是',l,sep='')
     </div>
 
 
+        
 
-
-    <div id="code9" class="code-block">
+    <div id="code8" class="code-block">
         <code>
 sr=eval(input("输入月收入"))
 kc=eval(input("输入专项扣除"))
@@ -216,9 +201,48 @@ print("个人所得税{}".format(tax))
 
 
 
+    <div id="code9" class="code-block">
+        <code>
+je=eval(input("输入购物金额"))
+vip=input("是否vip(y/n)")
+#代码开始
+if je>=5000:
+    f=je*0.7
+elif je>=2000:
+    f=je*0.8
+elif je>=1000:
+    f=je*0.9
+else:
+    sj=je
+if vip=='y' or vip=='Y':
+    if je>=3000:
+        f=f*0.95-50
+    else:
+        f=f*0.95
+    print(f'实际付款为{f:.2f}优惠金额为{je-f:.2f}')
+else:
+    print(f'实际付款为{f:.2f}优惠金额为{je-f:.2f}')
+#代码结束
+
+        </code>
+    </div>
 
 
 
+
+    <div id="code10" class="code-block">
+        <code>
+A、5!=5
+A、x%2==1
+B、5
+D、strawberry watermelon watermelon
+B、y=x if x<=0 else -x
+D、a=20, b=1
+D、可以使用if<条件><表达式1>else<表达式2>的紧凑结构，返回一个表达式的值
+A、及格
+C、None
+        </code>
+    </div>
 
             
 
