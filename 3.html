@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二级下拉列表代码显示</title>
+    <style>
+        .code-block {
+            display: none;
+            background-color: #f5f5f5;
+            border: 1px solid #ccc;
+            padding: 10px;
+            white-space: pre;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <label for="mainSelect">类别:</label>
+    <select id="mainSelect">
+        <option value="">--Select--</option>
+        <option value="ex2">自由练习2</option>
+        <option value="ex3">自由练习3</option>
+    </select>
+
+    <label for="subSelect">项:</label>
+    <select id="subSelect" disabled>
+        <option value="">--Select--</option>
+    </select>
+
+    <div id="appleCode" class="code-block">
+        <code>
+console.log("这是苹果的代码片段");
+        </code>
+    </div>
+
+    <div id="bananaCode" class="code-block">
+        <code>
+console.log("这是香蕉的代码片段");
+        </code>
+    </div>
+
+    <div id="carrotCode" class="code-block">
+        <code>
+console.log("这是胡萝卜的代码片段");
+        </code>
+    </div>
+
+    <div id="broccoliCode" class="code-block">
+        <code>
+console.log("这是西兰花的代码片段");
+        </code>
+    </div>
+
+    <script>
+        const data = {
+            ex2: [
+                { value: 'apple', text: '苹果' },
+                { value: 'banana', text: '香蕉' }
+            ],
+            ex3: [
+                { value: 'carrot', text: '胡萝卜' },
+                { value: 'broccoli', text: '西兰花' }
+            ]
+        };
+
+        document.getElementById('mainSelect').addEventListener('change', function() {
+            const subSelect = document.getElementById('subSelect');
+            const selectedCategory = this.value;
+
+            subSelect.innerHTML = '<option value="">--Select--</option>';
+
+            if (selectedCategory && data[selectedCategory]) {
+                subSelect.disabled = false;
+                data[selectedCategory].forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.value;
+                    option.text = item.text;
+                    subSelect.appendChild(option);
+                });
+            } else {
+                subSelect.disabled = true;
+            }
+        });
+
+        document.getElementById('subSelect').addEventListener('change', function() {
+            const codeBlocks = document.querySelectorAll('.code-block');
+            codeBlocks.forEach(block => block.style.display = 'none');
+
+            const selectedValue = this.value;
+            if (selectedValue) {
+                document.getElementById(`${selectedValue}Code`).style.display = 'block';
+            }
+        });
+    </script>
+
+</body>
+</html>
