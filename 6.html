@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Display</title>
+    <style>
+        body {
+            background-image: url('https://ttfou.com/i/2024/10/15/rkjpy.jpg'); /* 初始的背景图片 */
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            transition: background-color 1s ease; /* 过渡效果 */
+        }
+        .code-block {
+            display: none;
+            background-color: #f5f5f5;
+            border: 1px solid #ccc;
+            padding: 10px;
+            white-space: pre;
+            font-family: monospace;
+            z-index: 10; /* 让文字层位于 GIF 之上 */
+            position: relative; /* 确保文字在 GIF 之上 */
+            top: 2%
+        }
+        #codeSelect {
+            display: none; /* 初始时隐藏 */
+            z-index: 10; /* 保证选择框在前 */
+            position: relative;
+            left: 1%;
+            top: 1%;
+        }
+        #passwordInput, #passwordBtn, label {
+            z-index: 10; /* 确保输入框等元素在 GIF 上方 */
+            position: relative;
+            left: 1%; /* 水平居中 */
+            top: 1%;
+        }
+        #gifBackground {
+            display: none; /* 初始时隐藏GIF背景 */
+            position: fixed;
+            bottom: 0; /* 固定在页面底部 */
+            left: 50%; /* 水平居中 */
+            transform: translateX(-50%); /* 居中对齐 */
+            z-index: 1; /* GIF在底层 */
+        }
+        #gifBackground img {
+            width: auto; /* 保持GIF的原始宽度 */
+            height: auto; /* 保持GIF的原始高度 */
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 隐藏的GIF背景层 -->
+    <div id="gifBackground">
+        <img src="https://ttfou.com/i/2024/10/15/w8st7.gif" alt="Success GIF">
+    </div>
+
+    <label for="passwordInput">Input your password：</label>
+    <input type="password" id="passwordInput">
+    <button id="passwordBtn">Submit</button>
+
+    <br><br>
+
+    <label for="codeSelect">Choose a code snippet:</label>
+    <select id="codeSelect">
+        <option value="">--Select--</option>
+        <option value="code1">Code 1</option>
+        <option value="code2">Code 2</option>
+    </select>
+
+    <div id="code1" class="code-block">
+        <code>
+        <!-- Your code snippets -->
+        # Example code for Code 1
+        print("Hello World")
+        </code>
+    </div>
+
+    <div id="code2" class="code-block">
+        <code>
+        <!-- Your code snippets -->
+        # Example code for Code 2
+        print("Goodbye World")
+        </code>
+    </div>
+
+    <script>
+        const correctPassword = "zoushen"; // 设置你想要的密码
+
+        document.getElementById('passwordBtn').addEventListener('click', function() {
+            const passwordInput = document.getElementById('passwordInput').value;
+            if (passwordInput === correctPassword) {
+                // 密码正确时，修改背景颜色并显示GIF
+                document.body.style.backgroundColor = '#D8D5D6';  // 修改背景颜色
+                document.body.style.backgroundImage = 'none';  // 隐藏原有的背景
+
+                // 显示GIF背景
+                document.getElementById('gifBackground').style.display = 'block';
+
+                // 显示选择框
+                document.getElementById('codeSelect').style.display = 'block';
+
+                alert("Password correct!");
+            } else {
+                alert("Incorrect password.");
+            }
+        });
+
+        document.getElementById('codeSelect').addEventListener('change', function() {
+            const codeBlocks = document.querySelectorAll('.code-block');
+            codeBlocks.forEach(block => block.style.display = 'none');
+
+            const selectedValue = this.value;
+            if (selectedValue) {
+                document.getElementById(selectedValue).style.display = 'block';
+            }
+        });
+    </script>
+
+</body>
+</html>
