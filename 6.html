@@ -35,7 +35,7 @@
         }
         #codeSelect {
             display: none; /* 初始时隐藏 */
-            z-index习: 10; /* 保证选择框在前 */
+            z-index: 10; /* 保证选择框在前 */
             position: relative;
             left: 1%;
             top: 1%;
@@ -53,6 +53,7 @@
             left: 50%; /* 水平居中 */
             transform: translatex(-50%); /* 居中对齐 */
             z-index: 1; /* GIF在底层 */
+            pointer-events:none;
         }
         #gifBackground img {
             width: auto; /* 保持GIF的原始宽度 */
@@ -67,6 +68,7 @@
     <div id="gifBackground">
         <img src="https://ttfou.com/i/2024/10/15/w8st7.gif" alt="Success GIF">
     </div>
+
 
     <label for="passwordInput">Input your password：</label>
     <input type="password" id="passwordInput">
