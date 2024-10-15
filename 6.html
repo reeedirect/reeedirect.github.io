@@ -59,6 +59,22 @@
             width: auto; /* 保持GIF的原始宽度 */
             height: auto; /* 保持GIF的原始高度 */
         }
+        .copy-btn {
+            position: absolute;
+            /* display: inline-block; */
+            /* margin-bottom: 1px; */
+            top: 10px;
+            left: 10px;
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .copy-btn:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 
@@ -95,21 +111,22 @@
 
 
     <div id="code1" class="code-block">
-        <code>
+        <button class="copy-btn" data-target="code1">复制</button>
+        <code><pre>
 # 本程序计算小球上抛在不同时间点的高度
 v0 = 25     # 小球上抛的初速度
 g = 9.8     # 地球重力加速度
 
 t = int(input())
 h=25*t-0.5*g*t**2
-print(h)
-        </code>
+print(h)</pre></code>
     </div>
 
 
 
     <div id="code2" class="code-block">
-        <code>
+        <button class="copy-btn" data-target="code2">复制</button>
+        <code><pre>
 # 本程序进行华氏温度和摄氏温度之间的转换
 # 请通过换算公式来计算相应的摄氏温度值，需给出Python表达式
 # 最终输出格式为：华氏**度=摄氏**度
@@ -120,14 +137,14 @@ F = float(input())    # 华氏温度
 # ********** Begin *********#
 C=(F-32)*5/9
 print(f'华氏{F:.2f}度=摄氏{C:.2f}度')
-# ********** End **********#
-        </code>
+# ********** End **********#</pre></code>
     </div>
 
 
 
   <div id="code3" class="code-block">
-        <code>
+        <button class="copy-btn" data-target="code3">复制</button>
+        <code><pre>
 # 计算小球在空气中向下作阻力落体运动中随时间的速度变化情况
 # 1.导入需要的函数
 # 2.根据落体运动速度方程计算某时刻小球的速度
@@ -146,14 +163,14 @@ v=sqrt(m*g/u)*tanh(sqrt(u*g/m)*t)
 x=m/u*log(cosh(sqrt(u*g/m)*t))
 print(f'当t={t}秒时，速度v={v:.2f}米/秒')
 print(f'{t}秒后，小球位置为向下{x:.2f}米')
-# ********** End **********#
-        </code>
+# ********** End **********#</pre></code>
     </div>
 
 
 
     <div id="code4" class="code-block">
-        <code>
+        <button class="copy-btn" data-target="code4">复制</button>
+        <code><pre>
 # 本程序计算小球向上斜抛在不同时间点的高度
 
 theta = int(input())  # 单位：角度
@@ -170,14 +187,14 @@ y=x*tan(theta)-(1/(2*v0**2))*(g*x**2/cos(theta)**2)+y0
 
 
 print(f'y值计算结果为：{y:.5f}米')
-# ********** End **********#
-        </code>
+# ********** End **********#</pre></code>
     </div>
 
 
     
     <div id="code5" class="code-block">
-        <code>
+        <button class="copy-btn" data-target="code5">复制</button>
+        <code><pre>
 year=eval(input("输入年号"))
 #代码开始
 if year%4==0 and year%100!=0 or year%400==0:
@@ -185,15 +202,15 @@ if year%4==0 and year%100!=0 or year%400==0:
 else:
     print('平年')
 
-#代码结束
-        </code>
+#代码结束</pre></code>
     </div>
 
 
 
 
     <div id="code6" class="code-block">
-        <code>
+        <button class="copy-btn" data-target="code6">复制</button>
+        <code><pre>
 w=eval(input("请输入重量"))
 #代码开始
 from math import ceil
@@ -203,14 +220,14 @@ if w>5:
 else:
     f=f
 #代码结束
-print("费用{}".format(f))
-        </code>
+print("费用{}".format(f))</pre></code>
     </div>
 
 
 
     <div id="code7" class="code-block">
-        <code>
+        <button class="copy-btn" data-target="code7">复制</button>
+        <code><pre>
 s=eval(input("输入成绩"))
 #代码开始
 if s<60:
@@ -222,15 +239,15 @@ elif s<90:
 else:
     l='优秀'
 print('等级是',l,sep='')
-#代码结束
-        </code>
+#代码结束</pre></code>
     </div>
 
 
         
 
     <div id="code8" class="code-block">
-        <code>
+        <button class="copy-btn" data-target="code8">复制</button>
+        <code><pre>
 sr=eval(input("输入月收入"))
 kc=eval(input("输入专项扣除"))
 #代码开始
@@ -250,15 +267,15 @@ elif ys<80000:
 else:
     tax=90+900+2600+6000+(80000-55000)*0.35+(ys-80000)*0.45
 #代码结束
-print("个人所得税{}".format(tax))
-        </code>
+print("个人所得税{}".format(tax))</pre></code>
     </div>
 
 
 
 
     <div id="code9" class="code-block">
-        <code>
+        <button class="copy-btn" data-target="code9">复制</button>
+        <code><pre>
 je=eval(input("输入购物金额"))
 vip=input("是否vip(y/n)")
 #代码开始
@@ -278,16 +295,15 @@ if vip=='y' or vip=='Y':
     print(f'实际付款为{f:.2f}优惠金额为{je-f:.2f}')
 else:
     print(f'实际付款为{f:.2f}优惠金额为{je-f:.2f}')
-#代码结束
-
-        </code>
+#代码结束</pre></code>
     </div>
 
 
 
 
     <div id="code10" class="code-block">
-        <code>
+        <button class="copy-btn" data-target="code10">复制</button>
+        <code><pre>
 A、5!=5
 A、x%2==1
 B、5
@@ -296,15 +312,15 @@ B、y=x if x<=0 else -x
 D、a=20, b=1
 D、可以使用if<条件><表达式1>else<表达式2>的紧凑结构，返回一个表达式的值
 A、及格
-C、None
-        </code>
+C、None</pre></code>
     </div>
 
             
 
 
     <div id="code11" class="code-block">
-        <code>
+        <button class="copy-btn" data-target="code11">复制</button>
+        <code><pre>
 D.5.00
 A.死循环，不能确定
 D.break用来结束当前的循环语句，但不跳出当前的循环体
@@ -319,8 +335,7 @@ A.PYTHN
       count += 1
       continue
 填空4:range(5)
-      right(144)
-        </code>
+      right(144)</pre></code>
     </div>
 
 
@@ -356,6 +371,27 @@ A.PYTHN
                 document.getElementById(selectedValue).style.display = 'block';
             }
         });
+
+        // 复制代码功能
+        document.querySelectorAll('.copy-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const codeBlock = document.getElementById(targetId).querySelector('code').innerText;
+
+                // 创建临时textarea来选中并复制文本
+                const tempTextArea = document.createElement('textarea');
+                tempTextArea.value = codeBlock;
+                document.body.appendChild(tempTextArea);
+                tempTextArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempTextArea);
+
+                // 提示用户代码已复制
+                alert('代码已复制到剪贴板');
+            });
+        });
+
+
     </script>
 
 </body>
