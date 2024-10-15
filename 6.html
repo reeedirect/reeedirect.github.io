@@ -23,7 +23,7 @@
             padding: 10px;
             white-space: pre;
             font-family: monospace;
-            z-ind练习: 10; /* 让文字层位于 GIF 之上 */
+            z-index: 10; /* 让文字层位于 GIF 之上 */
             position: relative; /* 确保文字在 GIF 之上 */
             top: 2%;
             margin-left: 20px;
@@ -35,13 +35,13 @@
         }
         #codeSelect {
             display: none; /* 初始时隐藏 */
-            z-ind练习: 10; /* 保证选择框在前 */
+            z-index习: 10; /* 保证选择框在前 */
             position: relative;
             left: 1%;
             top: 1%;
         }
         #passwordInput, #passwordBtn, label {
-            z-ind练习: 10; /* 确保输入框等元素在 GIF 上方 */
+            z-index: 10; /* 确保输入框等元素在 GIF 上方 */
             position: relative;
             left: 1%; /* 水平居中 */
             top: 1%;
@@ -51,8 +51,8 @@
             position: fixed;
             bottom: 0; /* 固定在页面底部 */
             left: 50%; /* 水平居中 */
-            transform: translat练习(-50%); /* 居中对齐 */
-            z-ind练习: 1; /* GIF在底层 */
+            transform: translatex(-50%); /* 居中对齐 */
+            z-index: 1; /* GIF在底层 */
         }
         #gifBackground img {
             width: auto; /* 保持GIF的原始宽度 */
