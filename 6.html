@@ -15,14 +15,16 @@
             padding: 0;
             height: 100vh;
             transition: background-color 1s ease; /* 过渡效果 */
+            font-family: 'cfont2';
         }
         .code-block {
+            font-family: 'cfont';
             display: none;
             background-color: #f5f5f5;
             border: 1px solid #E3F9FD;
             padding: 10px;
             white-space: pre;
-            font-family: monospace;
+            /* font-family: monospace; */
             z-index: 10; /* 让文字层位于 GIF 之上 */
             position: relative; /* 确保文字在 GIF 之上 */
             top: 2%;
@@ -32,6 +34,7 @@
             box-sizing: border-box;
             box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
             border-radius: 10px;
+            
         }
         #codeSelect {
             display: none; /* 初始时隐藏 */
@@ -74,6 +77,18 @@
         }
         .copy-btn:hover {
             background-color: #91675a;
+        }
+        .code-block pre, .code-block code {
+            font-family: 'cfont';
+        }
+        @font-face {
+            font-family: 'cfont';
+            /* src: url('/resource/icon-font/MSA-Regular.woff2') format('woff2'); */
+            src: url('/resource/icon-font/MSA-SWideRegular.woff2') format('woff2');
+        }
+        @font-face {
+            font-family: 'cfont2';
+            src: url('/resource/icon-font/MSA-Regular.woff2') format('woff2');
         }
     </style>
 </head>
