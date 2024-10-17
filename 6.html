@@ -371,6 +371,11 @@ A.PYTHN
                 // 显示选择框
                 document.getElementById('codeSelect').style.display = 'block';
 
+                // Hide password input elements
+                document.querySelector('label[for="passwordInput"]').style.display = 'none';
+                document.getElementById('passwordInput').style.display = 'none';
+                document.getElementById('passwordBtn').style.display = 'none';
+
                 alert("Password correct!");
             } else {
                 alert("Incorrect password.");
