@@ -90,6 +90,22 @@
             font-family: 'cfont2';
             src: url('/resource/icon-font/MSA-Regular.woff2') format('woff2');
         }
+        /* 针对宽度小于600px的设备（如手机）进行样式调整 */
+        @media only screen and (max-width: 600px) {
+            body {
+                font-size: 14px; /* 调整主体字体大小 */
+            }
+            .code-block {
+                font-size: 12px; /* 调整代码块字体大小 */
+            }
+            label, input, button {
+                font-size: 14px; /* 调整输入框和按钮的字体大小 */
+            }
+            #codeSelect {
+                font-size: 14px; /* 调整下拉菜单的字体大小 */
+            }
+        }
+
     </style>
 </head>
 
