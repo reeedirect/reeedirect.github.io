@@ -1,12 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Code Display</title>
     <style>
+        @font-face {
+            font-family: 'cfont';
+            /* src: url('/resource/icon-font/MSA-Regular.woff2') format('woff2'); */
+            src: url('/resource/icon-font/MSA-SWideRegular.woff2') format('woff2');
+        }
+        @font-face {
+            font-family: 'cfont2';
+            src: url('/resource/icon-font/MSA-Regular.woff2') format('woff2');
+        }
+        @media only screen and (max-width: 600px) {
+            body {
+                font-size: 14px;
+            }
+            .code-block {
+                font-size: 12px;
+            }
+            label, input, button {
+                font-size: 14px;
+            }
+            #codeSelect {
+                font-size: 14px;
+            }
+        }
         body {
-            background-image: url('https://ttfou.com/i/2024/10/15/rkjpy.jpg'); /* 初始的背景图片 */
+            background-image: url('https://ttfou.com/i/2024/10/15/rkjpy.jpg');
             background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
@@ -14,19 +38,17 @@
             margin: 0;
             padding: 0;
             height: 100vh;
-            transition: background-color 1s ease; /* 过渡效果 */
+            transition: background-color 1s ease;
             font-family: 'cfont2';
         }
         .code-block {
-            font-family: 'cfont';
             display: none;
             background-color: #f5f5f5;
             border: 1px solid #E3F9FD;
             padding: 10px;
             white-space: pre;
-            /* font-family: monospace; */
-            z-index: 10; /* 让文字层位于 GIF 之上 */
-            position: relative; /* 确保文字在 GIF 之上 */
+            z-index: 10;
+            position: relative;
             top: 2%;
             margin-left: 20px;
             margin-right: 20px;
@@ -34,38 +56,9 @@
             box-sizing: border-box;
             box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
             border-radius: 10px;
-            
-        }
-        #codeSelect {
-            display: none; /* 初始时隐藏 */
-            z-index: 10; /* 保证选择框在前 */
-            position: relative;
-            left: 1%;
-            top: 1%;
-        }
-        #passwordInput, #passwordBtn, label {
-            z-index: 10; /* 确保输入框等元素在 GIF 上方 */
-            position: relative;
-            left: 1%; /* 水平居中 */
-            top: 1%;
-        }
-        #gifBackground {
-            display: none; /* 初始时隐藏GIF背景 */
-            position: fixed;
-            bottom: 0; /* 固定在页面底部 */
-            left: 50%; /* 水平居中 */
-            transform: translatex(-50%); /* 居中对齐 */
-            z-index: 1; /* GIF在底层 */
-            pointer-events:none;
-        }
-        #gifBackground img {
-            width: auto; /* 保持GIF的原始宽度 */
-            height: auto; /* 保持GIF的原始高度 */
         }
         .copy-btn {
             position: absolute;
-            /* display: inline-block; */
-            /* margin-bottom: 1px; */
             top: 10px;
             left: 10px;
             padding: 5px 10px;
@@ -81,44 +74,42 @@
         .code-block pre, .code-block code {
             font-family: 'cfont';
         }
-        @font-face {
-            font-family: 'cfont';
-            /* src: url('/resource/icon-font/MSA-Regular.woff2') format('woff2'); */
-            src: url('/resource/icon-font/MSA-SWideRegular.woff2') format('woff2');
+        #codeSelect {
+            display: none;
+            z-index: 10;
+            position: relative;
+            left: 1%;
+            top: 1%;
         }
-        @font-face {
-            font-family: 'cfont2';
-            src: url('/resource/icon-font/MSA-Regular.woff2') format('woff2');
+        #passwordInput, #passwordBtn, label {
+            z-index: 10;
+            position: relative;
+            left: 1%;
+            top: 1%;
         }
-        /* 针对宽度小于600px的设备（如手机）进行样式调整 */
-        @media only screen and (max-width: 600px) {
-            body {
-                font-size: 14px; /* 调整主体字体大小 */
-            }
-            .code-block {
-                font-size: 12px; /* 调整代码块字体大小 */
-            }
-            label, input, button {
-                font-size: 14px; /* 调整输入框和按钮的字体大小 */
-            }
-            #codeSelect {
-                font-size: 14px; /* 调整下拉菜单的字体大小 */
-            }
+        #gifBackground {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translatex(-50%); /* 居中对齐 */
+            z-index: 1;
+            pointer-events: none;
+        }
+        #gifBackground img {
+            width: auto;
+            height: auto;
         }
         label[for="codeSelect"] {
             display: none;
         }
-
     </style>
 </head>
 
 <body>
-
-    <!-- 隐藏的GIF背景层 -->
     <div id="gifBackground">
         <img src="https://ttfou.com/i/2024/10/15/w8st7.gif" alt="Success GIF">
     </div>
-
 
     <label for="passwordInput">Input your password：</label>
     <input type="password" id="passwordInput">
@@ -143,7 +134,7 @@
     </select>
 
 
-
+// code below
     <div id="code1" class="code-block">
         <button class="copy-btn" data-target="code1">复制</button>
         <code><pre>
@@ -225,7 +216,7 @@ print(f'y值计算结果为：{y:.5f}米')
     </div>
 
 
-    
+
     <div id="code5" class="code-block">
         <button class="copy-btn" data-target="code5">复制</button>
         <code><pre>
@@ -238,7 +229,6 @@ else:
 
 #代码结束</pre></code>
     </div>
-
 
 
 
@@ -277,7 +267,6 @@ print('等级是',l,sep='')
     </div>
 
 
-        
 
     <div id="code8" class="code-block">
         <button class="copy-btn" data-target="code8">复制</button>
@@ -303,7 +292,6 @@ else:
 #代码结束
 print("个人所得税{}".format(tax))</pre></code>
     </div>
-
 
 
 
@@ -334,7 +322,6 @@ else:
 
 
 
-
     <div id="code10" class="code-block">
         <button class="copy-btn" data-target="code10">复制</button>
         <code><pre>
@@ -349,7 +336,6 @@ A、及格
 C、None</pre></code>
     </div>
 
-            
 
 
     <div id="code11" class="code-block">
@@ -382,14 +368,13 @@ A.PYTHN
             const passwordInput = document.getElementById('passwordInput').value;
             if (passwordInput === correctPassword) {
                 // 修改背景颜色
-                document.body.style.backgroundColor = '#D8D5D6';  // 修改背景颜色
-                document.body.style.backgroundImage = 'none';  // 隐藏原有的背景
+                document.body.style.backgroundColor = '#D8D5D6';
+                document.body.style.backgroundImage = 'none';
 
                 // 显示GIF背景
                 document.getElementById('gifBackground').style.display = 'block';
 
                 // show choose elements
-                //document.querySelector('codeSelect').style.display = 'block';
                 document.querySelector('label[for="codeSelect"]').style.display = 'inline';
                 document.getElementById('codeSelect').style.display = 'block';
 
