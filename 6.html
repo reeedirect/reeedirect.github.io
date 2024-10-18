@@ -105,6 +105,9 @@
                 font-size: 14px; /* 调整下拉菜单的字体大小 */
             }
         }
+        label[for="codeSelect"] {
+            display: none;
+        }
 
     </style>
 </head>
@@ -374,17 +377,20 @@ A.PYTHN
     <script>
         const correctPassword = "zoushen";
 
+        // 密码功能
         document.getElementById('passwordBtn').addEventListener('click', function() {
             const passwordInput = document.getElementById('passwordInput').value;
             if (passwordInput === correctPassword) {
-                // 密码正确时，修改背景颜色并显示GIF
+                // 修改背景颜色
                 document.body.style.backgroundColor = '#D8D5D6';  // 修改背景颜色
                 document.body.style.backgroundImage = 'none';  // 隐藏原有的背景
 
                 // 显示GIF背景
                 document.getElementById('gifBackground').style.display = 'block';
 
-                // 显示选择框
+                // show choose elements
+                //document.querySelector('codeSelect').style.display = 'block';
+                document.querySelector('label[for="codeSelect"]').style.display = 'inline';
                 document.getElementById('codeSelect').style.display = 'block';
 
                 // Hide password input elements
@@ -392,12 +398,14 @@ A.PYTHN
                 document.getElementById('passwordInput').style.display = 'none';
                 document.getElementById('passwordBtn').style.display = 'none';
 
+
                 alert("Password correct!");
             } else {
                 alert("Incorrect password.");
             }
         });
 
+        // 选择项功能
         document.getElementById('codeSelect').addEventListener('change', function() {
             const codeBlocks = document.querySelectorAll('.code-block');
             codeBlocks.forEach(block => block.style.display = 'none');
@@ -422,7 +430,6 @@ A.PYTHN
                 document.execCommand('copy');
                 document.body.removeChild(tempTextArea);
 
-                // 提示用户代码已复制
                 alert('代码已复制');
             });
         });
