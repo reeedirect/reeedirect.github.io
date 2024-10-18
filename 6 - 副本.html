@@ -8,6 +8,7 @@
     <style>
         @font-face {
             font-family: 'cfont';
+            /* src: url('/resource/icon-font/MSA-Regular.woff2') format('woff2'); */
             src: url('/resource/icon-font/MSA-SWideRegular.woff2') format('woff2');
         }
         @font-face {
@@ -358,29 +359,14 @@ A.PYTHN
     </div>
 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
     <script>
         const correctPassword = "zoushen";
-        const encryptedCode1 = "U2FsdGVkX1+4h9QCu3VOBW82K69G57tp5ASov3lhTD2u313lydIipGAtMkWRcXp+U3XQSqeMU0PqSsDkfi0o5M7JLh6gW1hjqnNM+ycoCxaRNsns/g56n0dMtTEtqoS47ws9wEwKrXBOhi3dybJHFGyAho0tbNscKX8ifGweFqGIyOEnK0dF3QKN0sYelVUT";
 
         // 密码功能
         document.getElementById('passwordBtn').addEventListener('click', function() {
             const passwordInput = document.getElementById('passwordInput').value;
             if (passwordInput === correctPassword) {
-
-                // try {
-                //     const decrypted = CryptoJS.AES.decrypt(encryptedCode1, '123').toString(CryptoJS.enc.Utf8);
-                //     if (decrypted) {
-                //         document.getElementById('codeDisplay').innerText = decrypted;
-                //         document.getElementById('codeDisplay').style.display = 'block';
-                //     } else {
-                //     alert('Incorrect password.');
-                //     }
-                // } catch (e) {
-                // alert('Incorrect password.');
-                // }
-
                 // 修改背景颜色
                 document.body.style.backgroundColor = '#D8D5D6';
                 document.body.style.backgroundImage = 'none';
@@ -404,30 +390,15 @@ A.PYTHN
             }
         });
 
-        // 解密并显示代码
-        function decryptCode(encryptedCode, password) {
-            try {
-                const decrypted = CryptoJS.AES.decrypt(encryptedCode, password).toString(CryptoJS.enc.Utf8);
-                return decrypted ? decrypted : "解密失败";
-            } catch (e) {
-                return "解密失败";
-            }
-        }
-
         // 选择项功能
         document.getElementById('codeSelect').addEventListener('change', function() {
             const codeBlocks = document.querySelectorAll('.code-block');
             codeBlocks.forEach(block => block.style.display = 'none');
 
             const selectedValue = this.value;
-            if (selectedValue === 'code1') {
-                const decryptedCode = decryptCode(encryptedCode1, correctPassword);
-                document.getElementById('code1').querySelector('pre').innerText = decryptedCode;
-                document.getElementById('code1').style.display = 'block';
+            if (selectedValue) {
+                document.getElementById(selectedValue).style.display = 'block';
             }
-            // if (selectedValue) {
-            //     document.getElementById(selectedValue).style.display = 'block';
-            // }
         });
 
         // 复制代码功能
