@@ -130,6 +130,7 @@
         <option value="code9">练习3.5</option>
         <option value="code10">练习3.6</option>
         <option value="code11">作业2</option>
+        <option value="code12">自由练习4</option>
     </select>
 
 
@@ -356,6 +357,60 @@ A.PYTHN
 填空4:range(5)
       right(144)</pre></code>
     </div>
+
+
+
+    <div id="code12" class="code-block">
+        <button class="copy-btn" data-target="code12">复制</button>
+        <code><pre>
+for i in range(1,10):
+    for x in range(1,i+1):
+        print (i,'*',x,'=',i*x,end=' ')
+    print()
+##########################################
+# 本程序计算1-N整数平方的累加和
+
+N = int(input())
+#   请在此添加实现代码   #
+# ********** Begin *********#
+s = 0
+for i in range (1,N+1):
+    s = s + i**2
+print(s)
+# ********** End **********#
+##########################################
+#   请在此添加实现代码   #
+# ********** Begin *********#
+x = 3
+s = 1
+while 1/x >= 10**-5:
+    x = -x
+    s = s + 1/x
+    if x < 0:
+        x = -x
+        x += 2
+    else:
+        x += 2
+print(4*s)
+# ********** End **********#
+##########################################
+#   请在此添加实现代码   #
+# ********** Begin *********#
+n = eval(input())
+i = 0
+count = 0
+import random
+while i < n:
+    x = random.random()
+    y = random.random()
+    if x**2 + y**2 <= 1:
+        count += 1
+    i += 1
+pi = 4*count/n
+print(f'{pi:.8f}')
+# ********** End **********#
+
+
 
 
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script> -->
