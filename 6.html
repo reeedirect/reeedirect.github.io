@@ -134,6 +134,7 @@
         <option value="code10">练习3.6</option>
         <option value="code11">作业2</option>
         <option value="code12">自由练习4</option>
+        <option value="code13">实验5</option>
     </select>
 
 
@@ -413,6 +414,129 @@ pi = 4*count/n
 print(f'{pi:.8f}')
 # ********** End **********#</pre></code>
     </div>
+
+
+
+    <div id="code13" class="code-block">
+        <button class="copy-btn" data-target="code13">复制</button>
+        <code><pre>    
+# 获取待处理的源字符串
+source_string = input()
+# 请在下面添加字符串转换的代码
+string = source_string.strip()
+string = string.title()
+### Begin ###
+print(string)
+print(len(string))
+### End ###
+#######################################↓↓↓下一道↓↓↓
+
+# 获取待处理的源字符串
+source_string = input()
+# 请在下面添加代码
+string = source_string.replace('day','time')
+### Begin ###
+print(source_string.find('day'))
+print(string)
+print(string.split(' '))
+### End ###
+#######################################↓↓↓下一道↓↓↓
+
+# 获取待处理的源字符串
+source_string = input()
+# 请在下面添加代码
+### Begin ###
+print(source_string[0:3])
+print(source_string[-3:])
+print(len(source_string))
+print(source_string.find('o'))
+print(source_string.count('o'))
+print(source_string.replace('.','-'))
+print(source_string.upper())
+### End ###
+#######################################↓↓↓下一道↓↓↓
+
+#获取待兑换的人民币字符串
+source_string = input()
+#请在下面添加代码实现现金兑换
+string = source_string[:-1]
+### Begin ###
+s = eval(string)*0.1456
+print(f'{string}元人民币可以兑换{s:.2f}美元')
+### End ###
+#######################################↓↓↓下一道↓↓↓
+
+#创建并初始化guests列表
+guests = []
+while True:
+    try:
+        guest = input()
+        guests.append(guest)
+    except:
+        break
+
+#请在此添加代码,对guests列表进行操作
+guests.sort()
+deleted_guest = guests.pop(-1)
+guests.insert(2,deleted_guest)
+del guests[1]
+### Begin ###
+print(deleted_guest)
+print(guests)
+### End ###
+#######################################↓↓↓下一道↓↓↓
+
+# 创建并读入range函数的相应参数
+lower = int(input())
+upper = int(input())
+step = int(input())
+# 请在此添加代码，实现编程要求
+### Begin ###
+data_list = list(range(lower,upper,step))
+s = max(data_list) - min(data_list)
+print(len(data_list))
+print(s)
+### End ###
+#######################################↓↓↓下一道↓↓↓
+
+#创建并初始化my_munu列表
+my_menu = []
+while True:
+    try:
+        food = input()
+        my_menu.append(food)
+    except:
+        break
+
+#请在此添加代码,对my_menu列表进行切片操作
+### Begin ###
+print(my_menu[0::3])
+print(my_menu[-3:])
+### End ###
+#######################################↓↓↓下一道↓↓↓
+
+sfz=input("请输入身份证号:")
+print(sfz)
+xz=((1,19,"摩羯座"),(2,18,"水瓶座"),(3,20,"双鱼座"),(4,19,"白羊座"),
+    (5,20,"金牛座"),(6,21,"双子座"),(7,22,"巨蟹座"), (8,22,"狮子座"),
+    (9,22,"处女座"),(10,23,"天秤座"),(11,22,"天蝎座"),(12,21,"射手座"))
+### Begin ###
+s = xz[-1][2]
+month = int(sfz[10:12])
+day = int(sfz[12:14])
+for i in range(0,11):
+    if month == xz[i][0] and day <= xz[i][1]:
+        s = xz[i][2]
+    elif month == xz[i-1][0] and day >= xz[i-1][1]:
+        s = xz[i][2]
+print(s)
+### End ###</pre></code>
+    </div> 
+
+
+
+
+
 
 
 
