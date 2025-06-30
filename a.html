@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>词汇替换练习</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .main-container {
+             max-width: 80rem; /* max-w-7xl */
+        }
+        .quiz-card {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .action-btn, .word-btn, .answer-blank {
+            transition: all 0.2s ease-in-out;
+        }
+        .main-menu-btn {
+            transition: all 0.3s ease;
+        }
+        .main-menu-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .word-btn {
+            background-color: #3b82f6; color: white;
+        }
+        .word-btn:hover:not(:disabled) {
+             background-color: #2563eb;
+        }
+        .word-btn.selected {
+            background-color: #f59e0b; color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4);
+        }
+        .word-btn:disabled {
+            background-color: #d1d5db; color: #6b7280;
+            cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.8;
+        }
+        .replacement-group {
+            display: inline-flex; flex-direction: column; align-items: center;
+            vertical-align: middle; margin: 0 4px; cursor: pointer;
+        }
+        .answer-blank {
+            display: block; min-width: 80px; text-align: center;
+            border-bottom: 2px solid #9ca3af; padding: 0 8px;
+            height: 24px; line-height: 24px;
+            font-weight: 600; color: #1d4ed8;
+        }
+        .original-text-underneath {
+            font-size: 0.8rem; color: #9ca3af;
+            text-decoration: line-through; margin-top: -2px;
+        }
+        .correct .answer-blank { color: #10b981 !important; border-bottom-color: #10b981 !important; }
+        .incorrect .answer-blank { color: #ef4444 !important; border-bottom-color: #ef4444 !important; }
+        .wrong-answer-card { border-left: 4px solid #ef4444; }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div id="app-container" class="main-container w-full mx-auto">
+
+        <!-- Main Menu Screen -->
+        <div id="main-menu-screen">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold text-gray-800">词汇替换综合练习</h1>
+                <p class="text-gray-500 mt-4 text-lg">请选择一个模式开始</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <button id="start-quiz-btn" class="main-menu-btn bg-blue-600 text-white p-8 rounded-2xl shadow-lg">
+                    <h2 class="text-3xl font-bold">开始做题</h2>
+                    <p class="mt-2">随机练习所有题目</p>
+                </button>
+                <button id="view-wrong-answers-btn" class="main-menu-btn bg-red-500 text-white p-8 rounded-2xl shadow-lg">
+                    <h2 class="text-3xl font-bold">错题本</h2>
+                    <p class="mt-2">查看和练习已做错的题目</p>
+                </button>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden">
+             <div class="quiz-card bg-white rounded-2xl p-6 md:p-10">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 id="quiz-title" class="text-2xl md:text-3xl font-bold text-gray-800">词汇替换练习</h1>
+                    <button id="exit-quiz-btn" class="text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg">返回主菜单</button>
+                </div>
+                <div class="mb-8">
+                    <h2 class="text-lg font-semibold text-gray-700 mb-4">1. 点击选择单词:</h2>
+                    <div id="word-bank" class="flex flex-wrap gap-3"></div>
+                </div>
+                <div class="mb-8">
+                    <h2 class="text-lg font-semibold text-gray-700 mb-4">2. 点击下方空白处进行替换:</h2>
+                    <div id="questions-container" class="space-y-8"></div>
+                </div>
+                <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <button id="check-btn" class="action-btn w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg">检查答案</button>
+                    <button id="skip-btn" class="action-btn w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-4 rounded-lg">换一道题</button>
+                    <button id="next-btn" class="action-btn w-full bg-gray-700 hover:bg-gray-800 text-white font-bold py-3 px-4 rounded-lg hidden">下一题</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wrong Answers Screen -->
+        <div id="wrong-answers-screen" class="hidden">
+            <div class="quiz-card bg-white rounded-2xl p-6 md:p-10">
+                 <div class="flex justify-between items-center mb-8">
+                    <h1 class="text-3xl font-bold text-gray-800">错题本</h1>
+                    <button id="back-to-menu-from-wrong-btn" class="text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg">返回主菜单</button>
+                </div>
+                <div id="wrong-answers-controls" class="mb-6 flex gap-4">
+                     <button id="practice-wrong-answers-btn" class="action-btn flex-grow bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg">开始错题练习</button>
+                     <button id="clear-wrong-answers-btn" class="action-btn bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg">清空错题本</button>
+                </div>
+                <div id="wrong-answers-list" class="space-y-6"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Confirmation Modal -->
+    <div id="confirmation-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-sm w-full">
+            <h3 id="modal-title" class="text-xl font-bold text-gray-800">确认操作</h3>
+            <p id="modal-message" class="text-gray-600 my-4">确定要清空所有错题记录吗？此操作无法撤销。</p>
+            <div class="flex justify-end gap-4 mt-6">
+                <button id="modal-cancel-btn" class="action-btn px-6 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300">取消</button>
+                <button id="modal-confirm-btn" class="action-btn px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">确认清空</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const fullQuizData = [
+            // Unit 1, Passage 1
+            { words: ["advocate", "aerial", "comprehensive", "cop", "heal", "lounge", "setback"], sentences: [ { q: "I went to a {blank} secondary school just outside London.", a: "comprehensive", original: "mixed-ability", t: "我上的是伦敦郊外的一所综合中学。" }, { q: "I got stopped by a {blank} who asked to see my driving licence.", a: "cop", original: "policeman", t: "我被一个警察拦下，他要看我的驾照。" }, { q: "Have you seen this beautiful {blank}?", a: "aerial", original: "view of Oxford from the air", t: "你见过牛津这美丽的空中视角吗？" }, { q: "She had a good job but she suffered a {blank} with her health.", a: "setback", original: "problem", t: "她工作不错，但健康上遇到了挫折。" }, { q: "I hurt my leg badly a couple of months ago, and it still hasn't {blank} completely.", a: "healed", original: "got better completely", t: "几个月前我腿伤得很重，现在还没完全愈合。" }, { q: "When he got home from work his son was {blank} on the couch listening to music.", a: "lounging", original: "lying lazily", t: "他下班回家时，儿子正懒洋洋地躺在沙发上听音乐。" }, { q: "You should speak to Toby; he's a {blank} of flexible working hours.", a: "advocate", original: "supporter", t: "你应该和托比谈谈；他是弹性工作制的支持者。" } ], explanations: { "advocate": "n. 拥护者; 提倡者 v. 提倡; 主张", "aerial": "adj. 空中的; 航空的", "comprehensive": "adj. 全面的; 综合的", "cop": "n. 警察(口语)", "heal": "v. 治愈; 愈合", "lounge": "v. 懒洋洋地躺着; n. 休息室", "setback": "n. 挫折; 障碍" } },
+            // Unit 1, Passage 2
+            { words: ["belongings", "dropout", "gamble", "honesty", "odds", "substantial", "thriving", "repay"], sentences: [ { q: "When I was at college I kept all my {blank} in an old cupboard.", a: "belongings", original: "personal things", t: "我上大学时，把我所有的个人物品都放在一个旧柜子里。" }, { q: "Few {blank} end up in good jobs.", a: "dropouts", original: "people who leave university before getting a degree", t: "很少有大学辍学的人最终能找到好工作。" }, { q: "I think she'll get a good degree, but I wouldn't {blank} on the exact result.", a: "gamble", original: "risk my money", t: "我认为她会取得好成绩，但我不会拿钱赌具体结果。" }, { q: "When you get your first job, you may be surprised by how {blank} the bills are.", a: "substantial", original: "high", t: "当你找到第一份工作时，你可能会惊讶于账单数额如此之大。" }, { q: "The {blank} of my being offered a job after that interview must be quite remote.", a: "odds", original: "chances", t: "那次面试后我被录用的几率一定很小。" }, { q: "Our business has {blank} since we changed our advertising.", a: "been thriving", original: "done very well", t: "自从我们改变了广告策略，我们的生意一直很兴隆。" }, { q: "If you take out a loan while you're at university, you have to {blank} when you get a job.", a: "repay it", original: "give it back", t: "如果你在大学期间贷款，你必须在找到工作后偿还。" }, { q: "I think {blank} is always the best policy.", a: "honesty", original: "telling the truth and not cheating", t: "我认为诚实永远是最好的策略。" } ], explanations: { "belongings": "n. 财产; 所有物", "dropout": "n. 退学者; 辍学者", "gamble": "v. / n. 赌博; 冒险", "honesty": "n. 诚实", "odds": "n. 可能性; 几率", "substantial": "adj. 大量的; 可观的", "thriving": "adj. 繁荣的; 兴旺的 (thrive的现在分词)", "repay": "v. 偿还; 报答" } },
+            // Unit 2, Passage 1
+            { words: ["confront", "dialect", "induce", "influential", "interact", "likewise", "mysterious"], sentences: [ { q: "In a good novel, the writer and reader {blank} with each other.", a: "interact", original: "communicate", t: "在一部好的小说中，作者与读者会相互交流。" }, { q: "I have to {blank} the problem sooner or later.", a: "confront", original: "face up to", t: "我迟早要面对这个问题。" }, { q: "I read the book in one sitting and Mary {blank}.", a: "likewise", original: "did too", t: "我一口气读完了这本书，玛丽也是。" }, { q: "E. M. Forster was one of the most {blank} British novelists of the 20th century.", a: "influential", original: "important and respected", t: "E. M. 福斯特是20世纪最受尊敬、最有影响力的英国小说家之一。" }, { q: "Do you believe that a work of literature can actually {blank} social changes?", a: "induce", original: "lead to", t: "你相信文学作品真的能引发社会变革吗？" }, { q: "Robert Burns was a great poet who wrote in the {blank} spoken in Scotland.", a: "dialect", original: "language variety", t: "罗伯特·彭斯是一位用苏格兰方言写作的伟大诗人。" }, { q: "The Time Traveler's Wife is the story of a man who has a {blank} genetic disorder.", a: "mysterious", original: "strange and inexplicable", t: "《时间旅行者的妻子》讲述了一个患有奇怪且无法解释的遗传性疾病的男人的故事。" } ], explanations: { "confront": "v. 面对; 对抗", "dialect": "n. 方言", "induce": "v. 引起; 导致", "influential": "adj. 有影响力的", "interact": "v. 互动; 交流", "likewise": "adv. 同样地; 也", "mysterious": "adj. 神秘的; 难以理解的" } },
+            // Unit 2, Passage 2
+            { words: ["advantageous", "autobiographical", "demoralize", "enlightenment", "indubitably", "prodigious", "prohibition", "unparalleled"], sentences: [ { q: "I felt {blank} after reading his criticism of my novel.", a: "demoralized", original: "depressed and lacking in confidence", t: "读完他对我的小说的批评后，我感到意志消沉。" }, { q: "Henry Miller's The Books in My Life is, as the name suggests, {blank}.", a: "autobiographical", original: "the story of his life", t: "亨利·米勒的《我生活中的书》，顾名思义，是自传性的。" }, { q: "Shakespeare had an {blank} talent as a writer, which is {blank} in the history of English literature.", a: "prodigious / unparalleled", original: "extraordinary / without comparison", t: "莎士比亚作为一名作家拥有非凡的才华，这在英国文学史上是无与伦比的。" }, { q: "Some people look to a book for pleasure rather than for {blank}.", a: "enlightenment", original: "understanding", t: "有些人看书是为了愉悦，而不是为了获得启迪。" }, { q: "The experiment in {blank} in the United States actually led to an increase in crime.", a: "prohibiting", original: "banning alcoholic drinks", t: "美国的禁酒令实验实际上导致了犯罪率的上升。" }, { q: "I'm not sure if it is {blank} for readers to read this review before they start the book.", a: "advantageous", original: "beneficial", t: "我不确定读者在开始读这本书之前阅读这篇评论是否有利。" }, { q: "Miller's Tropic of Cancer was, {blank}, one of the most infamous novels of the 20th century.", a: "indubitably", original: "without doubt", t: "米勒的《北回归线》无疑是20世纪最臭名昭著的小说之一。" } ], explanations: { "advantageous": "adj. 有利的; 有益的", "autobiographical": "adj. 自传的", "demoralize": "v. 使士气低落; 使意志消沉", "enlightenment": "n. 启迪; 教化", "indubitably": "adv. 无疑地; 确实地", "prodigious": "adj. 巨大的; 惊人的", "prohibition": "n. 禁止; 禁令", "unparalleled": "adj. 无与伦比的; 空前的" } },
+            // Unit 3, Passage 1
+            { words: ["accordingly", "combination", "dodge", "dubious", "imply", "indicative", "mortal", "occasional"], sentences: [ { q: "{blank} I dress formally, but usually I wear casual clothes.", a: "Occasionally", original: "Now and then", t: "我偶尔会穿正装，但通常穿休闲装。" }, { q: "If the bullet had been a few centimetres to the left, my father would have received a {blank} wound.", a: "mortal", original: "deadly", t: "如果子弹偏左几厘米，我父亲就会受到致命伤。" }, { q: "Is it really true that wearing dark colours {blank} a lack of interest in clothes?", a: "indicates", original: "shows", t: "穿深色衣服真的就表明对服装不感兴趣吗？" }, { q: "Although my father wasn't killed, he didn't manage to {blank} the bullet.", a: "dodge", original: "move quickly enough to avoid", t: "虽然我父亲没有被杀死，但他没能躲开子弹。" }, { q: "Fashionistas often think that {blank} different colours creates a good look.", a: "combining", original: "mixing", t: "时尚达人常常认为混合不同的颜色能创造出好看的造型。" }, { q: "The suggestion of the saying, \"There's no such thing as bad weather, just the wrong clothing\" is that we can't change the climate, we just need to dress {blank}.", a: "accordingly", original: "appropriately", t: "“没有坏天气，只有穿错的衣服”这句谚语的言下之意是，我们无法改变气候，我们只需要相应地着装。" }, { q: "People always make choices about what to wear, so I'm {blank} when they say they're not interested in clothes.", a: "dubious", original: "not convinced", t: "人们总是在选择穿什么，所以当他们说对衣服不感兴趣时，我表示怀疑。" } ], explanations: { "accordingly": "adv. 因此; 相应地", "combination": "n. 结合; 组合", "dodge": "v. 躲避; 闪开", "dubious": "adj. 可疑的; 不确定的", "imply": "v. 暗示; 意味着", "indicative": "adj. 指示的; 表明......的 (be indicative of)", "mortal": "adj. 致命的; 凡人的", "occasional": "adj. 偶尔的" } },
+            // Unit 3, Passage 2
+            { words: ["chuck", "elusive", "extraction", "folly", "negligence", "scour", "stint"], sentences: [ { q: "I had a {blank} as a volunteer before getting a job in the jewellery trade.", a: "stint", original: "period of time", t: "在进入珠宝行业之前，我曾做过一段时间的志愿者。" }, { q: "You shouldn't just {blank} that rubbish into the river!", a: "chuck", original: "throw", t: "你不应该就把那垃圾扔进河里！" }, { q: "It's sheer {blank} to go on using up the earth's resources as we are doing.", a: "folly", original: "stupid and careless behaviour", t: "像我们这样继续消耗地球资源是极其愚蠢的行为。" }, { q: "I {blank} the horizon, but couldn't see anyone coming towards me.", a: "scoured", original: "looked carefully at", t: "我仔细搜索着地平线，但没看到有人向我走来。" }, { q: "I think the accident was due to the driver's {blank}.", a: "negligence", original: "lack of care", t: "我认为这起事故是由于司机的疏忽造成的。" }, { q: "The {blank} of minerals from the earth is usually an expensive and dangerous task.", a: "extraction", original: "removal", t: "从地球上开采矿物通常是一项昂贵而危险的工作。" }, { q: "The red kite is one of the most {blank} birds in the country.", a: "elusive", original: "rarely seen", t: "红鸢是这个国家最罕见的鸟类之一。" } ], explanations: { "chuck": "v. 抛; 扔 (口语)", "elusive": "adj. 难以捉摸的; 罕见的", "extraction": "n. 开采; 提取", "folly": "n. 愚蠢; 蠢行", "negligence": "n. 疏忽; 粗心", "scour": "v. 仔细搜索; 擦洗", "stint": "n. 一段时间的（工作）" } },
+            // Unit 4, Passage 1
+            { words: ["correspondence", "desirable", "distinctive", "economical", "liable", "lure", "restraint", "wicked"], sentences: [ { q: "My car is very {blank} to run — it uses LPG instead of petrol.", a: "economical", original: "inexpensive", t: "我的车运行起来非常经济——它使用液化石油气而不是汽油。" }, { q: "A gold card would make me feel good about myself and be {blank} to others.", a: "desirable", original: "attractive", t: "金卡会让我自我感觉良好，并对他人有吸引力。" }, { q: "Credit card companies try to {blank} students into overspending.", a: "lure", original: "persuade and trap", t: "信用卡公司试图引诱学生过度消费。" }, { q: "You're {blank} to have a lot of repayments to make if you go on spending like that.", a: "liable", original: "likely", t: "如果你继续那样花钱，你很可能会有很多还款要做。" }, { q: "I like this coffee. It has a rather {blank} taste.", a: "distinctive", original: "different and easy-to-recognize", t: "我喜欢这种咖啡。它有一种相当独特的味道。" }, { q: "We have had {blank} about the best way to pay back the debt.", a: "correspondence", original: "exchanged a number of letters", t: "我们就偿还债务的最佳方式进行了通信。" }, { q: "The important thing is to exercise some {blank} when using a credit card.", a: "restraint", original: "self-control", t: "使用信用卡时，重要的是要进行一些自我克制。" }, { q: "It reminds me of that lovely story about the {blank} giant who turns out to be afraid of his own shadow.", a: "wicked", original: "evil", t: "这让我想起了那个可爱的故事，关于一个最终害怕自己影子的邪恶巨人。" } ], explanations: { "correspondence": "n. 通信; 信件", "desirable": "adj. 值得拥有的; 诱人的", "distinctive": "adj. 独特的; 与众不同的", "economical": "adj. 经济的; 节约的", "liable": "adj. 有可能的; 有责任的 (be liable to do)", "lure": "v. 引诱; 诱惑", "restraint": "n. 克制; 约束", "wicked": "adj. 邪恶的; 淘气的" } },
+            // Unit 4, Passage 2
+            { words: ["alienate", "amiable", "compassionate", "exceedingly", "reckon", "respectful"], sentences: [ { q: "Her father was an {blank} man, who loved his family.", a: "amiable", original: "extremely friendly and pleasant", t: "她的父亲是一个和蔼可亲、热爱家庭的人。" }, { q: "The girl was very {blank} about her father's financial concerns.", a: "compassionate", original: "sympathetic", t: "女孩对她父亲的财务问题非常同情。" }, { q: "She didn't like {blank} her father by asking for unreasonable presents.", a: "alienating", original: "putting her father off", t: "她不喜欢通过索要不合理的礼物来疏远她的父亲。" }, { q: "Once her father had explained all the bills he had to pay she had even more {blank} for him.", a: "respect", original: "admiration", t: "当她的父亲解释了他必须支付的所有账单后，她对他更加敬佩了。" }, { q: "The costs for looking after a dog were {blank} high.", a: "exceedingly", original: "extremely", t: "养狗的费用非常高。" }, { q: "She {blank} that she could look after her puppy if she got a paper round and a Saturday job.", a: "reckoned", original: "estimated", t: "她估计如果她能找到一份送报和周六的工作，她就能照顾好她的小狗。" } ], explanations: { "alienate": "v. 使疏远", "amiable": "adj. 和蔼可亲的; 友好的", "compassionate": "adj. 有同情心的", "exceedingly": "adv. 非常; 极其", "reckon": "v. 估计; 认为", "respectful": "adj. 恭敬的; 尊重人的" } },
+            // Unit 5, Passage 1
+            { words: ["etiquette", "exhaustive", "expletive", "highbrow", "informant", "initially", "reciprocate", "semantics", "stigma"], sentences: [ { q: "{blank} programmes tend to be broadcast very late in the evening.", a: "Highbrow", original: "Cultural and intellectual", t: "高雅节目往往在深夜播出。" }, { q: "{blank} I was very shy, but I soon got to know everyone and made friends.", a: "Initially", original: "At the beginning", t: "起初我很害羞，但很快我就认识了大家并交了朋友。" }, { q: "The course I enjoyed most when I was studying linguistics was the one on {blank}.", a: "semantics", original: "the relationship between words and meanings", t: "我学语言学时最喜欢的课程是关于词语和意义之间关系的课程。" }, { q: "To find out more about English as a world language, we need reliable {blank}.", a: "informants", original: "people who are able to give information", t: "为了更多地了解英语作为世界语言，我们需要可靠的信息提供者。" }, { q: "She sent me a bunch of roses when I got the job, and I {blank} when she got promoted.", a: "reciprocated", original: "did the same", t: "我找到工作时她送了我一束玫瑰，她升职时我也同样回报了她。" }, { q: "For some men there is still a {blank} about taking orders from a female superior.", a: "stigma", original: "feeling of embarrassment and unease", t: "对于一些男性来说，接受女性上司的命令仍然带有一种耻辱感。" }, { q: "After the goal was disallowed, most of the words I could hear were {blank}.", a: "expletives", original: "swear words", t: "进球被判无效后，我能听到的大部分都是咒骂语。" }, { q: "You can't speak like that to someone you don't know. It's a matter of {blank}.", a: "etiquette", original: "rules of social behaviour", t: "你不能对不认识的人那样说话。这是社交礼仪的问题。" }, { q: "Only after very {blank} editing will this book be ready for publication.", a: "exhaustive", original: "careful and time-consuming", t: "只有经过非常详尽的编辑，这本书才能出版。" } ], explanations: { "etiquette": "n. 礼节; 规矩", "exhaustive": "adj. 详尽的; 彻底的", "expletive": "n. 咒骂语", "highbrow": "adj. 高雅文化的; n. 知识分子", "informant": "n. 提供消息者", "initially": "adv. 最初; 开头", "reciprocate": "v. 回报; 回应", "semantics": "n. 语义学", "stigma": "n. 耻辱; 污名" } },
+            // Unit 5, Passage 2
+            { words: ["alluring", "alphabetize", "availability", "congratulatory", "frivolousness", "nominee", "sarcastic"], sentences: [ { q: "The candidate displayed a {blank} which we felt was not appropriate to the position he was applying for.", a: "frivolousness", original: "lack of seriousness", t: "该候选人表现出的轻浮态度，我们觉得不适合他所申请的职位。" }, { q: "I need to check my {blank} in March before I can confirm whether I shall be able to attend the conference.", a: "availability", original: "free dates", t: "我需要查看一下我三月份是否有空，然后才能确认是否能参加会议。" }, { q: "He has an {blank} smile which people find hard to resist.", a: "alluring", original: "attractive", t: "他迷人的微笑令人难以抗拒。" }, { q: "This list of participants needs to be {blank}.", a: "alphabetized", original: "put into alphabetical order", t: "这份参与者名单需要按字母顺序排列。" }, { q: "The first {blank} as general secretary had to withdraw due to ill health.", a: "nominee", original: "person officially suggested", t: "第一位被正式提名为秘书长的人因健康原因不得不退出。" }, { q: "After the first {blank} remarks the atmosphere at the prize-giving ceremony turned sour.", a: "congratulatory", original: "offering congratulations", t: "在最初的祝贺辞之后，颁奖典礼的气氛变得糟糕起来。" }, { q: "The speaker made a {blank} comment which I found unfriendly and which meant the opposite of what he really meant.", a: "sarcastic", original: "unfriendly and which meant the opposite of what he really meant", t: "演讲者发表了一番我感觉很不友好的、意在言外的讽刺性评论。" } ], explanations: { "alluring": "adj. 诱人的; 迷人的", "alphabetize": "v. 按字母顺序排列", "availability": "n. 可用性; 有空", "congratulatory": "adj. 祝贺的", "frivolousness": "n. 轻浮; 轻率", "nominee": "n. 被提名者", "sarcastic": "adj. 讽刺的; 挖苦的" } },
+            // Unit 6, Passage 1
+            { words: ["degenerate", "liquor", "onset", "shabby", "surpass", "swap"], sentences: [ { q: "His achievements were so great that they can never be {blank}.", a: "surpassed", original: "bettered", t: "他的成就如此伟大，永远无法被超越。" }, { q: "The situation can only {blank}; it will never improve.", a: "degenerate", original: "get worse", t: "情况只会恶化，永远不会改善。" }, { q: "Although he was a rich man, his clothes were {blank}.", a: "shabby", original: "of poor quality and in bad condition", t: "虽然他是个富人，但他的衣服却很破旧。" }, { q: "He {blank} his position as a general for that of an ordinary soldier.", a: "swapped", original: "exchanged", t: "他用将军的职位换取了普通士兵的职位。" }, { q: "At the {blank} of World War II the King turned to Churchill to lead the country.", a: "onset", original: "beginning", t: "在第二次世界大战开始时，国王求助于丘吉尔来领导国家。" }, { q: "Churchill drank a lot of {blank}.", a: "liquor", original: "alcohol", t: "丘吉尔喝了很多烈酒。" } ], explanations: { "degenerate": "v. 退化; 堕落", "liquor": "n. 烈酒", "onset": "n. 开始; 发生", "shabby": "adj. 破旧的; 褴褛的", "surpass": "v. 超越; 胜过", "swap": "v. 交换" } },
+            // Unit 6, Passage 2
+            { words: ["contend", "presumably", "propaganda", "reasonably", "territory"], sentences: [ { q: "We might {blank} that the study of history depends on interpreting facts in a logical way.", a: "Presumably", original: "suppose", t: "我们可以推测，历史研究取决于以合乎逻辑的方式解释事实。" }, { q: "Historians usually argue {blank}.", a: "reasonably", original: "in a rational way", t: "历史学家通常会理性地进行辩论。" }, { q: "Anyone who {blank} for historical accuracy against alternative versions is likely to fail.", a: "contends", original: "competes", t: "任何与不同版本争夺历史准确性的人都可能会失败。" }, { q: "In World War I there was a great deal of {blank} in the US.", a: "propaganda", original: "pro-British information", t: "在第一次世界大战期间，美国有大量的亲英宣传。" }, { q: "In 1848 Mexico ceded a large part of its {blank} to the US.", a: "territory", original: "land", t: "1848年，墨西哥将其大片领土割让给了美国。" } ], explanations: { "contend": "v. 竞争; 主张", "presumably": "adv. 大概; 据推测", "propaganda": "n. 宣传 (常含贬义)", "reasonably": "adv. 合理地; 适度地", "territory": "n. 领土; 领域" } },
+            // Unit 7, Passage 1
+            { words: ["exhibit", "indignant", "opponent", "transcend", "utility", "vow"], sentences: [ { q: "The architects {blank} to complete the tower, spending no more than the allotted budget.", a: "vowed", original: "promised", t: "建筑师们发誓要完成这座塔，花费不超过分配的预算。" }, { q: "The critic's assessment of the painting {blank} popular opinion.", a: "transcended", original: "rose above", t: "这位评论家对这幅画的评价超越了大众的看法。" }, { q: "Thousands of visitors came to the opening of the new technology {blank}.", a: "exhibition", original: "display", t: "成千上万的参观者前来参加新技术展览的开幕式。" }, { q: "Germany and France were {blank} during World War II, but today coexist peacefully.", a: "opponents", original: "enemies", t: "德国和法国在二战期间是敌人，但今天和平共处。" }, { q: "A well-designed house combines beauty and {blank}.", a: "utility", original: "functionality and usefulness", t: "一座精心设计的房子结合了美观与实用。" }, { q: "I felt {blank} when our visitors criticized the buildings in our town.", a: "indignant", original: "irritated and offended", t: "当我们的访客批评我们镇上的建筑时，我感到很愤慨。" } ], explanations: { "exhibit": "v. / n. 展览; 展示", "indignant": "adj. 愤慨的; 愤怒的", "opponent": "n. 对手; 反对者", "transcend": "v. 超越; 克服", "utility": "n. 实用; 效用", "vow": "v. / n. 发誓; 誓言" } },
+            // Unit 7, Passage 2
+            { words: ["ambiguity", "aspire", "dense", "faculty", "interpret", "literally", "moderate", "worship"], sentences: [ { q: "Because of its roots in Western European architecture, the Catherine Palace was inspired by {blank} baroque features.", a: "literally", original: "genuinely", t: "由于其源于西欧建筑，凯瑟琳宫的灵感来自于真正的巴洛克风格特征。" }, { q: "In the 1960s and 1970s architects {blank} to achieve the principles of combining form with function, but were often unsuccessful.", a: "aspired", original: "wished to achieve", t: "在20世纪60年代和70年代，建筑师们渴望实现形式与功能相结合的原则，但往往没有成功。" }, { q: "Some people feel that modern society {blank} extreme speed and efficiency.", a: "worships", original: "places great value on", t: "有些人觉得现代社会崇尚极端的快速和效率。" }, { q: "The language of architecture is relatively {blank}, a balance between function and form.", a: "unambiguous", original: "clear and easy to understand", t: "建筑的语言相对清晰易懂，是功能与形式的平衡。" }, { q: "This apartment building is designed for middle-class workers with {blank} salaries.", a: "moderate", original: "average, reasonable", t: "这栋公寓楼是为薪水适中的中产阶级工人设计的。" }, { q: "Critics use both intellectual and artistic {blank} when they judge architectural achievements.", a: "faculties", original: "abilities", t: "评论家在评判建筑成就时，会同时运用智力和艺术才能。" }, { q: "It is also possible for architecture to have several layers of meaning, adding to the {blank} of different meanings.", a: "density", original: "concentration", t: "建筑也可能有多层含义，从而增加了不同含义的密度。" }, { q: "One job of an engineer is to {blank} the architect's ideas.", a: "interpret", original: "understand and translate", t: "工程师的一项工作就是理解和诠释建筑师的想法。" } ], explanations: { "ambiguity": "n. 模棱两可; 含糊不清", "aspire": "v. 渴望; 立志 (aspire to)", "dense": "adj. 密集的; 稠密的", "faculty": "n. 能力; 官能; 全体教员", "interpret": "v. 解释; 理解; 口译", "literally": "adv. 照字面地; 真正地", "moderate": "adj. 适度的; 中等的", "worship": "v. / n. 崇拜; 敬奉" } },
+            // Unit 8, Passage 1
+            { words: ["converge", "hollow", "index", "intervene", "predecessor", "sphere", "underneath"], sentences: [ { q: "Early sailors used tree logs that were {blank} as boats.", a: "hollow", original: "empty in the middle", t: "早期的水手们用中间是空的树干做船。" }, { q: "Most explorers didn't believe the Earth was a {blank} until Magellan first sailed all round the Earth in the early 1500s.", a: "sphere", original: "ball", t: "大多数探险家都不相信地球是一个球体，直到16世纪初麦哲伦首次环球航行。" }, { q: "Ship hulls need to be strong and waterproof both on the sides and {blank}.", a: "underneath", original: "on the bottom", t: "船体需要在侧面和底部都坚固防水。" }, { q: "An interest in exploration has to {blank} with advances in technology to advance the science of navigation.", a: "converge", original: "come together", t: "对探索的兴趣必须与技术进步相结合，才能推动航海科学的发展。" }, { q: "We tend to credit one person with a major invention or discovery, although in fact that person was helped by many {blank}.", a: "predecessors", original: "people who lived and worked in the same areas before", t: "我们倾向于将一项重大发明或发现归功于一个人，尽管事实上这个人得到了许多前辈的帮助。" }, { q: "The Spanish Armada attempted to invade England in 1588, but they were stopped when the English fleet {blank}.", a: "intervened", original: "came and disrupted their plans", t: "西班牙无敌舰队于1588年试图入侵英国，但在英国舰队介入并打乱其计划后被阻止。" }, { q: "Ptolemy made an {blank} of place names.", a: "index", original: "alphabetical list", t: "托勒密制作了一份地名的字母索引。" } ], explanations: { "converge": "v. 汇合; 聚集", "hollow": "adj. 空的; 凹的", "index": "n. 索引; 指数", "intervene": "v. 干预; 介入", "predecessor": "n. 前任; 前辈", "sphere": "n. 球体; 范围", "underneath": "adv. / prep. 在......下面" } },
+            // Unit 8, Passage 2
+            { words: ["bridle", "invisible", "maw", "multitudinous", "perpendicular", "retain", "sickening", "spout"], sentences: [ { q: "One of the pleasures of deep-sea diving is swimming through schools of a {blank} colourful fish.", a: "multitudinous", original: "huge number of", t: "深海潜水的乐趣之一，就是游过成群的五彩斑斓的鱼群。" }, { q: "The drinking fountain {blank} a stream of water that splashed my face.", a: "spouted", original: "shot up", t: "饮水机喷出一股水流，溅了我一脸。" }, { q: "Flying a kite takes practice. For a beginner, it is not easy to {blank} it.", a: "bridle", original: "control", t: "放风筝需要练习。对于初学者来说，控制它并不容易。" }, { q: "The ladder was set at a {blank} to the side of the ship.", a: "perpendicular", original: "right angle", t: "梯子与船舷成直角放置。" }, { q: "When the airplane descended too quickly, the effect was {blank} and made me feel ill.", a: "sickening", original: "stomach-turning", t: "当飞机下降得太快时，那种感觉令人作呕，让我感到不适。" }, { q: "Cautiously, the explorers passed through the {blank} of the enormous cave.", a: "maw", original: "mouth", t: "探险家们小心翼翼地穿过了巨大洞穴的入口。" }, { q: "Even after 20 hours, the storm had {blank} all its strength as it moved eastwards.", a: "retained", original: "kept", t: "即使在20个小时后，风暴在向东移动时仍然保持着它的全部威力。" }, { q: "The problem about strong winds is that while they're {blank}, there's no mistaking their force.", a: "invisible", original: "impossible to see", t: "强风的问题在于，虽然它们是看不见的，但其威力是毋庸置疑的。" } ], explanations: { "bridle": "v. 控制; 约束 n. 缰绳", "invisible": "adj. 看不见的; 无形的", "maw": "n. （动物的）口，咽喉", "multitudinous": "adj. 大量的; 众多的", "perpendicular": "adj. 垂直的", "retain": "v. 保持; 保留", "sickening": "adj. 令人作呕的", "spout": "v. 喷出; 涌出" } }
+        ];
+
+        let appState = {
+            currentView: 'main-menu', // 'main-menu', 'quiz', 'wrong-answers'
+            wrongAnswers: [],
+            currentQuiz: {
+                questions: [],
+                questionIndex: -1,
+                isPractice: false
+            },
+            selectedWordButton: null
+        };
+        
+        // DOM Elements
+        const mainMenuScreen = document.getElementById('main-menu-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const wrongAnswersScreen = document.getElementById('wrong-answers-screen');
+        const confirmationModal = document.getElementById('confirmation-modal');
+        const modalConfirmBtn = document.getElementById('modal-confirm-btn');
+        const modalCancelBtn = document.getElementById('modal-cancel-btn');
+
+        // --- Event Listeners ---
+        document.getElementById('start-quiz-btn').addEventListener('click', () => startNewQuiz(false));
+        document.getElementById('view-wrong-answers-btn').addEventListener('click', showWrongAnswersScreen);
+        document.getElementById('exit-quiz-btn').addEventListener('click', showMainMenu);
+        document.getElementById('back-to-menu-from-wrong-btn').addEventListener('click', showMainMenu);
+        document.getElementById('practice-wrong-answers-btn').addEventListener('click', () => startNewQuiz(true));
+        document.getElementById('clear-wrong-answers-btn').addEventListener('click', () => {
+             confirmationModal.classList.remove('hidden');
+        });
+        document.getElementById('check-btn').addEventListener('click', checkAnswers);
+        document.getElementById('skip-btn').addEventListener('click', loadNextQuestion);
+        document.getElementById('next-btn').addEventListener('click', loadNextQuestion);
+        modalCancelBtn.addEventListener('click', () => {
+            confirmationModal.classList.add('hidden');
+        });
+        modalConfirmBtn.addEventListener('click', () => {
+            appState.wrongAnswers = [];
+            localStorage.removeItem('vocabWrongAnswers');
+            showWrongAnswersScreen(); // This will refresh the view
+            confirmationModal.classList.add('hidden');
+        });
+
+
+        // --- Core Functions ---
+        function switchView(viewName) {
+            appState.currentView = viewName;
+            mainMenuScreen.classList.toggle('hidden', viewName !== 'main-menu');
+            quizScreen.classList.toggle('hidden', viewName !== 'quiz');
+            wrongAnswersScreen.classList.toggle('hidden', viewName !== 'wrong-answers');
+        }
+
+        function showMainMenu() {
+            switchView('main-menu');
+        }
+
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex !== 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        // --- Quiz Logic ---
+        function startNewQuiz(isPractice) {
+            appState.currentQuiz.isPractice = isPractice;
+            if (isPractice) {
+                if (appState.wrongAnswers.length === 0) {
+                    alert('错题本是空的，无法进行错题练习！');
+                    return;
+                }
+                const practiceQuizData = createPracticeQuizData();
+                appState.currentQuiz.questions = shuffle([practiceQuizData]);
+                document.getElementById('quiz-title').textContent = '错题练习';
+            } else {
+                appState.currentQuiz.questions = shuffle([...fullQuizData]);
+                document.getElementById('quiz-title').textContent = '词汇替换练习';
+            }
+            appState.currentQuiz.questionIndex = -1;
+            loadNextQuestion();
+            switchView('quiz');
+        }
+
+        function loadNextQuestion() {
+            appState.currentQuiz.questionIndex++;
+            const { questions, questionIndex } = appState.currentQuiz;
+
+            if (questionIndex >= questions.length) {
+                alert(appState.currentQuiz.isPractice ? '错题练习完成！' : '所有题目已练习完毕！');
+                showMainMenu();
+                return;
+            }
+            
+            appState.selectedWordButton = null;
+            const questionData = questions[questionIndex];
+            
+            const wordBank = document.getElementById('word-bank');
+            wordBank.innerHTML = '';
+            questionData.words.forEach(word => {
+                const wordBtn = document.createElement('button');
+                wordBtn.className = 'word-btn font-semibold py-2 px-4 rounded-lg shadow';
+                wordBtn.textContent = word;
+                wordBtn.addEventListener('click', handleWordClick);
+                wordBank.appendChild(wordBtn);
+            });
+
+            const questionsContainer = document.getElementById('questions-container');
+            questionsContainer.innerHTML = '';
+            let sentenceCounter = 0;
+            const shuffledSentences = shuffle([...questionData.sentences]);
+
+            shuffledSentences.forEach((sentence) => {
+                const questionElement = document.createElement('div');
+                questionElement.className = 'question-item';
+                
+                let sentenceHtml = `${++sentenceCounter}. ${sentence.q}`;
+                const originalParts = sentence.original.split(' / ');
+                const answerParts = sentence.a.split(' / ');
+                
+                originalParts.forEach((part, i) => {
+                    const blankTemplate = `<div class="replacement-group" data-answer="${answerParts[i] || answerParts[0]}" data-original="${part.trim()}">
+                                              <span class="answer-blank">&nbsp;</span>
+                                              <s class="original-text-underneath">${part.trim()}</s>
+                                           </div>`;
+                    sentenceHtml = sentenceHtml.replace('{blank}', blankTemplate);
+                });
+                
+                // Programmatic DOM creation to avoid JSON errors
+                const flexContainer = document.createElement('div');
+                flexContainer.className = 'flex items-center flex-wrap';
+                flexContainer.dataset.fullSentence = JSON.stringify(sentence);
+
+                const p = document.createElement('p');
+                p.innerHTML = sentenceHtml;
+                
+                const feedbackIcon = document.createElement('span');
+                feedbackIcon.className = 'feedback-icon text-xl ml-2';
+
+                flexContainer.appendChild(p);
+                flexContainer.appendChild(feedbackIcon);
+                questionElement.appendChild(flexContainer);
+
+                questionsContainer.appendChild(questionElement);
+            });
+            
+            document.querySelectorAll('.replacement-group').forEach(group => {
+                group.addEventListener('click', handleBlankClick);
+            });
+
+            document.getElementById('check-btn').style.display = 'block';
+            document.getElementById('skip-btn').style.display = 'block';
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('check-btn').disabled = false;
+        }
+        
+        function handleWordClick(e) {
+            const clickedButton = e.target;
+            if (clickedButton.disabled) return;
+            if (clickedButton === appState.selectedWordButton) {
+                appState.selectedWordButton.classList.remove('selected');
+                appState.selectedWordButton = null;
+            } else {
+                if (appState.selectedWordButton) {
+                    appState.selectedWordButton.classList.remove('selected');
+                }
+                appState.selectedWordButton = clickedButton;
+                appState.selectedWordButton.classList.add('selected');
+            }
+        }
+        
+        function returnWordToBank(wordText) {
+            const wordButtons = document.getElementById('word-bank').querySelectorAll('button');
+            for(const btn of wordButtons) {
+                if(btn.textContent.toLowerCase() === wordText.toLowerCase() && btn.disabled) {
+                    btn.disabled = false;
+                    break;
+                }
+            }
+        }
+
+        function handleBlankClick(e) {
+            const group = e.currentTarget;
+            const blank = group.querySelector('.answer-blank');
+            if (document.getElementById('check-btn').disabled) return;
+            
+            const isFilled = blank.textContent.trim() !== '';
+
+            if (appState.selectedWordButton) {
+                if (isFilled) {
+                    returnWordToBank(blank.textContent);
+                }
+                blank.textContent = appState.selectedWordButton.textContent;
+                
+                appState.selectedWordButton.disabled = true;
+                appState.selectedWordButton.classList.remove('selected');
+                appState.selectedWordButton = null;
+            }
+            else if (isFilled) {
+                returnWordToBank(blank.textContent);
+                blank.innerHTML = '&nbsp;';
+            }
+        }
+
+        function checkAnswers() {
+            const questionData = appState.currentQuiz.questions[appState.currentQuiz.questionIndex];
+            const questionItems = document.querySelectorAll('.question-item');
+
+            questionItems.forEach(item => {
+                // The dataset is now on the flex container
+                const flexContainer = item.querySelector('.flex');
+                const fullSentenceData = JSON.parse(flexContainer.dataset.fullSentence);
+                const groups = item.querySelectorAll('.replacement-group');
+                let isLineCorrect = true;
+
+                groups.forEach(group => {
+                    const blank = group.querySelector('.answer-blank');
+                    const userAnswer = blank.textContent.trim().toLowerCase();
+                    const isBlankEmpty = userAnswer === '';
+                    const correctAnswers = group.dataset.answer.toLowerCase().split(' / ');
+                    
+                    const oldHint = item.querySelector('.correct-answer-hint');
+                    if (oldHint) oldHint.remove();
+                    const oldExplanation = item.querySelector('.explanation-text');
+                    if (oldExplanation) oldExplanation.remove();
+
+                    if (!isBlankEmpty && (correctAnswers.includes(userAnswer) || correctAnswers.some(ans => userAnswer.includes(ans)))) {
+                        group.classList.add('correct');
+                    } else {
+                        isLineCorrect = false;
+                        group.classList.add('incorrect');
+                    }
+
+                    const explanationDiv = document.createElement('div');
+                    explanationDiv.className = 'explanation-text w-full text-sm text-gray-500 pl-5 pt-1';
+                    const expectedAnswerKey = group.dataset.answer.split(' / ')[0];
+                    const baseWord = questionData.words.find(w => expectedAnswerKey.toLowerCase().includes(w.toLowerCase()));
+                    if (baseWord && questionData.explanations[baseWord]) {
+                        explanationDiv.innerHTML = `<p><strong class="text-gray-700">${baseWord}:</strong> ${questionData.explanations[baseWord]}</p>`;
+                        item.appendChild(explanationDiv);
+                    }
+                });
+
+                const feedbackIcon = item.querySelector('.feedback-icon');
+                if (isLineCorrect) {
+                    feedbackIcon.textContent = '✅';
+                } else {
+                    feedbackIcon.textContent = '❌';
+                    if (!appState.currentQuiz.isPractice) {
+                        saveWrongAnswer(fullSentenceData, questionData.explanations);
+                    }
+                }
+            });
+
+            document.getElementById('check-btn').style.display = 'none';
+            document.getElementById('skip-btn').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        // --- Wrong Answer Book Logic ---
+        function loadWrongAnswersFromStorage() {
+            const storedAnswers = localStorage.getItem('vocabWrongAnswers');
+            appState.wrongAnswers = storedAnswers ? JSON.parse(storedAnswers) : [];
+        }
+
+        function saveWrongAnswer(sentenceData, allExplanations) {
+             const existing = appState.wrongAnswers.find(item => item.q === sentenceData.q);
+             if (existing) return; // Avoid duplicates
+
+             const expectedAnswerKey = sentenceData.a.split(' / ')[0];
+             const baseWord = Object.keys(allExplanations).find(w => expectedAnswerKey.toLowerCase().includes(w.toLowerCase()));
+             const explanation = baseWord ? allExplanations[baseWord] : '释义未找到';
+
+             const wrongAnswer = {
+                 q: sentenceData.q,
+                 a: sentenceData.a,
+                 original: sentenceData.original,
+                 t: sentenceData.t,
+                 explanation: explanation,
+                 baseWord: baseWord
+             };
+             appState.wrongAnswers.push(wrongAnswer);
+             localStorage.setItem('vocabWrongAnswers', JSON.stringify(appState.wrongAnswers));
+        }
+
+        function showWrongAnswersScreen() {
+            const listContainer = document.getElementById('wrong-answers-list');
+            listContainer.innerHTML = '';
+
+            if (appState.wrongAnswers.length === 0) {
+                listContainer.innerHTML = '<p class="text-center text-gray-500">错题本是空的，太棒了！</p>';
+                document.getElementById('practice-wrong-answers-btn').disabled = true;
+            } else {
+                 document.getElementById('practice-wrong-answers-btn').disabled = false;
+                appState.wrongAnswers.forEach((item, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'wrong-answer-card bg-gray-50 p-4 rounded-lg';
+                    
+                    let sentenceHtml = item.q.replace('{blank}', `<strong class="text-red-500">${item.original}</strong>`);
+
+                    card.innerHTML = `
+                        <p class="font-semibold text-gray-800">${index + 1}. ${sentenceHtml}</p>
+                        <p class="text-sm mt-2"><strong>正确答案:</strong> <span class="text-green-600 font-bold">${item.a}</span></p>
+                        <p class="text-sm"><strong>单词释义:</strong> ${item.explanation}</p>
+                        <p class="text-sm text-blue-500 mt-1"><strong>中文翻译:</strong> ${item.t}</p>
+                    `;
+                    listContainer.appendChild(card);
+                });
+            }
+            switchView('wrong-answers');
+        }
+        
+        function clearWrongAnswers() {
+             confirmationModal.classList.remove('hidden');
+        }
+        
+        function createPracticeQuizData() {
+            const correctWords = [...new Set(appState.wrongAnswers.map(item => item.baseWord))];
+            
+            // Get distractor words
+            const allWords = [...new Set(fullQuizData.flatMap(q => q.words))];
+            const distractors = [];
+            while(distractors.length < 5 && allWords.length > 0) {
+                const randomIndex = Math.floor(Math.random() * allWords.length);
+                const randomWord = allWords.splice(randomIndex, 1)[0];
+                if (!correctWords.includes(randomWord)) {
+                    distractors.push(randomWord);
+                }
+            }
+            
+            return {
+                words: shuffle([...correctWords, ...distractors]),
+                sentences: appState.wrongAnswers,
+                explanations: fullQuizData.reduce((acc, curr) => ({...acc, ...curr.explanations}), {})
+            };
+        }
+
+
+        // --- Initial Load ---
+        function initializeApp() {
+            loadWrongAnswersFromStorage();
+            showMainMenu();
+        }
+
+        initializeApp();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>英语听力随机练习</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .quiz-container, .main-menu-container, .workbook-container {
+            transition: all 0.3s ease-in-out;
+        }
+        .option-label {
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+        .option-label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .correct {
+            background-color: #d1fae5 !important;
+            border-color: #10b981;
+        }
+        .incorrect {
+            background-color: #fee2e2 !important;
+            border-color: #ef4444;
+        }
+        .correct-answer-reveal {
+             background-color: #cffafe;
+             border-color: #06b6d4;
+        }
+        input[type="radio"] {
+            display: none;
+        }
+        input[type="radio"] + label .radio-custom-button {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            border-radius: 50%;
+            border: 2px solid #cbd5e1;
+            background-color: white;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+        input[type="radio"]:checked + label .radio-custom-button {
+            background-color: #3b82f6;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+        /* Modal styles */
+        .modal-backdrop {
+            background-color: rgba(0,0,0,0.5);
+            display: flex; /* Use flexbox for centering */
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <!-- Main Menu -->
+    <div id="main-menu-container" class="main-menu-container bg-white w-full max-w-2xl rounded-2xl shadow-xl p-6 md:p-8 text-center">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">英语听力练习</h1>
+        <p class="text-gray-500 mb-8">选择一个选项开始</p>
+        <div class="space-y-4">
+            <button id="start-new-quiz-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition-transform transform hover:scale-105 shadow-md">
+                开始新练习
+            </button>
+            <button id="resume-quiz-btn" class="w-full bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded-lg transition-transform transform hover:scale-105 shadow-md hidden">
+                继续上次练习
+            </button>
+            <button id="workbook-btn" class="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-4 rounded-lg transition-transform transform hover:scale-105 shadow-md">
+                错题本
+            </button>
+        </div>
+    </div>
+
+    <!-- Quiz Container -->
+    <div id="quiz-container" class="quiz-container bg-white w-full max-w-2xl rounded-2xl shadow-xl p-6 md:p-8 hidden">
+        <div id="quiz-header">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800 text-center mb-2">练习中...</h1>
+            <p id="progress-counter" class="text-center text-sm text-gray-500 mb-4"></p>
+            <div class="bg-gray-200 h-1.5 rounded-full mb-6">
+                <div id="progress-bar" class="bg-blue-500 h-1.5 rounded-full" style="width: 0%;"></div>
+            </div>
+        </div>
+        <div id="question-area">
+            <p id="question-text" class="text-lg md:text-xl font-semibold text-gray-700 mb-6 min-h-[56px]"></p>
+            <form id="answer-form" class="space-y-4"></form>
+        </div>
+        <div id="feedback-area" class="mt-6 min-h-[50px]">
+            <p id="feedback-text" class="text-center text-xl font-bold"></p>
+        </div>
+        <div id="completion-area" class="hidden text-center py-8">
+             <h2 class="text-3xl font-bold text-green-500 mb-4">恭喜！</h2>
+             <p class="text-gray-600 text-lg mb-2">您已完成所有题目。</p>
+             <p id="score-text" class="text-gray-800 text-xl font-semibold mb-6"></p>
+             <button id="back-to-menu-completion-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition-transform transform hover:scale-105 shadow-md">
+                返回主菜单
+            </button>
+        </div>
+        <div class="mt-8 grid grid-cols-2 gap-4">
+            <button id="quit-btn" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg transition-transform transform hover:scale-105 shadow-md">
+                保存并退出
+            </button>
+            <button id="submit-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition-transform transform hover:scale-105 shadow-md">
+                提交答案
+            </button>
+            <button id="next-btn" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg transition-transform transform hover:scale-105 shadow-md hidden col-span-2">
+                下一题
+            </button>
+        </div>
+    </div>
+
+    <!-- Workbook Container -->
+    <div id="workbook-container" class="workbook-container bg-white w-full max-w-4xl rounded-2xl shadow-xl p-6 md:p-8 hidden">
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6">错题本</h1>
+        <div id="workbook-list" class="space-y-6 max-h-[60vh] overflow-y-auto pr-4">
+            <!-- Incorrect questions will be injected here -->
+        </div>
+        <div class="mt-8 flex justify-between items-center">
+            <button id="clear-workbook-btn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg shadow-md">清空错题</button>
+            <button id="back-to-menu-workbook-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md">返回主菜单</button>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmation-modal" class="fixed inset-0 z-50 items-center justify-center hidden modal-backdrop">
+        <div class="bg-white w-full max-w-sm rounded-2xl shadow-xl p-6 m-4 text-center">
+            <h3 id="modal-title" class="text-lg font-semibold text-gray-800 mb-4">确认操作</h3>
+            <p id="modal-message" class="text-gray-600 mb-6">您确定要执行此操作吗？</p>
+            <div class="flex justify-end space-x-4">
+                <button id="modal-cancel-btn" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg">取消</button>
+                <button id="modal-confirm-btn" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg">确认</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // --- Data (Verified and Corrected) ---
+        const quizData = [
+            { id: "q1", question: "What is life like in Zhouzhuang?", options: ["Busy and exciting", "Rapid and comfortable", "Quiet and simple", "Full and interesting"], answer: "C" },
+            { id: "q2", question: "Where is the speaker now?", options: ["Zhouzhuang", "Shanghai", "Not mentioned", "Far away from Zhouzhuang"], answer: "B" },
+            { id: "q3", question: "How does the reality of Zhouzhuang compare to Chen Yifei's painting?", options: ["It is exactly the same as painted by Chen Yifei.", "It is a little bit different from what Chen Yifei painted.", "It is very different from what Chen Yifei painted.", "It is totally different from what Chen Yifei painted."], answer: "B" },
+            { id: "q4", question: "What creates the magical atmosphere in Zhouzhuang at night?", options: ["The boats on the rivers.", "The traditional buildings there.", "The traditional stringed and woodwind melodies in teahouses.", "Lights, music and flowing clear water."], answer: "D" },
+            { id: "q5", question: "What is the speaker's opinion on the young people leaving Zhouzhuang?", options: ["Those who are leaving Zhouzhuang for larger cities fail to see its beauty.", "it's good for young people to leave Zhouzhuang to look for a better life.", "Life in Zhouzhuang might be dull, as it is too simple.", "Yong people who are leaving Zhouzhuang will return one day and never leave again."], answer: "A" },
+            { id: "q6", question: "What is the main topic of the talk?", options: ["Exercise to do on the weekend.", "How to release your stress.", "How to make use of weekends to improve your life.", "Tips for getting ready for work."], answer: "C" },
+            { id: "q7", question: "According to the speaker, what is a benefit of having a weekend?", options: ["You can learn from a book how to improve your life.", "You can decompress or get energized.", "You can forget the brutal week.", "The work load will be light."], answer: "B" },
+            { id: "q8", question: "Which of the following suggestions is mentioned in the talk?", options: ["You can sleep as long as you like because it is good for your appearance.", "Fresh air is good for improving your life.", "We seldom read paper books now.", "Laughing can strengthen the immune system and reduce the chances of a heart attack or stroke."], answer: "A" },
+            { id: "q9", question: "What is the main idea of the story?", options: ["The memory of the speaker's terrible business trip.", "The effect a clerk's smile had on the speaker after his difficult journey.", "The way the speaker got refreshed after a long and terrible trip.", "The introduction of a good hotel the speaker once stayed at."], answer: "B" },
+            { id: "q10", question: "Why was it difficult for the speaker to get a taxi?", options: ["Because it was too expensive.", "Because it was too early to get a taxi.", "Because too many people were waiting for taxis, which were few as it was a holiday.", "Because it was a holiday and there was no taxi during holidays in that city."], answer: "C" },
+            { id: "q11", question: "What other misfortune did the speaker encounter?", options: ["It was raining heavily.", "He had his wallet stolen.", "He did not have an umbrella.", "The luggage was heavy."], answer: "B" },
+            { id: "q12", question: "What is the main topic of the talk?", options: ["When people should smile.", "How people should smile.", "What smiles can do to people.", "What causes people to smile."], answer: "C" },
+            { id: "q13", question: "What happens physically when you smile?", options: ["Your heart rate accelerates.", "You feel relaxed.", "You feel satisfied.", "Your blood pressure rises."], answer: "B" },
+            { id: "q14", question: "What does the speaker say about a smile?", options: ["It takes effort to smile.", "It is hard to smile.", "Smiles can take the place of the medication.", "A smile costs nothing."], answer: "D" },
+            { id: "q15", question: "What is the talk mainly about?", options: ["International Right to Know Day in Africa.", "The significance of international Right to Know Day.", "The history if International Right to Know Day.", "An introduction to International Right to Know Day."], answer: "D" },
+            { id: "q16", question: "What is the primary goal of the Pan-African Conference on Access to Information?", options: ["To promote the right to information in Africa.", "To promote the freedom of governments.", "To promote gender equality.", "To promote transparency in health and aid."], answer: "A" },
+            { id: "q17", question: "What is a key benefit of access to information mentioned in the talk?", options: ["Improves transparency in gender equality.", "Helps governments to operate more efficiently.", "Improves people's health.", "Reduces corruption."], answer: "C" },
+            { id: "q18", question: "What does the World Giving Index primarily measure?", options: ["Citizen's willingness to provide financial aid.", "Citizen's willingness to assist a stranger.", "Citizen's willingness to volunteer time.", "Citizen's willingness to join charitable institutions."], answer: "C" },
+            { id: "q19", question: "Which country ranked highest in Europe for helping strangers?", options: ["Germany.", "Belgium.", "U.K.", "Switzerland."], answer: "C" },
+            { id: "q20", question: "What can be inferred about Chinese people from the survey?", options: ["They are very generous.", "They do not trust charities.", "They choose to save money for future use.", "They are not good at helping others."], answer: "D" },
+            { id: "q21", question: "What is the main problem discussed in the talk?", options: ["The communication between physicians and patients is not effective enough.", "U.S. patients need better health equipment.", "The relationship between physicians and patients needs to be improved.", "Scientific advances cannot keep up with health care needs."], answer: "A" },
+            { id: "q22", question: "What is a key question raised by the speaker regarding public health?", options: ["Scientific advances in medicine and health are good for people.", "Whether chronic diseases are preventable.", "Whether the general public really understand the impact of lifestyle choices.", "Physicians are making good use of health information."], answer: "C" },
+            { id: "q23", question: "What is a challenge for many patients, according to the talk?", options: ["Understand and nutrition information on a food package.", "Visit their physician regularly.", "Remember the benefits of screening from their physician and the public health community.", "Try to understand the messages from their physician and the public health community."], answer: "D" },
+            { id: "q24", question: "What is the main topic of the speech?", options: ["Poor health outcomes in the U.S.", "Lack of medical expertise in the U.S.", "Approaches to addressing health care in the U.S.", "Lack of effective health care in the U.S."], answer: "C" },
+            { id: "q25", question: "Who is leading the initiative to improve health literacy?", options: ["Local medical societies.", "The health care community.", "Relevant nonmedical organizations.", "The AMA."], answer: "D" },
+            { id: "q26", question: "What is the first step the AMA is taking?", options: ["To make their communication with patients more effective.", "To identify a barrier to effective health care.", "To embrace the groundwork laid by the experts.", "To increase people's awareness of the issue of low health literacy."], answer: "A" },
+            { id: "q27", question: "What recommendation is made for collaboration?", options: ["Professional health care education should be provided to everyone.", "Knowledge about disease prevention should be spread.", "Expertise should be shared across disciplines.", "Health literacy training should be given to the adult education community."], answer: "C" },
+            { id: "q28", question: "What do public health professionals need to improve?", options: ["The way they communicate with the public.", "The way they communicate with patients.", "The way they communicate with a diverse population.", "The way they address the issue of low health literacy."], answer: "A" },
+            { id: "q29", question: "What is the main topic of the news report?", options: ["China's enormous potential for philanthropy.", "Billionaires capital of the world.", "Charity problems in China.", "Chinese billionaires, Jack Ma."], answer: "C" },
+            { id: "q30", question: "When did China's first charity law take effect?", options: ["China's first charity law was passed in March and went into effect in September.", "China's first charity law was passed in September and went into effect in November.", "Beijing became the billionaire capital of the world in March.", "The number of billionaires in China reached 540 in March."], answer: "A" },
+            { id: "q31", question: "What is the main challenge for charity in China?", options: ["Chinese billionaires are unwilling to donate money to charities.", "China doesn't have many billionaires", "Charities in China don't lack money.", "China lacks a developed system to ensure that donations go to good use."], answer: "D" },
+            { id: "q32", question: "What is a major issue for Chinese donors and charities?", options: ["Chinese donors and charities know well about modern philanthropic practices.", "Chinese donors and charities don't know much about modern philanthropic practices.", "Ultra-rich philanthropic in China appeared 20 years ago.", "Chinese philanthropy will closely follow the steps of Western philanthropy."], answer: "B" },
+            { id: "q33", question: "When did the torch relay for the London Paralympic Games begin?", options: ["On July 27, 2012.", "On July 27, 2015.", "On June 27, 2012.", "On June 27, 2015."], answer: "B" },
+            { id: "q34", question: "What was the total distance of the torch relay?", options: ["71km.", "Over 1700 km.", "More than 7100 km.", "710 km."], answer: "B" },
+            { id: "q35", question: "How much money was raised for the charity 'Home of Hope'?", options: ["More than 1000000 yuan.", "About 900000 yuan.", "100000 US dollars.", "About 500000 US dollars."], answer: "B" },
+            { id: "q36", question: "What is 'Home of Hope'?", options: ["It is a place built specially for children with no limbs.", "The place is in southeast China's Jiangsu Province.", "The person in charge taught children there to play ping-pong.", "Some of the children there had been to London."], answer: "A" },
+            { id: "q37", question: "How many children from 'Home of Hope' participated in the torch relay?", options: ["Three.", "Four.", "Five.", "Six."], answer: "C" },
+            { id: "q38", question: "What has been the government's focus in education?", options: ["The government has made sure to build more schools.", "The government has focused on building good school facilities.", "The government has focused on providing all children with a good education.", "The government has emphasized on the need for well-trained teachers."], answer: "C" },
+            { id: "q39", question: "What is a major problem for rural schools in China?", options: ["They don't have adequate facilities and well-trained teachers.", "They have no good students.", "They do not have enough teachers.", "They give their students too few tests."], answer: "A" },
+            { id: "q40", question: "What is the primary focus of education in many rural schools?", options: ["Learning practical skills.", "Helping students and their communities.", "Getting high test scores.", "Raising money for rural communities."], answer: "C" },
+            { id: "q41", question: "What did Diane do in China?", options: ["Diane made it possible to set up the Rural China Education Foundation.", "Diane worked in China as an English teacher.", "Diane compared the curriculum used in rural schools with that of urban schools.", "Diane did research on rural schools."], answer: "B" },
+            { id: "q42", question: "What is the main goal of the Rural China Education Foundation?", options: ["To help rural students with their study.", "To promote education for people in rural China.", "To improve the teaching quality in rural China.", "To broaden rural students' horizon."], answer: "B" },
+            { id: "q43", question: "What is one of the foundation's key activities?", options: ["Organizing summer camps to improve student's education.", "Working with local teachers and schools to improve teacher training.", "Providing appropriate books for local students.", "Cooperating with some specific rural schools to make improvement."], answer: "A" },
+            { id: "q44", question: "What successful program did the foundation implement?", options: ["Cooperation with many rural schools.", "Cooperations with some passionate Chinese teachers from urban schools.", "A cooperative program with a rural school in Shanxi.", "A cooperative program with the government."], answer: "C" },
+            { id: "q45", question: "What is the main message of the talk?", options: ["China's rural schools need more attention.", "Rural schools lack qualified teaching staff.", "Well educated people are encouraged to involve in such a project.", "A small number of people can make a positive impact on the lives of others."], answer: "D" },
+            { id: "q46", question: "Why is the health care industry interested in big data?", options: ["Because health care is a high-level industry.", "Because big data actually can help the health care industry to overcome the challenges it faces.", "Because big data technology is not welcome in this industry.", "Because this industry lacks money to use the big data technology."], answer: "B" },
+            { id: "q47", question: "What is a major challenge in the health care industry?", options: ["The difficulty of making large profits in hospitals.", "The lack of government funding for hospitals.", "The high cost of health care.", "The high cost of health insurance."], answer: "C" },
+            { id: "q48", question: "How can big data help doctors?", options: ["Using his data can reduce the waiting time in hospitals.", "Using big data can reduce doctors' work.", "Using big data can help identify high-risk patients.", "Using big data can help with stronger of patients' records."], answer: "B" },
+            { id: "q49", question: "What is a new trend in patient health monitoring?", options: ["Using wearable technology to track patients' indicators.", "Searching of high-level information from big data through the Interenet.", "Using centain indicators to diagnose medical conditions.", "Looking for a good doctor with the help of the Interenet."], answer: "A" },
+            { id: "q50", question: "Why has the doctor-patient relationship changed?", options: ["Because patients pay more for treatment now.", "Because patients can now easily get information about their illness from the Internet.", "Because patients feel that doctors need to increase their medical knowledge.", "Because most patients are not satisfied with their experiences in hospitals."], answer: "B" },
+            { id: "q51", question: "What is the main idea of the talk about big data?", options: ["Big data is now not so popular as before.", "Big data has brought benefits, and challenge as well.", "Big data has been used by most companies.", "Companies have to learn how to pay for the data."], answer: "B" },
+            { id: "q52", question: "Why does the speaker mention Facebook?", options: ["To show that Facebook doesn't use traditional processing software.", "To show Facebook had predicted the shortage problem for big data.", "To show the extent of Facebook's storage problem and to suggest why it was crucial for the problem to be solved quickly.", "To show how Facebook dealt with big data."], answer: "C" },
+            { id: "q53", question: "How do new technologies help companies analyze data?", options: ["They can consider all the factors and analyze the measurable ones.", "They can analyze, record and store data concerning both measurable and unmeasurable factors.", "They can identify high-quality information from big data.", "They can use data to track the information they want to know."], answer: "B" },
+            { id: "q54", question: "Why is it important for companies to combine different types of data?", options: ["Because it can save time and energy of workers.", "Because it can reduce the cost.", "Because in this way companies can use big data effectively.", "Because companies usually have a lot of information to deal with."], answer: "C" },
+            { id: "q55", question: "Which of the following statements about big data is true?", options: ["Most companies are still processing big data by using traditional methods.", "Big data is difficult to measure and contain, and needs the help of new technologies to do so.", "Big data is playing an important role in our work.", "Big data will have a profound influence on our society."], answer: "B" },
+            { id: "q56", question: "What does the speaker say about WeChat and QQ?", options: ["All the data is important because we can get useful information from them.", "It is not difficult to measure big data because the measuring method is the same for any amount of data.", "WeChat and QQ have to deal with large amounts of data every day.", "Only a few data is hard to be analyzed and stored."], answer: "C" },
+            { id: "q57", question: "How many active users does QQ have?", options: ["272 million people.", "217 million people.", "Nearly 1 billion people.", "More than 1 billion people."], answer: "A" },
+            { id: "q58", question: "How is big data generally processed?", options: ["Just by using traditional methods.", "By combining new technology and traditional methods.", "Generally by using new technologies.", "By using more computers."], answer: "C" },
+            { id: "q59", question: "What is the speaker's view on the future of big data?", options: ["Big data is still considered a new field.", "Compared with small companies, big companies depend on big data more.", "Big data has successfully influenced various types of product development.", "Big data will play a bigger role in our lives."], answer: "B" },
+            { id: "q60", question: "Which field has NOT been significantly impacted by big data yet?", options: ["Education.", "Health care.", "Online retailing.", "Advertising."], answer: "A" },
+            { id: "q61", question: "Which of the following is NOT a mentioned use of big data in science?", options: ["Big data can be used to get a better understanding of diseases.", "Big data can be used to study the stars.", "Big data can be used to produce new energy.", "Big data can help us understand more about our genes."], answer: "C" },
+            { id: "q62", question: "What is the speaker's overall tone?", options: ["Cautious.", "Vague.", "Optimistic.", "Pessmistic."], answer: "C" },
+            { id: "q63", question: "What is the main topic of the survey?", options: ["Whether Americans are more afraid of terrorist attacks or government corruption.", "Things that Americans fear.", "The reasons for Amercians' fears", "The impact of fear on American lives."], answer: "B" },
+            { id: "q64", question: "How many people participated in the survey?", options: ["1514.", "1614.", "1541.", "1641."], answer: "C" },
+            { id: "q65", question: "What do Americans fear the most?", options: ["Government corruption.", "Terrorist attacks.", "Pandemics.", "Death."], answer: "A" },
+            { id: "q66", question: "What is one of the least feared things by Americans?", options: ["Corporate tracking of personal information.", "Biological warfare.", "Credit card fraud.", "Reptiles."], answer: "D" },
+            { id: "q67", question: "What do people with imposter syndrome attribute their success to?", options: ["Internal factors.", "External factors.", "Luck.", "Their skills."], answer: "B" },
+            { id: "q68", question: "How do people with imposter syndrome view their abilities?", options: ["Their abilities are greater than that which was indicated by their success.", "Their abilities are equal to that which was indicated by their success.", "Their abilities are less than that which was indicated by their success.", "They have no abilities that could have led to success."], answer: "C" },
+            { id: "q69", question: "What do people with imposter syndrome often do to cope?", options: ["Seek advice from others.", "Confide to friends their worries.", "Find the true meaning of success.", "Work harder to success."], answer: "D" },
+            { id: "q70", question: "According to a survey on Blind, what percentage of tech professionals feel like frauds?", options: ["Half of the people on Blind, an anonymous social network.", "Most of the people on Blind, an anonymous social network.", "Over 10000 people on Blind, an anonymous social network.", "Very few people on Blind, an anyone social network."], answer: "A" },
+            { id: "q71", question: "What is the main topic of Jia Jiang's story?", options: ["The lack of confidence.", "The benefit of gratitude.", "The fear of the unknown.", "The fear of rejection."], answer: "D" },
+            { id: "q72", question: "How did Jia Jiang feel after being rejected by a major investor?", options: ["Lonely.", "Angry.", "Hostile.", "Jealous."], answer: "D" },
+            { id: "q73", question: "What was Jia Jiang's background before starting his own company?", options: ["He had had a good education.", "He used to be very confident.", "He had a very happy childhood.", "He does not care about his career."], answer: "A" },
+            { id: "q74", question: "What is one of Jia Jiang's notable achievements?", options: ["He has started his own company.", "He has written many books.", "He has given a TED talk.", "He has become a professor."], answer: "C" },
+            { id: "q75", question: "How did Jia Jiang decide to overcome his fear of rejection?", options: ["Constantly talking about it.", "Constantly thinking about it.", "Constantly seeking it out.", "Constantly thinking it out."], answer: "C" },
+            { id: "q76", question: "How did Jia Jiang practice getting rejected?", options: ["By following the strategy on a website.", "By learning difficult tasks.", "By making strange requests.", "By making funny excuses."], answer: "C" },
+            { id: "q77", question: "What did Jia Jiang discover from his rejection therapy?", options: ["Failures in being rejected.", "Successes in being rejected.", "Neither failures nor successes in being rejected.", "Both failures and successes in being rejected."], answer: "D" },
+            { id: "q78", question: "What is the most important lesson Jia Jiang learned?", options: ["How you are rejected.", "How often you are rejected.", "How you react to rejection.", "How you define rejection."], answer: "C" },
+        ];
+
+        // --- Application Logic ---
+        const mainMenuContainer = document.getElementById('main-menu-container');
+        const quizContainer = document.getElementById('quiz-container');
+        const workbookContainer = document.getElementById('workbook-container');
+
+        const startNewQuizBtn = document.getElementById('start-new-quiz-btn');
+        const resumeQuizBtn = document.getElementById('resume-quiz-btn');
+        const workbookBtn = document.getElementById('workbook-btn');
+        
+        const questionTextEl = document.getElementById('question-text');
+        const answerFormEl = document.getElementById('answer-form');
+        const feedbackTextEl = document.getElementById('feedback-text');
+        const submitBtn = document.getElementById('submit-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const quitBtn = document.getElementById('quit-btn');
+        
+        const progressBar = document.getElementById('progress-bar');
+        const progressCounterEl = document.getElementById('progress-counter');
+        const completionArea = document.getElementById('completion-area');
+        const scoreTextEl = document.getElementById('score-text');
+        
+        const workbookListEl = document.getElementById('workbook-list');
+        const clearWorkbookBtn = document.getElementById('clear-workbook-btn');
+        const backToMenuWorkbookBtn = document.getElementById('back-to-menu-workbook-btn');
+        const backToMenuCompletionBtn = document.getElementById('back-to-menu-completion-btn');
+
+        // Modal elements
+        const confirmationModal = document.getElementById('confirmation-modal');
+        const modalCancelBtn = document.getElementById('modal-cancel-btn');
+        const modalConfirmBtn = document.getElementById('modal-confirm-btn');
+        const modalMessage = document.getElementById('modal-message');
+
+        let availableQuestions = [];
+        let currentQuestion = {};
+        let score = 0;
+        let questionsAttempted = 0;
+        let incorrectQuestions = [];
+
+        // --- State Management ---
+        function saveState() {
+            const state = {
+                availableQuestions,
+                score,
+                questionsAttempted,
+            };
+            localStorage.setItem('quizState', JSON.stringify(state));
+        }
+
+        function loadState() {
+            const savedState = localStorage.getItem('quizState');
+            if (savedState) {
+                return JSON.parse(savedState);
+            }
+            return null;
+        }
+        
+        function clearState() {
+            localStorage.removeItem('quizState');
+        }
+
+        function saveIncorrectQuestion(question) {
+            let incorrect = JSON.parse(localStorage.getItem('incorrectQuestions')) || [];
+            if (!incorrect.some(q => q.id === question.id)) {
+                incorrect.push(question);
+                localStorage.setItem('incorrectQuestions', JSON.stringify(incorrect));
+            }
+        }
+
+        function loadIncorrectQuestions() {
+            return JSON.parse(localStorage.getItem('incorrectQuestions')) || [];
+        }
+
+        // --- UI Navigation ---
+        function showScreen(screen) {
+            mainMenuContainer.classList.add('hidden');
+            quizContainer.classList.add('hidden');
+            workbookContainer.classList.add('hidden');
+            screen.classList.remove('hidden');
+        }
+
+        function showMainMenu() {
+            showScreen(mainMenuContainer);
+            const savedState = loadState();
+            if (savedState && savedState.availableQuestions.length > 0) {
+                resumeQuizBtn.classList.remove('hidden');
+            } else {
+                resumeQuizBtn.classList.add('hidden');
+            }
+        }
+
+        // --- Quiz Logic ---
+        function startQuiz(resume = false) {
+            const savedState = loadState();
+            if (resume && savedState) {
+                availableQuestions = savedState.availableQuestions;
+                score = savedState.score;
+                questionsAttempted = savedState.questionsAttempted;
+            } else {
+                availableQuestions = [...quizData];
+                score = 0;
+                questionsAttempted = 0;
+                clearState();
+            }
+            
+            showScreen(quizContainer);
+            completionArea.classList.add('hidden');
+            document.getElementById('question-area').classList.remove('hidden');
+            document.getElementById('feedback-area').classList.remove('hidden');
+            document.getElementById('quiz-header').classList.remove('hidden');
+            submitBtn.parentElement.classList.remove('hidden');
+
+            loadRandomQuestion();
+        }
+
+        function loadRandomQuestion() {
+            if (availableQuestions.length === 0) {
+                showCompletionScreen();
+                return;
+            }
+
+            feedbackTextEl.textContent = '';
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('hidden');
+            quitBtn.classList.remove('hidden');
+            nextBtn.classList.add('hidden');
+            quizContainer.style.opacity = 0;
+
+            const questionIndex = Math.floor(Math.random() * availableQuestions.length);
+            currentQuestion = availableQuestions[questionIndex];
+            availableQuestions.splice(questionIndex, 1);
+
+            setTimeout(() => {
+                questionTextEl.textContent = currentQuestion.question;
+                answerFormEl.innerHTML = '';
+                const options = currentQuestion.options;
+                const optionLetters = ['A', 'B', 'C', 'D'];
+
+                options.forEach((option, index) => {
+                    const optionId = `option_${index}`;
+                    const optionEl = document.createElement('div');
+                    optionEl.innerHTML = `
+                        <input type="radio" id="${optionId}" name="answer" value="${optionLetters[index]}">
+                        <label for="${optionId}" class="option-label flex items-center w-full p-4 border border-gray-200 rounded-lg cursor-pointer bg-white hover:bg-gray-50">
+                            <span class="radio-custom-button"></span>
+                            <span class="font-medium text-gray-700">${optionLetters[index]}. ${option}</span>
+                        </label>
+                    `;
+                    answerFormEl.appendChild(optionEl);
+                });
+                quizContainer.style.opacity = 1;
+            }, 300);
+            
+            updateProgress();
+        }
+        
+        function updateProgress() {
+            const totalQuestions = quizData.length;
+            const doneCount = totalQuestions - availableQuestions.length - (currentQuestion ? 1 : 0) + 1;
+            progressCounterEl.textContent = `题目: ${doneCount} / ${totalQuestions}`;
+            const progressPercentage = (doneCount / totalQuestions) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+        }
+
+        function checkAnswer() {
+            const selectedOption = answerFormEl.querySelector('input[name="answer"]:checked');
+            if (!selectedOption) {
+                feedbackTextEl.textContent = '请选择一个答案！';
+                feedbackTextEl.className = 'text-center text-xl font-bold text-yellow-500';
+                return;
+            }
+
+            submitBtn.disabled = true;
+            const userAnswer = selectedOption.value;
+            
+            if (userAnswer === currentQuestion.answer) {
+                feedbackTextEl.textContent = '正确！';
+                feedbackTextEl.className = 'text-center text-xl font-bold text-green-500';
+                selectedOption.nextElementSibling.classList.add('correct');
+                score++;
+            } else {
+                feedbackTextEl.innerHTML = `错误。正确答案是 <span class="text-blue-500">${currentQuestion.answer}</span>`;
+                feedbackTextEl.className = 'text-center text-xl font-bold text-red-500';
+                selectedOption.nextElementSibling.classList.add('incorrect');
+                saveIncorrectQuestion(currentQuestion);
+            }
+            
+            const labels = answerFormEl.querySelectorAll('label');
+            labels.forEach(label => {
+                const radio = document.getElementById(label.getAttribute('for'));
+                if (radio.value === currentQuestion.answer) {
+                    label.classList.add('correct-answer-reveal');
+                }
+            });
+
+            submitBtn.classList.add('hidden');
+            quitBtn.classList.add('hidden');
+            nextBtn.classList.remove('hidden');
+        }
+        
+        function showCompletionScreen() {
+            clearState();
+            document.getElementById('question-area').classList.add('hidden');
+            document.getElementById('feedback-area').classList.add('hidden');
+            document.getElementById('quiz-header').classList.add('hidden');
+            submitBtn.parentElement.classList.add('hidden');
+            
+            completionArea.classList.remove('hidden');
+            scoreTextEl.textContent = `您的得分: ${score} / ${quizData.length}`;
+        }
+
+        // --- Workbook Logic ---
+        function showWorkbook() {
+            showScreen(workbookContainer);
+            const incorrect = loadIncorrectQuestions();
+            workbookListEl.innerHTML = '';
+
+            if (incorrect.length === 0) {
+                workbookListEl.innerHTML = '<p class="text-gray-500 text-center">错题本是空的，太棒了！</p>';
+                clearWorkbookBtn.disabled = true;
+                clearWorkbookBtn.classList.add('opacity-50');
+            } else {
+                 clearWorkbookBtn.disabled = false;
+                 clearWorkbookBtn.classList.remove('opacity-50');
+                incorrect.forEach(q => {
+                    const questionEl = document.createElement('div');
+                    questionEl.className = 'p-4 border rounded-lg bg-gray-50';
+                    
+                    let optionsHTML = q.options.map((opt, index) => {
+                        const letter = ['A', 'B', 'C', 'D'][index];
+                        const isCorrect = letter === q.answer;
+                        return `<li class="mt-2 p-2 rounded ${isCorrect ? 'correct' : ''}">${letter}. ${opt}</li>`;
+                    }).join('');
+
+                    questionEl.innerHTML = `
+                        <p class="font-semibold text-gray-800">${q.question}</p>
+                        <ul class="list-none mt-2">${optionsHTML}</ul>
+                    `;
+                    workbookListEl.appendChild(questionEl);
+                });
+            }
+        }
+
+        // --- Modal Logic ---
+        let onConfirmCallback = null;
+        function showModal(message, onConfirm) {
+            modalMessage.textContent = message;
+            onConfirmCallback = onConfirm;
+            confirmationModal.classList.remove('hidden');
+        }
+
+        function hideModal() {
+            confirmationModal.classList.add('hidden');
+            onConfirmCallback = null;
+        }
+
+        modalConfirmBtn.addEventListener('click', () => {
+            if (onConfirmCallback) {
+                onConfirmCallback();
+            }
+            hideModal();
+        });
+        modalCancelBtn.addEventListener('click', hideModal);
+
+
+        // --- Event Listeners ---
+        startNewQuizBtn.addEventListener('click', () => startQuiz(false));
+        resumeQuizBtn.addEventListener('click', () => startQuiz(true));
+        
+        submitBtn.addEventListener('click', checkAnswer);
+        nextBtn.addEventListener('click', loadRandomQuestion);
+
+        quitBtn.addEventListener('click', () => {
+            saveState();
+            showMainMenu();
+        });
+
+        workbookBtn.addEventListener('click', showWorkbook);
+        backToMenuWorkbookBtn.addEventListener('click', showMainMenu);
+        backToMenuCompletionBtn.addEventListener('click', showMainMenu);
+
+        clearWorkbookBtn.addEventListener('click', () => {
+            showModal('您确定要清空所有错题记录吗？此操作无法撤销。', () => {
+                localStorage.removeItem('incorrectQuestions');
+                showWorkbook();
+            });
+        });
+
+        // --- Initial Load ---
+        document.addEventListener('DOMContentLoaded', showMainMenu);
+    </script>
+
+</body>
+</html>
