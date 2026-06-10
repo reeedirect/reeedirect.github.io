@@ -1,0 +1,1199 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>食品安全与质量控制复习</title>
+  <style>
+    :root {
+      --bg: #f4f6f1;
+      --panel: #fffdf7;
+      --panel-2: #f7fbff;
+      --text: #18201a;
+      --muted: #667065;
+      --line: #d8ded2;
+      --accent: #276f6b;
+      --accent-2: #8d4f23;
+      --bad: #b9383b;
+      --good: #287a46;
+      --warn: #9a6a00;
+      --shadow: 0 18px 50px rgba(28, 45, 30, 0.11);
+      --radius: 8px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background: linear-gradient(180deg, #f1f6f2 0%, #f7f4ed 48%, #f4f6f1 100%);
+      font-family: "Microsoft YaHei", "Noto Sans SC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+    }
+    button, input, textarea, select {
+      font: inherit;
+    }
+    button {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      border-radius: 7px;
+      min-height: 38px;
+      padding: 8px 12px;
+      cursor: pointer;
+      transition: transform .12s ease, border-color .12s ease, background .12s ease;
+    }
+    button:hover { transform: translateY(-1px); border-color: #97aaa0; }
+    button:disabled { opacity: .48; cursor: not-allowed; transform: none; }
+    .primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .danger { color: var(--bad); border-color: #e0b4b6; }
+    .quiet { background: transparent; }
+    .app {
+      width: min(1180px, calc(100vw - 28px));
+      margin: 0 auto;
+      padding: 24px 0 42px;
+    }
+    .topbar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: end;
+      padding: 8px 0 18px;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(26px, 4vw, 42px);
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+    .subtitle {
+      margin: 8px 0 0;
+      color: var(--muted);
+      max-width: 760px;
+    }
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(120px, 1fr));
+      gap: 10px;
+      margin: 10px 0 18px;
+    }
+    .stat {
+      background: rgba(255,255,255,.72);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+    }
+    .stat strong {
+      display: block;
+      font-size: 24px;
+      line-height: 1.2;
+    }
+    .stat span { color: var(--muted); font-size: 13px; }
+    .layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .controls {
+      padding: 14px;
+      position: sticky;
+      top: 12px;
+    }
+    .section-title {
+      margin: 6px 0 10px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #30382f;
+    }
+    .segmented {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .segmented button.active, .type-grid button.active, .range-row button.active {
+      background: #dceee7;
+      border-color: var(--accent);
+      color: #153d3a;
+      font-weight: 700;
+    }
+    .type-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    .range-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .start-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .searchbox {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 7px;
+      padding: 9px 10px;
+      margin-top: 8px;
+    }
+    .search-results {
+      max-height: 260px;
+      overflow: auto;
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+      padding-right: 2px;
+    }
+    .mini-item {
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 8px;
+      background: #fff;
+      cursor: pointer;
+    }
+    .mini-item:hover { border-color: var(--accent); }
+    .mini-meta {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .mini-stem {
+      margin-top: 4px;
+      font-size: 13px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .main {
+      min-height: 620px;
+      overflow: hidden;
+    }
+    .content-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.62);
+    }
+    .content-title {
+      font-size: 18px;
+      font-weight: 800;
+    }
+    .content-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+    .stage {
+      padding: 18px;
+    }
+    .empty {
+      padding: 46px 20px;
+      text-align: center;
+      color: var(--muted);
+    }
+    .question-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+    .question-meta {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #f7f8f4;
+      color: #364039;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .tag.star { color: #7d4a00; border-color: #e4c680; background: #fff6d7; }
+    .tag.double { color: #8b2727; border-color: #e6aaa2; background: #fff0ec; }
+    .tag.good { color: var(--good); background: #e9f6ee; border-color: #aed8bd; }
+    .tag.bad { color: var(--bad); background: #fff0f0; border-color: #e4b2b4; }
+    .tag.warn { color: var(--warn); background: #fff7dc; border-color: #e4cd86; }
+    .stem {
+      font-size: 21px;
+      line-height: 1.55;
+      margin: 0 0 16px;
+      word-break: break-word;
+    }
+    .options {
+      display: grid;
+      gap: 9px;
+      margin: 12px 0 14px;
+    }
+    .option {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+      align-items: start;
+      border: 1px solid var(--line);
+      background: #fbfcf8;
+      border-radius: 7px;
+      padding: 10px;
+      cursor: pointer;
+    }
+    .option input { margin-top: 5px; }
+    .option strong { margin-right: 6px; }
+    textarea.answer-input {
+      width: 100%;
+      min-height: 140px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 10px 12px;
+      background: #fff;
+      color: var(--text);
+    }
+    .blank-grid {
+      display: grid;
+      gap: 8px;
+      margin: 12px 0;
+    }
+    .blank-input {
+      display: grid;
+      grid-template-columns: 86px 1fr;
+      gap: 8px;
+      align-items: center;
+    }
+    .blank-input input {
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 9px 10px;
+      min-width: 0;
+    }
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .answer-panel {
+      margin-top: 16px;
+      border: 1px solid #cfd7cb;
+      border-radius: var(--radius);
+      background: var(--panel-2);
+      padding: 14px;
+    }
+    .answer-panel h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+    .answer-block {
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 10px;
+      margin: 8px 0;
+    }
+    .review-list {
+      display: grid;
+      gap: 12px;
+    }
+    .review-item {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      padding: 14px;
+    }
+    .review-item.wrong-review {
+      position: relative;
+      border: 2px solid #d95b5f;
+      background: #fff7f5;
+      box-shadow: 0 16px 42px rgba(185, 56, 59, .16);
+    }
+    .review-item.wrong-review::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 6px;
+      border-radius: 6px 0 0 6px;
+      background: var(--bad);
+    }
+    .review-item h3 {
+      margin: 8px 0;
+      font-size: 18px;
+    }
+    .wrong-banner {
+      margin: 10px 0;
+      border: 1px solid #e1a5a8;
+      border-radius: 7px;
+      background: #ffe7e4;
+      color: #8d2528;
+      padding: 8px 10px;
+      font-weight: 800;
+    }
+    .self-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .self-row button.mastered.active { background: #dff2e6; border-color: var(--good); color: var(--good); font-weight: 800; }
+    .self-row button.unfamiliar.active { background: #ffe0e0; border-color: var(--bad); color: var(--bad); font-weight: 800; }
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 28, 21, .36);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 10;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      width: min(760px, 100%);
+      max-height: min(760px, calc(100vh - 36px));
+      overflow: auto;
+      background: var(--panel);
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+    .modal h2 { margin: 0 0 10px; font-size: 20px; }
+    .modal textarea {
+      width: 100%;
+      min-height: 180px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 10px;
+      resize: vertical;
+    }
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      background: #17251c;
+      color: #fff;
+      padding: 9px 12px;
+      border-radius: 7px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease;
+      z-index: 20;
+      max-width: calc(100vw - 32px);
+    }
+    .toast.show { opacity: 1; }
+    .hidden { display: none !important; }
+    .small { font-size: 13px; color: var(--muted); }
+    .divider { height: 1px; background: var(--line); margin: 14px 0; }
+    @media (max-width: 860px) {
+      .topbar, .layout { grid-template-columns: 1fr; }
+      .toolbar { justify-content: flex-start; }
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .controls { position: static; }
+      .content-head { align-items: flex-start; flex-direction: column; }
+      .content-actions { justify-content: flex-start; }
+      .stem { font-size: 18px; }
+    }
+    @media (max-width: 520px) {
+      .app { width: min(100vw - 18px, 1180px); padding-top: 12px; }
+      .stats { grid-template-columns: 1fr; }
+      .type-grid, .segmented, .range-row, .start-row { grid-template-columns: 1fr; }
+      .stage, .question-card { padding: 12px; }
+      .blank-input { grid-template-columns: 1fr; }
+      button { width: 100%; }
+      .actions, .self-row, .toolbar { display: grid; grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div>
+        <h1>食品安全与质量控制复习</h1>
+        <p class="subtitle">按题型、随机、重点和错题反复练。选择题判断对错；填空和主观题看答案后自评。</p>
+      </div>
+      <div class="toolbar">
+        <button id="exportBtn" title="导出学习数据">导出</button>
+        <button id="importBtn" title="导入学习数据">导入</button>
+        <button id="resetBtn" class="danger" title="清空本地记录">清空记录</button>
+      </div>
+    </header>
+
+    <section class="stats" id="stats"></section>
+
+    <div class="layout">
+      <aside class="panel controls">
+        <div class="section-title">出题模式</div>
+        <div class="segmented">
+          <button data-mode="type" class="active">按题型</button>
+          <button data-mode="random">随机</button>
+          <button data-mode="wrong">错题本</button>
+          <button data-mode="search">搜索</button>
+        </div>
+
+        <div id="practiceControls">
+          <div id="typeControls">
+            <div class="section-title">题型</div>
+            <div class="type-grid" id="typeButtons"></div>
+          </div>
+
+          <div class="section-title">范围</div>
+          <div class="range-row">
+            <button data-range="all" class="active">全部题目</button>
+            <button data-range="priority">只做重点题</button>
+          </div>
+
+          <div class="start-row">
+            <button id="startBtn" class="primary">开始练习</button>
+            <button id="oneRandomBtn">来一题</button>
+          </div>
+        </div>
+
+        <div id="wrongControls" class="hidden">
+          <div class="section-title">错题题型</div>
+          <div class="type-grid" id="wrongTypeButtons"></div>
+          <div class="start-row">
+            <button id="startWrongBtn" class="primary">重做错题</button>
+            <button id="showWrongBtn">查看错题</button>
+          </div>
+        </div>
+
+        <div id="searchControls" class="hidden">
+          <div class="section-title">搜索题库</div>
+          <input id="searchInput" class="searchbox" type="search" placeholder="输入关键词、题号或答案">
+          <div class="search-results" id="searchResults"></div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="small" id="bankSummary"></div>
+      </aside>
+
+      <main class="panel main">
+        <div class="content-head">
+          <div>
+            <div class="content-title" id="viewTitle">准备开始</div>
+            <div class="small" id="viewSubTitle">选择一种模式开始复习。</div>
+          </div>
+          <div class="content-actions">
+            <button id="prevBtn" disabled>上一题</button>
+            <button id="nextBtn" disabled>下一题</button>
+            <button id="finishBtn" disabled>退出并检查</button>
+          </div>
+        </div>
+        <div class="stage" id="stage"></div>
+      </main>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal" role="dialog" aria-modal="true">
+      <h2 id="modalTitle">编辑</h2>
+      <div id="modalBody"></div>
+      <div class="actions">
+        <button id="modalSave" class="primary">保存</button>
+        <button id="modalCancel">取消</button>
+      </div>
+    </div>
+  </div>
+  <input id="importFile" type="file" accept="application/json" class="hidden">
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const QUESTION_BANK = [{"id":"choice-1","type":"multiple","choiceKind":"多选","group":"选择题","number":1,"stem":"下列属于食品的是( )","options":[{"key":"A","text":"鱼腥草"},{"key":"B","text":"康恩贝钙D软胶囊"},{"key":"C","text":"迪巧维D钙咀嚼片"},{"key":"D","text":"宠物粮"}],"answer":["A","B"],"answerText":"AB","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-2","type":"single","choiceKind":"单选","group":"选择题","number":2,"stem":"目前我国传播最广泛的食源性病毒( )","options":[{"key":"A","text":"朊病毒"},{"key":"B","text":"禽流感病毒"},{"key":"C","text":"肝炎病毒"},{"key":"D","text":"诺如病毒"}],"answer":["D"],"answerText":"D","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-3","type":"multiple","choiceKind":"多选","group":"选择题","number":3,"stem":"经食品传播的肝炎病毒有( )","options":[{"key":"A","text":"甲型肝炎病毒"},{"key":"B","text":"乙型肝炎病毒"},{"key":"C","text":"丙型肝炎病毒"},{"key":"D","text":"戊型肝炎病毒"}],"answer":["A","D"],"answerText":"AD","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-4","type":"single","choiceKind":"单选","group":"选择题","number":4,"stem":"下列哪一种是常见的螺源性寄生虫( )","options":[{"key":"A","text":"囊虫"},{"key":"B","text":"华枝睾吸虫"},{"key":"C","text":"广州管圆线虫"},{"key":"D","text":"布氏姜片虫"}],"answer":["C"],"answerText":"C","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-5","type":"single","choiceKind":"单选","group":"选择题","number":5,"stem":"䧳河豚鱼中毒性最强的部位是( )","options":[{"key":"A","text":"血液"},{"key":"B","text":"卵巢"},{"key":"C","text":"肌肉"},{"key":"D","text":"肾脏"}],"answer":["B"],"answerText":"B","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-6","type":"multiple","choiceKind":"多选","group":"选择题","number":6,"stem":"下列属于目前我国市场中存在的转基因作物的有( )","options":[{"key":"A","text":"大豆"},{"key":"B","text":"水稻"},{"key":"C","text":"玉米"},{"key":"D","text":"小麦"}],"answer":["A","C"],"answerText":"AC","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-7","type":"multiple","choiceKind":"多选","group":"选择题","number":7,"stem":"下列属于目前我国市场中存在的转基因作物的有( )","options":[{"key":"A","text":"油菜"},{"key":"B","text":"甜菜"},{"key":"C","text":"西红柿"},{"key":"D","text":"花生"}],"answer":["A","B"],"answerText":"AB","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-8","type":"single","choiceKind":"单选","group":"选择题","number":8,"stem":"下列属于目前我国市场中存在的转基因作物的有( )","options":[{"key":"A","text":"香蕉"},{"key":"B","text":"苹果"},{"key":"C","text":"木瓜"},{"key":"D","text":"西瓜"}],"answer":["C"],"answerText":"C","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-9","type":"single","choiceKind":"单选","group":"选择题","number":9,"stem":"主要污染海产品的致病性嗜盐菌是( )","options":[{"key":"A","text":"志贺氏菌"},{"key":"B","text":"单核增生李斯特氏菌"},{"key":"C","text":"金黄色葡萄球菌"},{"key":"D","text":"副溶血性弧菌"}],"answer":["D"],"answerText":"D","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-10","type":"single","choiceKind":"单选","group":"选择题","number":10,"stem":"人类化脓感染中最常见的病原菌是( )","options":[{"key":"A","text":"志贺氏菌"},{"key":"B","text":"单核增生李斯特氏菌"},{"key":"C","text":"金黄色葡萄球菌"},{"key":"D","text":"副溶血性弧菌"}],"answer":["C"],"answerText":"C","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-11","type":"single","choiceKind":"单选","group":"选择题","number":11,"stem":"被称为“冰箱杀手”的致病菌是( )","options":[{"key":"A","text":"志贺氏菌"},{"key":"B","text":"单核增生李斯特氏菌"},{"key":"C","text":"金黄色葡萄球菌"},{"key":"D","text":"副溶血性弧菌"}],"answer":["B"],"answerText":"B","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-12","type":"single","choiceKind":"单选","group":"选择题","number":12,"stem":"临床上会引起痢疾，统称为痢疾杆菌的致病菌是( )","options":[{"key":"A","text":"志贺氏菌"},{"key":"B","text":"单核增生李斯特氏菌"},{"key":"C","text":"金黄色葡萄球菌"},{"key":"D","text":"副溶血性弧菌"}],"answer":["A"],"answerText":"A","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-13","type":"single","choiceKind":"单选","group":"选择题","number":13,"stem":"以婴儿配方奶粉作为主要感染渠道，被称为“婴幼儿奶粉隐形杀手” 的致病菌是( )","options":[{"key":"A","text":"沙门氏菌"},{"key":"B","text":"阪崎肠杆菌"},{"key":"C","text":"单核增生李斯特氏菌"},{"key":"D","text":"肉毒梭菌"}],"answer":["B"],"answerText":"B","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-14","type":"single","choiceKind":"单选","group":"选择题","number":14,"stem":"吃荸荠、菱角、茭白易感染的寄生虫是( )","options":[{"key":"A","text":"旋毛虫"},{"key":"B","text":"囊尾蚴"},{"key":"C","text":"华支睾吸虫"},{"key":"D","text":"姜片虫"}],"answer":["D"],"answerText":"D","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-15","type":"single","choiceKind":"单选","group":"选择题","number":15,"stem":"水俣病是因为下列哪种重金属中毒引起的?( )","options":[{"key":"A","text":"铅"},{"key":"B","text":"汞"},{"key":"C","text":"砷"},{"key":"D","text":"镉"}],"answer":["B"],"answerText":"B","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-16","type":"single","choiceKind":"单选","group":"选择题","number":16,"stem":"痛痛病是因为下列哪种重金属中毒引起的?( )","options":[{"key":"A","text":"铅"},{"key":"B","text":"汞"},{"key":"C","text":"砷"},{"key":"D","text":"镉"}],"answer":["D"],"answerText":"D","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-17","type":"multiple","choiceKind":"多选","group":"选择题","number":17,"stem":"下列说法不正确的是?( )","options":[{"key":"A","text":"无铅松花蛋的确不含有铅"},{"key":"B","text":"发芽的马铃薯中含有的有毒物质为白果酸"},{"key":"C","text":"不吃未经处理的鲜黄花菜是因为含有剧毒成分秋水仙碱"},{"key":"D","text":"EHEC O157:H7是一种感染剂量低，致病性强，临床上无特效治疗药物的肠道致病菌"}],"answer":["A","B","C"],"answerText":"ABC","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-18","type":"multiple","choiceKind":"多选","group":"选择题","number":18,"stem":"下列说法错误的是( )。","options":[{"key":"A","text":"河豚毒素是由河豚自身代谢产生的"},{"key":"B","text":"为保证食材新鲜，购买河豚时尽量买活鱼"},{"key":"C","text":"河豚毒素可特异性作用于神经细胞膜钾离子通道，引起麻痹"},{"key":"D","text":"河豚毒素有剧毒，不可用于临床"}],"answer":["A","B","C","D"],"answerText":"ABCD","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-19","type":"single","choiceKind":"单选","group":"选择题","number":19,"stem":"以下属于计数型数值的数据是( )","options":[{"key":"A","text":"质量3.5kg"},{"key":"B","text":"pH值7.2"},{"key":"C","text":"不合格数12"},{"key":"D","text":"温度12度"}],"answer":["C"],"answerText":"C","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-20","type":"single","choiceKind":"单选","group":"选择题","number":20,"stem":"下列属于异常波动的是( )","options":[{"key":"A","text":"机器固有震动"},{"key":"B","text":"配方错误"},{"key":"C","text":"仪表精度误差"},{"key":"D","text":"工人操作的微小不均匀"}],"answer":["B"],"answerText":"B","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-21","type":"single","choiceKind":"单选","group":"选择题","number":21,"stem":"标准方差是指一组数据中最大值与最小值的差值，表示样本数据的分散程度。","options":[{"key":"对","text":"对"},{"key":"错","text":"错"}],"answer":["错"],"answerText":"错","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-22","type":"single","choiceKind":"单选","group":"选择题","number":22,"stem":"由系统因素引起的质量波动为正常波动，对质量特性值影响较小。","options":[{"key":"对","text":"对"},{"key":"错","text":"错"}],"answer":["错"],"answerText":"错","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-23","type":"single","choiceKind":"单选","group":"选择题","number":23,"stem":"正态分布曲线中变异度参数σ决定了正态分布曲线的宽度。","options":[{"key":"对","text":"对"},{"key":"错","text":"错"}],"answer":["对"],"answerText":"对","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-24","type":"single","choiceKind":"单选","group":"选择题","number":24,"stem":"质量数据一般包括计件值数据和计数值数据。","options":[{"key":"对","text":"对"},{"key":"错","text":"错"}],"answer":["错"],"answerText":"错","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-25","type":"single","choiceKind":"单选","group":"选择题","number":25,"stem":"控制图判异准则有两类:一是点子出界就判异;二是点子分布不随机就判异。","options":[{"key":"对","text":"对"},{"key":"错","text":"错"}],"answer":["对"],"answerText":"对","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-26","type":"single","choiceKind":"单选","group":"选择题","number":26,"stem":"通过质量管理可以消除质量波动。","options":[{"key":"对","text":"对"},{"key":"错","text":"错"}],"answer":["错"],"answerText":"错","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-27","type":"single","choiceKind":"单选","group":"选择题","number":27,"stem":"用同样的设备、原料和生产工艺，但生产的产品质量有差别，这属于( )。","options":[{"key":"A","text":"质量波动"},{"key":"B","text":"质量变动"},{"key":"C","text":"质量震动"},{"key":"D","text":"质量运动"}],"answer":["A"],"answerText":"A","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-28","type":"single","choiceKind":"单选","group":"选择题","number":28,"stem":"在某罐头生产企业中，品控员抽检罐头灌装量，发现连续7罐的灌装量都在控制范围之内，但是都是依次增加的，该品控员认为灌装量都在控制范围内，所以认为是正常的不需要调整灌装工序。","options":[{"key":"对","text":"对"},{"key":"错","text":"错"}],"answer":["错"],"answerText":"错","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-29","type":"single","choiceKind":"单选","group":"选择题","number":29,"stem":"在利用排列图分析时，当某质量因素的累计比率为82.6%，该质量因素为( )","options":[{"key":"A","text":"主要因素"},{"key":"B","text":"次要因素"},{"key":"C","text":"一般因素"},{"key":"D","text":"重要因素"}],"answer":["B"],"answerText":"B","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-30","type":"single","choiceKind":"单选","group":"选择题","number":30,"stem":"用于研究、判断两个变量之间的相互关系的质量工具是( )。","options":[{"key":"A","text":"直方图"},{"key":"B","text":"因果图"},{"key":"C","text":"散布图"},{"key":"D","text":"分层法"}],"answer":["C"],"answerText":"C","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-31","type":"single","choiceKind":"单选","group":"选择题","number":31,"stem":"一次抽样方案为(3000，125，7，8)，当抽出的样品中不合格品数为7时，则判定该批次产品为不合格。","options":[{"key":"对","text":"对"},{"key":"错","text":"错"}],"answer":["错"],"answerText":"错","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-32","type":"single","choiceKind":"单选","group":"选择题","number":32,"stem":"工序检验的作用是( )","options":[{"key":"A","text":"防止不合格品流入下道工序"},{"key":"B","text":"防止不合格的原料进入生产环节"},{"key":"C","text":"保证不合格产品不出厂"},{"key":"D","text":"以上都不是"}],"answer":["A"],"answerText":"A","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-33","type":"single","choiceKind":"单选","group":"选择题","number":33,"stem":"由于在最终检验中可以检测出不合格品，防止不合格品进入市场，因此可以忽视来料检验和工序检验。","options":[{"key":"对","text":"对"},{"key":"错","text":"错"}],"answer":["错"],"answerText":"错","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-34","type":"single","choiceKind":"单选","group":"选择题","number":34,"stem":"按照生产流程对质量检验进行分类，其中( )是最关键的检验。","options":[{"key":"A","text":"理化检验"},{"key":"B","text":"进货检验"},{"key":"C","text":"工序检验"},{"key":"D","text":"最终检验"}],"answer":["D"],"answerText":"D","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-35","type":"multiple","choiceKind":"多选","group":"选择题","number":35,"stem":"按照生产流程可以将质量检验分为( )","options":[{"key":"A","text":"理化检验"},{"key":"B","text":"进货检验"},{"key":"C","text":"工序检验"},{"key":"D","text":"最终检验"}],"answer":["B","C","D"],"answerText":"BCD","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-36","type":"multiple","choiceKind":"多选","group":"选择题","number":36,"stem":"按照检验方法可以将质量检验分为( )","options":[{"key":"A","text":"理化检验"},{"key":"B","text":"微生物检验"},{"key":"C","text":"进料检验"},{"key":"D","text":"感官检验"}],"answer":["A","B","D"],"answerText":"ABD","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-37","type":"multiple","choiceKind":"多选","group":"选择题","number":37,"stem":"随机抽样检查有哪几种( )。","options":[{"key":"A","text":"简单随机抽样"},{"key":"B","text":"分层随机抽样"},{"key":"C","text":"系统随机抽样"},{"key":"D","text":"整群抽样"}],"answer":["A","B","C"],"answerText":"ABC","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-38","type":"single","choiceKind":"单选","group":"选择题","number":38,"stem":"下列选项中属于计数数据的是( )","options":[{"key":"A","text":"不合格品数"},{"key":"B","text":"长度"},{"key":"C","text":"营养成分含量"},{"key":"D","text":"温度"}],"answer":["A"],"answerText":"A","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-39","type":"multiple","choiceKind":"多选","group":"选择题","number":39,"stem":"下列选项中属于异常波动的是( )","options":[{"key":"A","text":"配方错误"},{"key":"B","text":"工人未按规程操作"},{"key":"C","text":"原材料中的微量杂质"},{"key":"D","text":"仪器故障"}],"answer":["A","B","D"],"answerText":"ABD","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-40","type":"multiple","choiceKind":"多选","group":"选择题","number":40,"stem":"下列选项中，属于质量数据样本的指标或数据特征值是( )","options":[{"key":"A","text":"平均数"},{"key":"B","text":"方差"},{"key":"C","text":"极差"},{"key":"D","text":"中位数"}],"answer":["A","B","C","D"],"answerText":"ABCD","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-41","type":"single","choiceKind":"单选","group":"选择题","number":41,"stem":"正常波动生产数据符合正态分布，即99.73%的数据分布在平均数( )个标准差内","options":[{"key":"A","text":"1"},{"key":"B","text":"2"},{"key":"C","text":"3"},{"key":"D","text":"4"}],"answer":["C"],"answerText":"C","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-42","type":"multiple","choiceKind":"多选","group":"选择题","number":42,"stem":"调查表通常分为( )","options":[{"key":"A","text":"质量分布调查表"},{"key":"B","text":"不合格项调查表"},{"key":"C","text":"矩阵调查表"},{"key":"D","text":"不合格位置调查表"}],"answer":["A","B","C","D"],"answerText":"ABCD","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-43","type":"single","choiceKind":"单选","group":"选择题","number":43,"stem":"使用分层法时可以按照单一因素分层得出结论，此说法","options":[{"key":"对","text":"对"},{"key":"错","text":"错"}],"answer":["错"],"answerText":"错","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-44","type":"single","choiceKind":"单选","group":"选择题","number":44,"stem":"通常，分层法要与其他质量控制统计方法一起联用，分层后分别用其他方法制成分层排列图、分层直方图、分层散布图等","options":[{"key":"对","text":"对"},{"key":"错","text":"错"}],"answer":["对"],"answerText":"对","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-45","type":"single","choiceKind":"单选","group":"选择题","number":45,"stem":"排列图结果分析中主要因素是以0-( )%为界定范围的","options":[{"key":"A","text":"60"},{"key":"B","text":"70"},{"key":"C","text":"80"},{"key":"D","text":"90"}],"answer":["C"],"answerText":"C","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-46","type":"single","choiceKind":"单选","group":"选择题","number":46,"stem":"根据数据产生的特征(如不同人、不同场所、不同方法、不同设备等)将数据划分为若干组的工具是( )","options":[{"key":"A","text":"调查表"},{"key":"B","text":"分层法"},{"key":"C","text":"排列图"},{"key":"D","text":"因果图"}],"answer":["B"],"answerText":"B","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-47","type":"single","choiceKind":"单选","group":"选择题","number":47,"stem":"因果图质量控制方法是通过质量数据进行分析的。","options":[{"key":"对","text":"对"},{"key":"错","text":"错"}],"answer":["错"],"answerText":"错","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-48","type":"single","choiceKind":"单选","group":"选择题","number":48,"stem":"下列直方图的状态中，与规格界限比较，已经出现了不合格品的是( )","options":[{"key":"A","text":"偏心型"},{"key":"B","text":"无富余型"},{"key":"C","text":"能力不足型"},{"key":"D","text":"能力富余型"}],"answer":["C"],"answerText":"C","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-49","type":"single","choiceKind":"单选","group":"选择题","number":49,"stem":"散布图是研究两组相关数据之间相关关系的技术。此说法","options":[{"key":"对","text":"对"},{"key":"错","text":"错"}],"answer":["对"],"answerText":"对","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-50","type":"single","choiceKind":"单选","group":"选择题","number":50,"stem":"下列各选项中，用于找出影响质量的主要问题、确定质量改进关键项目的控制工具是( )","options":[{"key":"A","text":"因果图"},{"key":"B","text":"散布图"},{"key":"C","text":"排列图"},{"key":"D","text":"直方图"}],"answer":["C"],"answerText":"C","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-51","type":"single","choiceKind":"单选","group":"选择题","number":51,"stem":"下列各选项中，用于研究、判断两个变量之间的相互关系的质量工具是( )","options":[{"key":"A","text":"因果图"},{"key":"B","text":"排列图"},{"key":"C","text":"散布图"},{"key":"D","text":"直方图"}],"answer":["C"],"answerText":"C","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-52","type":"single","choiceKind":"单选","group":"选择题","number":52,"stem":"下列关于质量控制图的叙述中，错误的是( )","options":[{"key":"A","text":"控制图的上、下控制界限，一般是用″三倍标准偏差法\"确定"},{"key":"B","text":"控制图的原理是小概率事件"},{"key":"C","text":"常用控制图可分为计量值控制图和计数值控制图"},{"key":"D","text":"控制图的两种误判可避免"}],"answer":["D"],"answerText":"D","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-53","type":"single","choiceKind":"单选","group":"选择题","number":53,"stem":"正常生产过程中，某一产品质量特性值落在控制界限内的概率应为( )","options":[{"key":"A","text":"68.3%"},{"key":"B","text":"95.5%"},{"key":"C","text":"97.3%"},{"key":"D","text":"99.7%"}],"answer":["D"],"answerText":"D","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-54","type":"single","choiceKind":"单选","group":"选择题","number":54,"stem":"±3σ值越小，说明工序能力越好，此说法( )","options":[{"key":"A","text":"正确"},{"key":"B","text":"错误"},{"key":"C","text":"无法判断"},{"key":"D","text":"3σ值与工序能力无相关性"}],"answer":["A"],"answerText":"A","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-55","type":"single","choiceKind":"单选","group":"选择题","number":55,"stem":"质量检验的″预防″功能之一体现在( )","options":[{"key":"A","text":"有检验″把关″就不会再出现不合格品"},{"key":"B","text":"有检验″把关″用户对产品质量就放心"},{"key":"C","text":"有检验″把关″可以识别不合格品"},{"key":"D","text":"有检验\"把关″生产者对产品质量就有信心"}],"answer":["C"],"answerText":"C","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-56","type":"single","choiceKind":"单选","group":"选择题","number":56,"stem":"质量检验所提供的客观证据是要证实( )","options":[{"key":"A","text":"检验人员经过检验基本技能培训满足要求"},{"key":"B","text":"检测使用的量器具的精度符合规定要求"},{"key":"C","text":"产品的质量特性满足规定要求"},{"key":"D","text":"生产作业人员的作业满足规定要求"}],"answer":["C"],"answerText":"C","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-57","type":"single","choiceKind":"单选","group":"选择题","number":57,"stem":"质量检验具有的功能是( )","options":[{"key":"A","text":"识别、选择、防范和报告"},{"key":"B","text":"判定、规范、报告和改进"},{"key":"C","text":"鉴别、把关、预防和报告"},{"key":"D","text":"判断、剔除、隔离和预防"}],"answer":["C"],"answerText":"C","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-58","type":"single","choiceKind":"单选","group":"选择题","number":58,"stem":"质量检验的程序为( )","options":[{"key":"A","text":"准备、检验、记录、比较和判断，确认和处置"},{"key":"B","text":"准备、检验、比较和判断、记录、确认和处置"},{"key":"C","text":"准备、检验、比较和判断、确认和处置"},{"key":"D","text":"准备、检验、记录、比较和判断"}],"answer":["A"],"answerText":"A","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-59","type":"multiple","choiceKind":"多选","group":"选择题","number":59,"stem":"质量检验的标准主要包括( )","options":[{"key":"A","text":"国家标准"},{"key":"B","text":"行业标准"},{"key":"C","text":"地方标准"},{"key":"D","text":"企业标准"}],"answer":["A","B","C","D"],"answerText":"ABCD","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-60","type":"multiple","choiceKind":"多选","group":"选择题","number":60,"stem":"对一批产品进行检验，发现2个产品有A类不合格，3个产品有A类、B类不合格，5个产品有B类、C类不合格，可得出该批产品中有( )","options":[{"key":"A","text":"5个A类不合格品，5个B类不合格品"},{"key":"B","text":"5个A类不合格品，8个B类不合格品，5个C类不合格品"},{"key":"C","text":"5个A类不合格，8个B类不合格，5个C类不合格"},{"key":"D","text":"2个A类不合格品，3个B类不合格品，5个C类不合格品"}],"answer":["A","C"],"answerText":"AC","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-61","type":"single","choiceKind":"单选","group":"选择题","number":61,"stem":"抽样检验中要检验的对象被称为( )","options":[{"key":"A","text":"部分产品"},{"key":"B","text":"单位产品"},{"key":"C","text":"整批产品"},{"key":"D","text":"样本"}],"answer":["D"],"answerText":"D","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-62","type":"single","choiceKind":"单选","group":"选择题","number":62,"stem":"在一次抽样检验，接收数和拒收数有如下关系( )","options":[{"key":"A","text":"Ac=Re+1"},{"key":"B","text":"Ac=Re"},{"key":"C","text":"Re=Ac+1"},{"key":"D","text":"Ac>Re"}],"answer":["C"],"answerText":"C","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-63","type":"single","choiceKind":"单选","group":"选择题","number":63,"stem":"一次抽样和二次、多次抽样相比( )","options":[{"key":"A","text":"抽样简单，但判别能力不如二次和多次抽样"},{"key":"B","text":"判别能力基本相同"},{"key":"C","text":"样本量最小"},{"key":"D","text":"心理效果比二次和多次抽样好"}],"answer":["B"],"answerText":"B","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-64","type":"single","choiceKind":"单选","group":"选择题","number":64,"stem":"如果将抽样方案(50，2)调整为抽样方案(50，0)，结果是( )","options":[{"key":"A","text":"生产方风险减小"},{"key":"B","text":"对使用方的质量保证能力增强"},{"key":"C","text":"生产方和使用方的风险都减小"},{"key":"D","text":"生产方和使用方风险都增大"}],"answer":["B"],"answerText":"B","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-65","type":"single","choiceKind":"单选","group":"选择题","number":65,"stem":"在抽样检验中可以综合分析抽样方案判断能力的是( )","options":[{"key":"A","text":"样本量n"},{"key":"B","text":"批量N"},{"key":"C","text":"OC曲线"},{"key":"D","text":"接收数Ac"}],"answer":["C"],"answerText":"C","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-66","type":"single","choiceKind":"单选","group":"选择题","number":66,"stem":"接收质量限AQL是对生产方的过程质量提出的要求，是允许的生产过程平均的( )","options":[{"key":"A","text":"平均值"},{"key":"B","text":"最小值"},{"key":"C","text":"最大值"},{"key":"D","text":"初值"}],"answer":["C"],"answerText":"C","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-67","type":"single","choiceKind":"单选","group":"选择题","number":67,"stem":"在抽样检验中，不合格是指( )","options":[{"key":"A","text":"有一个或一个以上不合格的单位产品"},{"key":"B","text":"单位产品的任何一个质量特性不满足规范要求"},{"key":"C","text":"所有不合格的产品"},{"key":"D","text":"单位产品的某一质量特性不满足规范要求"}],"answer":["B"],"answerText":"B","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-68","type":"single","choiceKind":"单选","group":"选择题","number":68,"stem":"根据不同的生产日期从产品批中抽样，目的是为了( )","options":[{"key":"A","text":"节省抽样成本"},{"key":"B","text":"提高样本代表性"},{"key":"C","text":"使抽样更简便"},{"key":"D","text":"减少检验量"}],"answer":["B"],"answerText":"B","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-69","type":"single","choiceKind":"单选","group":"选择题","number":69,"stem":"生产方过程平均大于AQL，应使用( )抽样方案","options":[{"key":"A","text":"正常"},{"key":"B","text":"夜宽"},{"key":"C","text":"加严"},{"key":"D","text":"特宽"}],"answer":["C"],"answerText":"C","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-70","type":"multiple","choiceKind":"多选","group":"选择题","number":70,"stem":"抽样检验中检验水平反映了批量和样本量的关系，下列有关一般和特殊检验水平描述正确的是( )","options":[{"key":"A","text":"一般检验分为I、Ⅱ、Ⅲ三个检验水平"},{"key":"B","text":"特殊检验分为S-1、S-2、S-3、S-4四个检验水平"},{"key":"C","text":"无特殊要求时，均采用水平II；当需要的判别率比较高时，可使用一般检验水平Ⅲ"},{"key":"D","text":"特殊检验水平所抽取的样品较少，仅适用于必须用较小样本而且允许有较大误判风险的场合"}],"answer":["A","B","C","D"],"answerText":"ABCD","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-71","type":"single","choiceKind":"单选","group":"选择题","number":71,"stem":"HACCP管理体系的前提方案是( )","options":[{"key":"A","text":"GMP"},{"key":"B","text":"SSOP"},{"key":"C","text":"GMP和SSOP"},{"key":"D","text":"以上均不对"}],"answer":["C"],"answerText":"C","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-72","type":"single","choiceKind":"单选","group":"选择题","number":72,"stem":"操作限值比关键限值( )","options":[{"key":"A","text":"更严格"},{"key":"B","text":"更宽松"},{"key":"C","text":"更接近偏离区"},{"key":"D","text":"无法判断"}],"answer":["A"],"answerText":"A","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-73","type":"multiple","choiceKind":"多选","group":"选择题","number":73,"stem":"下列各项中比较适合作为HACCP关键限值的是( )","options":[{"key":"A","text":"时间"},{"key":"B","text":"温度"},{"key":"C","text":"pH值"},{"key":"D","text":"微生物含量"}],"answer":["A","B","C"],"answerText":"ABC","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-74","type":"single","choiceKind":"单选","group":"选择题","number":74,"stem":"HACCP管理体系是反应性体系而不是预防性体系( )","options":[{"key":"A","text":"对"},{"key":"B","text":"错"},{"key":"C","text":"无法判断"}],"answer":["B"],"answerText":"B","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"choice-75","type":"single","choiceKind":"单选","group":"选择题","number":75,"stem":"以下哪项属于食品交叉污染? ( )","options":[{"key":"A","text":"饼干放进冰箱后变软"},{"key":"B","text":"流感病毒的传染"},{"key":"C","text":"装过化学物质的容器再装食品"},{"key":"D","text":"切完大蒜的刀再切鸡肉一股蒜味"}],"answer":["C"],"answerText":"C","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-76","type":"single","choiceKind":"单选","group":"选择题","number":76,"stem":"下面哪一项不属于HACCP的原理( )","options":[{"key":"A","text":"全员参与"},{"key":"B","text":"关键控制点的监控"},{"key":"C","text":"纠正措施"},{"key":"D","text":"建立关键限值"}],"answer":["A"],"answerText":"A","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-77","type":"single","choiceKind":"单选","group":"选择题","number":77,"stem":"关键限值是为以下哪一项而设定的?( )","options":[{"key":"A","text":"关键控制点"},{"key":"B","text":"显著危害"},{"key":"C","text":"危害分析"},{"key":"D","text":"加工步骤"}],"answer":["A"],"answerText":"A","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-78","type":"single","choiceKind":"单选","group":"选择题","number":78,"stem":"与传统管理方式相比，HACCP体系的优点是( )","options":[{"key":"A","text":"不需要人力、物力的投入"},{"key":"B","text":"能有效预防危害发生或防止危害再次发生"},{"key":"C","text":"不需要进行产品检验"},{"key":"D","text":"能够避免不合格产品的产生"}],"answer":["B"],"answerText":"B","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-79","type":"single","choiceKind":"单选","group":"选择题","number":79,"stem":"“HACCP不是一个零风险的体系。”其意思是指( )","options":[{"key":"A","text":"有效的HACCP体系可以最大限度的降低或减少食品安全危害至可接受水平，而非消除所有的危害"},{"key":"B","text":"有效的HACCP体系能提高生产管理水平，但不能确保食品的安全"},{"key":"C","text":"HACCP体系只对部分食品安全危害起作用，而其它的食品安全危害只有通过传统的检验方法来解决"},{"key":"D","text":"有效的HACCP体系只对普通的食品安全危害起作用，而对异常的食品安全危害不起作用"}],"answer":["A"],"answerText":"A","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-80","type":"single","choiceKind":"单选","group":"选择题","number":80,"stem":"什么是某CCP的关键限值?( )","options":[{"key":"A","text":"超出某限度值而导致食品质量不一致"},{"key":"B","text":"微生物指标"},{"key":"C","text":"食品生产操作超出某限度值而可能造成健康危害"},{"key":"D","text":"产品的质量指标"}],"answer":["C"],"answerText":"C","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-81","type":"single","choiceKind":"单选","group":"选择题","number":81,"stem":"CCP判断树是( )","options":[{"key":"A","text":"说明关键限值的技术"},{"key":"B","text":"确定某环节是否是CCP的一系列问题"},{"key":"C","text":"决定控制测量的方法"},{"key":"D","text":"确认关键危害的方法"}],"answer":["B"],"answerText":"B","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-82","type":"single","choiceKind":"单选","group":"选择题","number":82,"stem":"下列哪一项描述是正确的?( )","options":[{"key":"A","text":"GMP、SSOP是HACCP的基础"},{"key":"B","text":"HACCP是GMP、SSOP的基础"},{"key":"C","text":"HACCP是ISO9000的基础"},{"key":"D","text":"ISO9000是HACCP的基础"}],"answer":["A"],"answerText":"A","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-83","type":"single","choiceKind":"单选","group":"选择题","number":83,"stem":"确定关键限制的原则是有效、简捷、经济。","options":[{"key":"对","text":"对"},{"key":"错","text":"错"}],"answer":["对"],"answerText":"对","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-84","type":"single","choiceKind":"单选","group":"选择题","number":84,"stem":"工厂实施HACCP之后就能生产“零缺陷”产品。","options":[{"key":"对","text":"对"},{"key":"错","text":"错"}],"answer":["错"],"answerText":"错","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-85","type":"single","choiceKind":"单选","group":"选择题","number":85,"stem":"HACCP体系重在预防而并非主要依赖于最终产品的检验。","options":[{"key":"对","text":"对"},{"key":"错","text":"错"}],"answer":["对"],"answerText":"对","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-86","type":"single","choiceKind":"单选","group":"选择题","number":86,"stem":"GMP的中心指导思想是食品质量的形成是由检验结果确定的。","options":[{"key":"对","text":"对"},{"key":"错","text":"错"}],"answer":["错"],"answerText":"错","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-87","type":"single","choiceKind":"单选","group":"选择题","number":87,"stem":"确定工艺路程图时危害分析的基础，能够确定HACCP的范围。","options":[{"key":"对","text":"对"},{"key":"错","text":"错"}],"answer":["对"],"answerText":"对","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-88","type":"single","choiceKind":"单选","group":"选择题","number":88,"stem":"加工食品的员工如果携带致病菌，应该禁止接触食品，但是如果症状轻微没有表现出来就不用禁止。","options":[{"key":"对","text":"对"},{"key":"错","text":"错"}],"answer":["错"],"answerText":"错","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-89","type":"single","choiceKind":"单选","group":"选择题","number":89,"stem":"薯片干燥时的显著性危害是有霉菌生长的可能，那么设置微生物检测限值是最好的控制选择。","options":[{"key":"对","text":"对"},{"key":"错","text":"错"}],"answer":["错"],"answerText":"错","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-90","type":"multiple","choiceKind":"多选","group":"选择题","number":90,"stem":"需要保存的HACCP记录有( )","options":[{"key":"A","text":"危害分析表及HACCP计划表"},{"key":"B","text":"纠偏记录"},{"key":"C","text":"验证记录"},{"key":"D","text":"CCP监控记录"}],"answer":["A","B","C","D"],"answerText":"ABCD","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-91","type":"multiple","choiceKind":"多选","group":"选择题","number":91,"stem":"确定关键控制点的方法有( )","options":[{"key":"A","text":"请专家指导和咨询"},{"key":"B","text":"借助CCP判断树"},{"key":"C","text":"照搬其他公司同类加工产品制订的关键控制点"},{"key":"D","text":"结合实际经验进行综合分析与判断"}],"answer":["A","B","D"],"answerText":"ABD","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"choice-92","type":"multiple","choiceKind":"多选","group":"选择题","number":92,"stem":"关键控制点发生偏离期间所生产的产品，其处理方式包括( )。","options":[{"key":"A","text":"销毁不合格产品"},{"key":"B","text":"重新加工"},{"key":"C","text":"降级使用"},{"key":"D","text":"检测确认无害后可放行"}],"answer":["A","B","C","D"],"answerText":"ABCD","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"choice-range"},{"id":"term-1","type":"term","group":"名词解释","number":1,"stem":"食品","options":[],"answer":"指各种供人食用或者饮用的成品和原料，以及按照传统既是食品又是药品的物品，但是不包括以治疗为目的的物品。","answerText":"指各种供人食用或者饮用的成品和原料，以及按照传统既是食品又是药品的物品，但是不包括以治疗为目的的物品。","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"term-2","type":"term","group":"名词解释","number":2,"stem":"食品安全","options":[],"answer":"食品无毒、无害、符合应当有的营养的要求，对人体健康不造成任何急性的、亚急性的或者慢性的危害。","answerText":"食品无毒、无害、符合应当有的营养的要求，对人体健康不造成任何急性的、亚急性的或者慢性的危害。","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"term-3","type":"term","group":"名词解释","number":3,"stem":"食品质量","options":[],"answer":"食品满足消费者明确的或者隐含的需要的特性。","answerText":"食品满足消费者明确的或者隐含的需要的特性。","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"term-4","type":"term","group":"名词解释","number":4,"stem":"食品卫生","options":[],"answer":"为确保食品安全性，在食物链所有阶段必须采取的所有条件和措施。 食品安全是包含食品卫生的更大概念。食品卫生侧重于过程安全，食品安全则是过程安全与结果安全的最终统一。 食品安全关注消费者的健康问题，食品质量关注食品的使用价值和性状(如色、香、味等感官需求)。安全是最基本底线。","answerText":"为确保食品安全性，在食物链所有阶段必须采取的所有条件和措施。 食品安全是包含食品卫生的更大概念。食品卫生侧重于过程安全，食品安全则是过程安全与结果安全的最终统一。 食品安全关注消费者的健康问题，食品质量关注食品的使用价值和性状(如色、香、味等感官需求)。安全是最基本底线。","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"term-5","type":"term","group":"名词解释","number":5,"stem":"生物源性危害","options":[],"answer":"有害的细菌、真菌、病毒等微生物及寄生虫等生物对食品造成的危害。微生物污染主要有细菌与细菌毒素、霉菌与霉菌毒素、病毒等。","answerText":"有害的细菌、真菌、病毒等微生物及寄生虫等生物对食品造成的危害。微生物污染主要有细菌与细菌毒素、霉菌与霉菌毒素、病毒等。","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"term-6","type":"term","group":"名词解释","number":6,"stem":"细菌性食物中毒","options":[],"answer":"人们吃了含有大量活的细菌或细菌毒素的食物而引起的急性中毒性疾病。","answerText":"人们吃了含有大量活的细菌或细菌毒素的食物而引起的急性中毒性疾病。","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"term-7","type":"term","group":"名词解释","number":7,"stem":"菌落总数","options":[],"answer":"在被检样品的单位质量、容积或表面积内，所含能在规定的条件下培养所生成的细菌集落总数。","answerText":"在被检样品的单位质量、容积或表面积内，所含能在规定的条件下培养所生成的细菌集落总数。","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"term-8","type":"term","group":"名词解释","number":8,"stem":"食源性寄生虫病","options":[],"answer":"由摄入含有寄生虫或虫卵、生的或未经彻底加热的食品引起的一类疾病。","answerText":"由摄入含有寄生虫或虫卵、生的或未经彻底加热的食品引起的一类疾病。","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"term-9","type":"term","group":"名词解释","number":9,"stem":"持续性有机污染物(POPs)","options":[],"answer":"一系列在环境中长期残留和长距离迁移，具有脂溶性和生物蓄积性，对人类和野生动植物有高毒的含碳化合物。","answerText":"一系列在环境中长期残留和长距离迁移，具有脂溶性和生物蓄积性，对人类和野生动植物有高毒的含碳化合物。","blanks":[],"starLevel":2,"levelLabel":"★★","isPriority":true,"sourcePriority":"star"},{"id":"term-10","type":"term","group":"名词解释","number":10,"stem":"生物富集系数(BCFs)","options":[],"answer":"有机化合物在生物体内或生物组织内的浓度与其在水中的浓度之比，用来表示有机化合物在生物体内的生物富集作用的大小。","answerText":"有机化合物在生物体内或生物组织内的浓度与其在水中的浓度之比，用来表示有机化合物在生物体内的生物富集作用的大小。","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"term-11","type":"term","group":"名词解释","number":11,"stem":"食品包装","options":[],"answer":"采用适当的包装材料、容器和包装技术，把食品包裹起来，以使食品在运输和贮藏过程中保持其价值和原有的状态。","answerText":"采用适当的包装材料、容器和包装技术，把食品包裹起来，以使食品在运输和贮藏过程中保持其价值和原有的状态。","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"term-12","type":"term","group":"名词解释","number":12,"stem":"转基因食品","options":[],"answer":"利用DNA重组技术将供体基因植入受体生物后产生的食品原料、成品及食品添加剂等。","answerText":"利用DNA重组技术将供体基因植入受体生物后产生的食品原料、成品及食品添加剂等。","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"term-13","type":"term","group":"名词解释","number":13,"stem":"正常波动","options":[],"answer":"由随机因素(偶然因素)引起，质量管理中允许的波动，此时的工序处于稳定状态和受控状态。","answerText":"由随机因素(偶然因素)引起，质量管理中允许的波动，此时的工序处于稳定状态和受控状态。","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"term-14","type":"term","group":"名词解释","number":14,"stem":"异常波动","options":[],"answer":"由系统因素(异常因素)引起，质量管理中不允许的波动，此时工序处于不稳定状态或非受控状态。例配方错误、设备故障或过度磨损、操作工人违反操作规程。","answerText":"由系统因素(异常因素)引起，质量管理中不允许的波动，此时工序处于不稳定状态或非受控状态。例配方错误、设备故障或过度磨损、操作工人违反操作规程。","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"term-15","type":"term","group":"名词解释","number":15,"stem":"排列图","options":[],"answer":"通过找出影响产品质量的主要问题，以确定质量改进关键项目的图表。","answerText":"通过找出影响产品质量的主要问题，以确定质量改进关键项目的图表。","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"term-16","type":"term","group":"名词解释","number":16,"stem":"因果图","options":[],"answer":"又称要因分析图、树枝图、鱼刺图、石川图，是一种用于分析质量特性(结果)与可能影响质量特性的因素(原因)的工具。","answerText":"又称要因分析图、树枝图、鱼刺图、石川图，是一种用于分析质量特性(结果)与可能影响质量特性的因素(原因)的工具。","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"term-17","type":"term","group":"名词解释","number":17,"stem":"控制图","options":[],"answer":"对过程质量特性值进行测量、记录、评估和监察过程是否处于统计控制状态的一种统计方法设计的图。","answerText":"对过程质量特性值进行测量、记录、评估和监察过程是否处于统计控制状态的一种统计方法设计的图。","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"term-18","type":"term","group":"名词解释","number":18,"stem":"工序能力(过程能力)","options":[],"answer":"指过程加工方面满足加工质量的能力，是衡量过程加工内在一致性的、最稳态下的最小波动。","answerText":"指过程加工方面满足加工质量的能力，是衡量过程加工内在一致性的、最稳态下的最小波动。","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"term-19","type":"term","group":"名词解释","number":19,"stem":"抽样检验","options":[],"answer":"按数理统计的方法，从一批待检产品中随机抽取一定数量的样本，并对样本进行全数检验，再根据样本的检验结果来判定整批产品的质量状况并做出接收或拒收的结论。","answerText":"按数理统计的方法，从一批待检产品中随机抽取一定数量的样本，并对样本进行全数检验，再根据样本的检验结果来判定整批产品的质量状况并做出接收或拒收的结论。","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"term-20","type":"term","group":"名词解释","number":20,"stem":"检验批","options":[],"answer":"为实施抽样检验而汇总起来的在同一条件下生产出来的若干单位产品。","answerText":"为实施抽样检验而汇总起来的在同一条件下生产出来的若干单位产品。","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"term-21","type":"term","group":"名词解释","number":21,"stem":"不合格","options":[],"answer":"单位产品的任何一个质量特性不满足规范要求。","answerText":"单位产品的任何一个质量特性不满足规范要求。","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"term-22","type":"term","group":"名词解释","number":22,"stem":"不合格品","options":[],"answer":"有一个或一个以上不合格的单位产品，称为不合格品。","answerText":"有一个或一个以上不合格的单位产品，称为不合格品。","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"term-23","type":"term","group":"名词解释","number":23,"stem":"批质量p","options":[],"answer":"一批产品的质量以不合格品率(或缺陷数)来衡量，p(不合格品率)=D(不合格品个数)/N(总数)。","answerText":"一批产品的质量以不合格品率(或缺陷数)来衡量，p(不合格品率)=D(不合格品个数)/N(总数)。","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"term-24","type":"term","group":"名词解释","number":24,"stem":"接收概率L(p)","options":[],"answer":"用给定的抽样方案(n，Ac)去验收批量N和批质量p。，已知的连续检验批时，把检验批判为合格而接收的概率。","answerText":"用给定的抽样方案(n，Ac)去验收批量N和批质量p。，已知的连续检验批时，把检验批判为合格而接收的概率。","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"term-25","type":"term","group":"名词解释","number":25,"stem":"抽样特性曲线(OC)","options":[],"answer":"对于一定的抽样方案(N、n丶Ac)来说，每一个p值都对应着唯一的接收概率L(p)。当p值连续变化时，特定抽检方案的接收概率L(p)随p值的变化规律称为抽样特性。在直角坐标系中将这一规律用曲线描绘出来，就称为抽样特性曲线，简称OC曲线。","answerText":"对于一定的抽样方案(N、n丶Ac)来说，每一个p值都对应着唯一的接收概率L(p)。当p值连续变化时，特定抽检方案的接收概率L(p)随p值的变化规律称为抽样特性。在直角坐标系中将这一规律用曲线描绘出来，就称为抽样特性曲线，简称OC曲线。","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"term-26","type":"term","group":"名词解释","number":26,"stem":"可接受质量水平(AQL)","options":[],"answer":"也称合格质量水平，是指在抽样检验中，经供需双方所认定的合格批的批不合格频率的上限，即p0。","answerText":"也称合格质量水平，是指在抽样检验中，经供需双方所认定的合格批的批不合格频率的上限，即p0。","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"term-27","type":"term","group":"名词解释","number":27,"stem":"批允许不合格品率(LTPD)","options":[],"answer":"也称极限质量水平，指经供需双方共同认定的不合格批的批不合格品率的下限，即P1","answerText":"也称极限质量水平，指经供需双方共同认定的不合格批的批不合格品率的下限，即P1","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"term-28","type":"term","group":"名词解释","number":28,"stem":"计数检验","options":[],"answer":"根据给定的技术标准，将单位产品简单地分成合格品或不合格品的检验(计件检验)，或是统计出单位产品中不合格数的检验(计点检验)。","answerText":"根据给定的技术标准，将单位产品简单地分成合格品或不合格品的检验(计件检验)，或是统计出单位产品中不合格数的检验(计点检验)。","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"term-29","type":"term","group":"名词解释","number":29,"stem":"SSOP","options":[],"answer":"即卫生标准操作程序，指企业为了达到GMP所规定的要求，确保加工过程中消除不良因素，使加工的食品符合卫生要求而制定的用于指导食品生产加工过程中如何实施清洗、消毒和卫生保持的作业指导书。","answerText":"即卫生标准操作程序，指企业为了达到GMP所规定的要求，确保加工过程中消除不良因素，使加工的食品符合卫生要求而制定的用于指导食品生产加工过程中如何实施清洗、消毒和卫生保持的作业指导书。","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"term-30","type":"term","group":"名词解释","number":30,"stem":"危害","options":[],"answer":"指会对食品产生潜在的健康危害的生物、化学或物理因素或状态。","answerText":"指会对食品产生潜在的健康危害的生物、化学或物理因素或状态。","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"term-31","type":"term","group":"名词解释","number":31,"stem":"关键控制点","options":[],"answer":"能实施控制，从而对食品安全危害加以预防、消除、或把它降低到可接受水平的一个加工点、步骤和工序。","answerText":"能实施控制，从而对食品安全危害加以预防、消除、或把它降低到可接受水平的一个加工点、步骤和工序。","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"blank-1","type":"blank","group":"填空题","number":1,"stem":"限制货架期的主要因素","rawText":"限制货架期的主要因素:微生物、化学物质、生理生化过程及物理的加工过程。","options":[],"answer":"微生物、化学物质、生理生化过程及物理的加工过程。","answerText":"微生物、化学物质、生理生化过程及物理的加工过程。","blanks":["微生物","化学物质","生理生化过程及物理的加工过程"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-2","type":"blank","group":"填空题","number":2,"stem":"影响食品质量的因素","rawText":"影响食品质量的因素:动物生产条件，动物的运输和屠宰条件，果蔬产品的栽培和收获条件，食品加工条件， 储存和销售条件","options":[],"answer":"动物生产条件，动物的运输和屠宰条件，果蔬产品的栽培和收获条件，食品加工条件， 储存和销售条件","answerText":"动物生产条件，动物的运输和屠宰条件，果蔬产品的栽培和收获条件，食品加工条件， 储存和销售条件","blanks":["动物生产条件","动物的运输和屠宰条件","果蔬产品的栽培和收获条件","食品加工条件","储存和销售条件"],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"blank-3","type":"blank","group":"填空题","number":3,"stem":"细菌性食物中毒的类型","rawText":"细菌性食物中毒的类型:感染型、毒素型、混合型","options":[],"answer":"感染型、毒素型、混合型","answerText":"感染型、毒素型、混合型","blanks":["感染型","毒素型","混合型"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-4","type":"blank","group":"填空题","number":4,"stem":"细菌污染食品的途径","rawText":"细菌污染食品的途径:细菌总数、大肠菌群、霉菌和酵母菌数、致病菌","options":[],"answer":"细菌总数、大肠菌群、霉菌和酵母菌数、致病菌","answerText":"细菌总数、大肠菌群、霉菌和酵母菌数、致病菌","blanks":["细菌总数","大肠菌群","霉菌和酵母菌数","致病菌"],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"blank-5","type":"blank","group":"填空题","number":5,"stem":"常见的引起食物中毒的细菌","rawText":"常见的引起食物中毒的细菌:沙门氏菌，副溶血性弧菌，肉毒梭状芽孢杆菌，金黄色葡萄球菌，单核增生李斯特氏菌，大肠埃希氏杆菌，志贺氏菌，阪崎肠杆菌，幽门螺旋杆菌，椰毒假单胞菌。","options":[],"answer":"沙门氏菌，副溶血性弧菌，肉毒梭状芽孢杆菌，金黄色葡萄球菌，单核增生李斯特氏菌，大肠埃希氏杆菌，志贺氏菌，阪崎肠杆菌，幽门螺旋杆菌，椰毒假单胞菌。","answerText":"沙门氏菌，副溶血性弧菌，肉毒梭状芽孢杆菌，金黄色葡萄球菌，单核增生李斯特氏菌，大肠埃希氏杆菌，志贺氏菌，阪崎肠杆菌，幽门螺旋杆菌，椰毒假单胞菌。","blanks":["沙门氏菌","副溶血性弧菌","肉毒梭状芽孢杆菌","金黄色葡萄球菌","单核增生李斯特氏菌","大肠埃希氏杆菌","志贺氏菌","阪崎肠杆菌","幽门螺旋杆菌","椰毒假单胞菌"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-6","type":"blank","group":"填空题","number":6,"stem":"与食品关系较为密切的霉菌毒素","rawText":"与食品关系较为密切的霉菌毒素:黄曲霉毒素、赭曲霉毒素、伏马毒素、玉米赤霉烯酮等","options":[],"answer":"黄曲霉毒素、赭曲霉毒素、伏马毒素、玉米赤霉烯酮等","answerText":"黄曲霉毒素、赭曲霉毒素、伏马毒素、玉米赤霉烯酮等","blanks":["黄曲霉毒素","赭曲霉毒素","伏马毒素","玉米赤霉烯酮等"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-7","type":"blank","group":"填空题","number":7,"stem":"引起食源性疾病的病毒","rawText":"引起食源性疾病的病毒:朊病毒、禽流感病毒、肝炎病毒、诺瓦克病毒(诺如病毒)","options":[],"answer":"朊病毒、禽流感病毒、肝炎病毒、诺瓦克病毒(诺如病毒)","answerText":"朊病毒、禽流感病毒、肝炎病毒、诺瓦克病毒(诺如病毒)","blanks":["朊病毒","禽流感病毒","肝炎病毒","诺瓦克病毒(诺如病毒)"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-8","type":"blank","group":"填空题","number":8,"stem":"寄生虫污染食品的种类分类","rawText":"寄生虫污染食品的种类分类:(1)肉源性寄生虫-囊虫、旋毛虫 (2)水生动物源性寄生虫:华支睾吸虫(鱼)、广州管圆线虫(螺类)、卫氏并殖吸虫(淡水甲壳类) (3)水生植物源性寄生虫:姜片虫 (4)蔬菜水果源性寄生虫:蛔虫","options":[],"answer":"(1)肉源性寄生虫-囊虫、旋毛虫 (2)水生动物源性寄生虫:华支睾吸虫(鱼)、广州管圆线虫(螺类)、卫氏并殖吸虫(淡水甲壳类) (3)水生植物源性寄生虫:姜片虫 (4)蔬菜水果源性寄生虫:蛔虫","answerText":"(1)肉源性寄生虫-囊虫、旋毛虫 (2)水生动物源性寄生虫:华支睾吸虫(鱼)、广州管圆线虫(螺类)、卫氏并殖吸虫(淡水甲壳类) (3)水生植物源性寄生虫:姜片虫 (4)蔬菜水果源性寄生虫:蛔虫","blanks":["1.肉源性寄生虫-囊虫","旋毛虫","2.水生动物源性寄生虫:华支睾吸虫(鱼)","广州管圆线虫(螺类)","卫氏并殖吸虫(淡水甲壳类)","3.水生植物源性寄生虫:姜片虫","4.蔬菜水果源性寄生虫:蛔虫"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-9","type":"blank","group":"填空题","number":9,"stem":"动物源性食品中的天然有毒物质","rawText":"动物源性食品中的天然有毒物质:河豚毒素(TTX)，组胺，贝类毒素和螺类毒素，动物肝脏、胆汁、甲状腺和肾上腺的毒素、其他(例雪卡毒素)","options":[],"answer":"河豚毒素(TTX)，组胺，贝类毒素和螺类毒素，动物肝脏、胆汁、甲状腺和肾上腺的毒素、其他(例雪卡毒素)","answerText":"河豚毒素(TTX)，组胺，贝类毒素和螺类毒素，动物肝脏、胆汁、甲状腺和肾上腺的毒素、其他(例雪卡毒素)","blanks":["河豚毒素(TTX)","组胺","贝类毒素和螺类毒素","动物肝脏","胆汁","甲状腺和肾上腺的毒素","其他(例雪卡毒素)"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-10","type":"blank","group":"填空题","number":10,"stem":"植物源性食品中的天然有毒物质","rawText":"植物源性食品中的天然有毒物质: (1)苷类:皂苷、生氰糖苷、硫苷、原蕨苷、芦芸苷)、 (2)生物碱:龙葵碱、秋水仙碱、茶碱 (3)毒蛋白和有毒氨基酸:外源凝集素、酶抑制剂(胰蛋白酶抑制剂、淀粉酶抑制剂)、其它毒蛋白(巴豆素、相思豆毒蛋白)、有毒氨基酸及其衍生物(β-氰基丙氨酸、刀豆氨酸，L-3，4-二羟基苯丙氨酸) (4)酚类:棉酚，大麻酚 (5)酶类:硫胺素酶、大豆脂肪氧化酶 (6)其他:血管活性胺(多巴胺、酪胺)、甘草酸和甘草次酸、白果酸、苍耳、桐油","options":[],"answer":"(1)苷类:皂苷、生氰糖苷、硫苷、原蕨苷、芦芸苷)、 (2)生物碱:龙葵碱、秋水仙碱、茶碱 (3)毒蛋白和有毒氨基酸:外源凝集素、酶抑制剂(胰蛋白酶抑制剂、淀粉酶抑制剂)、其它毒蛋白(巴豆素、相思豆毒蛋白)、有毒氨基酸及其衍生物(β-氰基丙氨酸、刀豆氨酸，L-3，4-二羟基苯丙氨酸) (4)酚类:棉酚，大麻酚 (5)酶类:硫胺素酶、大豆脂肪氧化酶 (6)其他:血管活性胺(多巴胺、酪胺)、甘草酸和甘草次酸、白果酸、苍耳、桐油","answerText":"(1)苷类:皂苷、生氰糖苷、硫苷、原蕨苷、芦芸苷)、 (2)生物碱:龙葵碱、秋水仙碱、茶碱 (3)毒蛋白和有毒氨基酸:外源凝集素、酶抑制剂(胰蛋白酶抑制剂、淀粉酶抑制剂)、其它毒蛋白(巴豆素、相思豆毒蛋白)、有毒氨基酸及其衍生物(β-氰基丙氨酸、刀豆氨酸，L-3，4-二羟基苯丙氨酸) (4)酚类:棉酚，大麻酚 (5)酶类:硫胺素酶、大豆脂肪氧化酶 (6)其他:血管活性胺(多巴胺、酪胺)、甘草酸和甘草次酸、白果酸、苍耳、桐油","blanks":["1.苷类:皂苷","生氰糖苷","硫苷","原蕨苷","芦芸苷)","2.生物碱:龙葵碱","秋水仙碱","茶碱","3.毒蛋白和有毒氨基酸:外源凝集素","酶抑制剂(胰蛋白酶抑制剂","淀粉酶抑制剂)","其它毒蛋白(巴豆素","相思豆毒蛋白)","有毒氨基酸及其衍生物(β-氰基丙氨酸","刀豆氨酸","L-3","4-二羟基苯丙氨酸)","4.酚类:棉酚","大麻酚","5.酶类:硫胺素酶","大豆脂肪氧化酶","6.其他:血管活性胺(多巴胺","酪胺)","甘草酸和甘草次酸","白果酸","苍耳","桐油"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-11","type":"blank","group":"填空题","number":11,"stem":"蕈菌毒素分类","rawText":"蕈菌毒素分类:胃肠毒型、肝肾损害型、溶血毒型、神经精神型、呼吸循环衰竭型和光过敏皮炎型。","options":[],"answer":"胃肠毒型、肝肾损害型、溶血毒型、神经精神型、呼吸循环衰竭型和光过敏皮炎型。","answerText":"胃肠毒型、肝肾损害型、溶血毒型、神经精神型、呼吸循环衰竭型和光过敏皮炎型。","blanks":["胃肠毒型","肝肾损害型","溶血毒型","神经精神型","呼吸循环衰竭型和光过敏皮炎型"],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"blank-12","type":"blank","group":"填空题","number":12,"stem":"神经精神型覃菌","rawText":"神经精神型覃菌:毒蝇碱、异恶唑衍生物、色胶类化合物、致幻素","options":[],"answer":"毒蝇碱、异恶唑衍生物、色胶类化合物、致幻素","answerText":"毒蝇碱、异恶唑衍生物、色胶类化合物、致幻素","blanks":["毒蝇碱","异恶唑衍生物","色胶类化合物","致幻素"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-13","type":"blank","group":"填空题","number":13,"stem":"主要残留兽药","rawText":"主要残留兽药:抗生素、激素、磺胺类药物","options":[],"answer":"抗生素、激素、磺胺类药物","answerText":"抗生素、激素、磺胺类药物","blanks":["抗生素","激素","磺胺类药物"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-14","type":"blank","group":"填空题","number":14,"stem":"多氯联苯的特性","rawText":"多氯联苯的特性:生物蓄积性、远距离迁移性","options":[],"answer":"生物蓄积性、远距离迁移性","answerText":"生物蓄积性、远距离迁移性","blanks":["生物蓄积性","远距离迁移性"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-15","type":"blank","group":"填空题","number":15,"stem":"食品生产加工、烹调过程生成的污染物","rawText":"食品生产加工、烹调过程生成的污染物:氯丙醇、N-亚硝基类化合物、多环芳烃类化合物","options":[],"answer":"氯丙醇、N-亚硝基类化合物、多环芳烃类化合物","answerText":"氯丙醇、N-亚硝基类化合物、多环芳烃类化合物","blanks":["氯丙醇","N-亚硝基类化合物","多环芳烃类化合物"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-16","type":"blank","group":"填空题","number":16,"stem":"常用食品包装材料","rawText":"常用食品包装材料:纸和纸包装容器、塑料和塑料包装容器、金属和金属包装容器、复合材料及其包装容器、玻璃陶瓷容器、木质容器、其他(麻袋、布袋、草、竹等)","options":[],"answer":"纸和纸包装容器、塑料和塑料包装容器、金属和金属包装容器、复合材料及其包装容器、玻璃陶瓷容器、木质容器、其他(麻袋、布袋、草、竹等)","answerText":"纸和纸包装容器、塑料和塑料包装容器、金属和金属包装容器、复合材料及其包装容器、玻璃陶瓷容器、木质容器、其他(麻袋、布袋、草、竹等)","blanks":["纸和纸包装容器","塑料和塑料包装容器","金属和金属包装容器","复合材料及其包装容器","玻璃陶瓷容器","木质容器","其他(麻袋","布袋","草","竹等)"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-17","type":"blank","group":"填空题","number":17,"stem":"食品包装常用塑料材料","rawText":"食品包装常用塑料材料:脲醛树脂(VR)、三聚氰胺树脂、酚醛树脂、聚氯乙烯(PVC)、聚偏二氯乙烯(PVDC)、聚乙烯(PE)、聚丙烯(PP)、聚苯乙烯(PS)、聚对苯二甲酸乙二醇酯(PET)、复合材料","options":[],"answer":"脲醛树脂(VR)、三聚氰胺树脂、酚醛树脂、聚氯乙烯(PVC)、聚偏二氯乙烯(PVDC)、聚乙烯(PE)、聚丙烯(PP)、聚苯乙烯(PS)、聚对苯二甲酸乙二醇酯(PET)、复合材料","answerText":"脲醛树脂(VR)、三聚氰胺树脂、酚醛树脂、聚氯乙烯(PVC)、聚偏二氯乙烯(PVDC)、聚乙烯(PE)、聚丙烯(PP)、聚苯乙烯(PS)、聚对苯二甲酸乙二醇酯(PET)、复合材料","blanks":["脲醛树脂(VR)","三聚氰胺树脂","酚醛树脂","聚氯乙烯(PVC)","聚偏二氯乙烯(PVDC)","聚乙烯(PE)","聚丙烯(PP)","聚苯乙烯(PS)","聚对苯二甲酸乙二醇酯(PET)","复合材料"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-18","type":"blank","group":"填空题","number":18,"stem":"橡胶添加剂有促进剂、防老剂和填充剂。","rawText":"橡胶添加剂有促进剂、防老剂和填充剂。","options":[],"answer":"橡胶添加剂有促进剂、防老剂和填充剂。","answerText":"橡胶添加剂有促进剂、防老剂和填充剂。","blanks":["促进剂","防老剂和填充剂"],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"blank-19","type":"blank","group":"填空题","number":19,"stem":"食品包装用纸中的主要有毒有害物质","rawText":"食品包装用纸中的主要有毒有害物质:荧光增白剂，重金属，甲醛，多氯联苯，二苯甲酮，芳香族碳水化合物，二噁英，防油剂","options":[],"answer":"荧光增白剂，重金属，甲醛，多氯联苯，二苯甲酮，芳香族碳水化合物，二噁英，防油剂","answerText":"荧光增白剂，重金属，甲醛，多氯联苯，二苯甲酮，芳香族碳水化合物，二噁英，防油剂","blanks":["荧光增白剂","重金属","甲醛","多氯联苯","二苯甲酮","芳香族碳水化合物","二噁英","防油剂"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-20","type":"blank","group":"填空题","number":20,"stem":"天然橡胶以异戊二烯为主要成分","rawText":"天然橡胶以异戊二烯为主要成分","options":[],"answer":"天然橡胶以异戊二烯为主要成分","answerText":"天然橡胶以异戊二烯为主要成分","blanks":["主要成分"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-21","type":"blank","group":"填空题","number":21,"stem":"转基因食品的分类","rawText":"转基因食品的分类:转基因植物食品、转基因动物食品、转基因微生物食品","options":[],"answer":"转基因植物食品、转基因动物食品、转基因微生物食品","answerText":"转基因植物食品、转基因动物食品、转基因微生物食品","blanks":["转基因植物食品","转基因动物食品","转基因微生物食品"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-22","type":"blank","group":"填空题","number":22,"stem":"转基因食品的食用安全性","rawText":"转基因食品的食用安全性:潜在毒性，潜在致敏性，抗生素抗性，食品营养成分的改变，外源基因的安全性，其它潜在的危害","options":[],"answer":"潜在毒性，潜在致敏性，抗生素抗性，食品营养成分的改变，外源基因的安全性，其它潜在的危害","answerText":"潜在毒性，潜在致敏性，抗生素抗性，食品营养成分的改变，外源基因的安全性，其它潜在的危害","blanks":["潜在毒性","潜在致敏性","抗生素抗性","食品营养成分的改变","外源基因的安全性","其它潜在的危害"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-23","type":"blank","group":"填空题","number":23,"stem":"我国批准的转基因作物","rawText":"我国批准的转基因作物:大豆、玉米、油菜、甜菜、棉花、木瓜、甘蔗、苜蓿。我国大面积种植的:棉花、番木瓜","options":[],"answer":"大豆、玉米、油菜、甜菜、棉花、木瓜、甘蔗、苜蓿。我国大面积种植的:棉花、番木瓜","answerText":"大豆、玉米、油菜、甜菜、棉花、木瓜、甘蔗、苜蓿。我国大面积种植的:棉花、番木瓜","blanks":["大豆","玉米","油菜","甜菜","棉花","木瓜","甘蔗","苜蓿。我国大面积种植的:棉花","番木瓜"],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"blank-24","type":"blank","group":"填空题","number":24,"stem":"风险分析包括风险评估、风险管理和风险交流三部分。","rawText":"风险分析包括风险评估、风险管理和风险交流三部分。","options":[],"answer":"风险分析包括风险评估、风险管理和风险交流三部分。","answerText":"风险分析包括风险评估、风险管理和风险交流三部分。","blanks":["风险评估","风险管理和风险交流三部分"],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"blank-25","type":"blank","group":"填空题","number":25,"stem":"风险评估的基本程序为包括危害鉴定(危害识别)、危害特征描述、暴露评估和风险特征描述。","rawText":"风险评估的基本程序为包括危害鉴定(危害识别)、危害特征描述、暴露评估和风险特征描述。","options":[],"answer":"风险评估的基本程序为包括危害鉴定(危害识别)、危害特征描述、暴露评估和风险特征描述。","answerText":"风险评估的基本程序为包括危害鉴定(危害识别)、危害特征描述、暴露评估和风险特征描述。","blanks":["危害鉴定(危害识别)","危害特征描述","暴露评估和风险特征描述"],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"blank-26","type":"blank","group":"填空题","number":26,"stem":"危害识别的主要方法","rawText":"危害识别的主要方法:流行病学研究、动物毒理学试验、体外试验和定量的结构-活性关系。","options":[],"answer":"流行病学研究、动物毒理学试验、体外试验和定量的结构-活性关系。","answerText":"流行病学研究、动物毒理学试验、体外试验和定量的结构-活性关系。","blanks":["流行病学研究","动物毒理学试验","体外试验和定量的结构-活性关系"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-27","type":"blank","group":"填空题","number":27,"stem":"分析流行病学研究一般采用队列研究(前瞻性研究、定群研究、随访研究)","rawText":"分析流行病学研究一般采用队列研究(前瞻性研究、定群研究、随访研究)","options":[],"answer":"分析流行病学研究一般采用队列研究(前瞻性研究、定群研究、随访研究)","answerText":"分析流行病学研究一般采用队列研究(前瞻性研究、定群研究、随访研究)","blanks":["队列研究(前瞻性研究","定群研究","随访研究)"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-28","type":"blank","group":"填空题","number":28,"stem":"现场流行病学调查步骤","rawText":"现场流行病学调查步骤:核实诊断、制定病例定义、开展病例搜索、进行个案调查、描述性流行病学分析、分析性流行病学研究等","options":[],"answer":"核实诊断、制定病例定义、开展病例搜索、进行个案调查、描述性流行病学分析、分析性流行病学研究等","answerText":"核实诊断、制定病例定义、开展病例搜索、进行个案调查、描述性流行病学分析、分析性流行病学研究等","blanks":["核实诊断","制定病例定义","开展病例搜索","进行个案调查","描述性流行病学分析","分析性流行病学研究等"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-29","type":"blank","group":"填空题","number":29,"stem":"事故调查的任务需开现场流行病学调查、食品卫生学调查和实验室检验工作","rawText":"事故调查的任务需开现场流行病学调查、食品卫生学调查和实验室检验工作","options":[],"answer":"事故调查的任务需开现场流行病学调查、食品卫生学调查和实验室检验工作","answerText":"事故调查的任务需开现场流行病学调查、食品卫生学调查和实验室检验工作","blanks":["事故调查的任务需开现场流行病学调查、食品卫生学调查和实验室检验工作"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-30","type":"blank","group":"填空题","number":30,"stem":"常做的动物试验包括","rawText":"常做的动物试验包括:急性毒性试验、重复给药毒性试验、生殖和发育毒性实验、神经毒性试验、遗传毒性试验和致癌试验。","options":[],"answer":"急性毒性试验、重复给药毒性试验、生殖和发育毒性实验、神经毒性试验、遗传毒性试验和致癌试验。","answerText":"急性毒性试验、重复给药毒性试验、生殖和发育毒性实验、神经毒性试验、遗传毒性试验和致癌试验。","blanks":["急性毒性试验","重复给药毒性试验","生殖和发育毒性实验","神经毒性试验","遗传毒性试验和致癌试验"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-31","type":"blank","group":"填空题","number":31,"stem":"危害识别一般采用动物试验和体外试验的资料作为依据。","rawText":"危害识别一般采用动物试验和体外试验的资料作为依据。","options":[],"answer":"危害识别一般采用动物试验和体外试验的资料作为依据。","answerText":"危害识别一般采用动物试验和体外试验的资料作为依据。","blanks":["依据"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-32","type":"blank","group":"填空题","number":32,"stem":"进行危害识别研究的主要三种体外试验","rawText":"进行危害识别研究的主要三种体外试验:体外细胞培养试验、体外组织培养试验、脏器离体灌流实验","options":[],"answer":"体外细胞培养试验、体外组织培养试验、脏器离体灌流实验","answerText":"体外细胞培养试验、体外组织培养试验、脏器离体灌流实验","blanks":["体外细胞培养试验","体外组织培养试验","脏器离体灌流实验"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-33","type":"blank","group":"填空题","number":33,"stem":"危害特征描述的评估方法一般是由毒理学试验获得的数据外推到人，计算人体的每日允许摄入量(ADI)。","rawText":"危害特征描述的评估方法一般是由毒理学试验获得的数据外推到人，计算人体的每日允许摄入量(ADI)。","options":[],"answer":"危害特征描述的评估方法一般是由毒理学试验获得的数据外推到人，计算人体的每日允许摄入量(ADI)。","answerText":"危害特征描述的评估方法一般是由毒理学试验获得的数据外推到人，计算人体的每日允许摄入量(ADI)。","blanks":["危害特征描述的评估方法一般是由毒理学试验获得的数据外推到人，计算人体的每日允许摄入量(ADI)"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-34","type":"blank","group":"填空题","number":34,"stem":"暴露评估的研究方法","rawText":"暴露评估的研究方法:总膳食研究、个别食品的选择性研究和双份饭研究","options":[],"answer":"总膳食研究、个别食品的选择性研究和双份饭研究","answerText":"总膳食研究、个别食品的选择性研究和双份饭研究","blanks":["总膳食研究","个别食品的选择性研究和双份饭研究"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-35","type":"blank","group":"填空题","number":35,"stem":"风险评估过程的局限性主要来源于危害特征描述和暴露评估步骤。危害特征描述的不确定性主要包括两个部分，一是健康指导值制定过程中的不确定性，二是剂量-反应评估过程的不确定性。暴露评估过程的不确定性主要包括两类，一类是选用数据的不确定性，二是模型和参数估计的不确定性。","rawText":"风险评估过程的局限性主要来源于危害特征描述和暴露评估步骤。危害特征描述的不确定性主要包括两个部分，一是健康指导值制定过程中的不确定性，二是剂量-反应评估过程的不确定性。暴露评估过程的不确定性主要包括两类，一类是选用数据的不确定性，二是模型和参数估计的不确定性。","options":[],"answer":"风险评估过程的局限性主要来源于危害特征描述和暴露评估步骤。危害特征描述的不确定性主要包括两个部分，一是健康指导值制定过程中的不确定性，二是剂量-反应评估过程的不确定性。暴露评估过程的不确定性主要包括两类，一类是选用数据的不确定性，二是模型和参数估计的不确定性。","answerText":"风险评估过程的局限性主要来源于危害特征描述和暴露评估步骤。危害特征描述的不确定性主要包括两个部分，一是健康指导值制定过程中的不确定性，二是剂量-反应评估过程的不确定性。暴露评估过程的不确定性主要包括两类，一类是选用数据的不确定性，二是模型和参数估计的不确定性。","blanks":["两个部分","一是健康指导值制定过程中的不确定性","二是剂量-反应评估过程的不确定性。暴露评估过程的不确定性主要包括两类","一类是选用数据的不确定性","二是模型和参数估计的不确定性"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-36","type":"blank","group":"填空题","number":36,"stem":"风险管理可以分为四部分","rawText":"风险管理可以分为四部分:风险评价、风险管理选择评估、执行管理决定、监控和审查。","options":[],"answer":"风险评价、风险管理选择评估、执行管理决定、监控和审查。","answerText":"风险评价、风险管理选择评估、执行管理决定、监控和审查。","blanks":["风险评价","风险管理选择评估","执行管理决定","监控和审查"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-37","type":"blank","group":"填空题","number":37,"stem":"质量波动根据其性质可分为正常波动和异常波动。","rawText":"质量波动根据其性质可分为正常波动和异常波动。","options":[],"answer":"质量波动根据其性质可分为正常波动和异常波动。","answerText":"质量波动根据其性质可分为正常波动和异常波动。","blanks":["正常波动和异常波动"],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"blank-38","type":"blank","group":"填空题","number":38,"stem":"计量数据主要可分为计量数据和计数数据。","rawText":"计量数据主要可分为计量数据和计数数据。","options":[],"answer":"计量数据主要可分为计量数据和计数数据。","answerText":"计量数据主要可分为计量数据和计数数据。","blanks":["计量数据和计数数据"],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"blank-39","type":"blank","group":"填空题","number":39,"stem":"(影响过程质量的6个因素)","rawText":"(影响过程质量的6个因素):食品加工过程5M1E包括人、机(机器)、料(原料)、法(方法)、测(测量)、环(环境)。","options":[],"answer":"食品加工过程5M1E包括人、机(机器)、料(原料)、法(方法)、测(测量)、环(环境)。","answerText":"食品加工过程5M1E包括人、机(机器)、料(原料)、法(方法)、测(测量)、环(环境)。","blanks":["食品加工过程5M1E包括人","机(机器)","料(原料)","法(方法)","测(测量)","环(环境)"],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"blank-40","type":"blank","group":"填空题","number":40,"stem":"常用统计工具与方法","rawText":"常用统计工具与方法:调查表、分层法、排列图、因果图、散布图、直方图、控制图。","options":[],"answer":"调查表、分层法、排列图、因果图、散布图、直方图、控制图。","answerText":"调查表、分层法、排列图、因果图、散布图、直方图、控制图。","blanks":["调查表","分层法","排列图","因果图","散布图","直方图","控制图"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-41","type":"blank","group":"填空题","number":41,"stem":"调查表分类","rawText":"调查表分类:质量分布调查表(频数调查表)、不合格项调查表、不合格位置调查(缺陷位置调查表)、矩阵调查表(不合格原因调查表)。","options":[],"answer":"质量分布调查表(频数调查表)、不合格项调查表、不合格位置调查(缺陷位置调查表)、矩阵调查表(不合格原因调查表)。","answerText":"质量分布调查表(频数调查表)、不合格项调查表、不合格位置调查(缺陷位置调查表)、矩阵调查表(不合格原因调查表)。","blanks":["质量分布调查表(频数调查表)","不合格项调查表","不合格位置调查(缺陷位置调查表)","矩阵调查表(不合格原因调查表)"],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"blank-42","type":"blank","group":"填空题","number":42,"stem":"直方图形状分析","rawText":"直方图形状分析:正常型、双峰型、孤岛型、平顶型、锯齿型。","options":[],"answer":"正常型、双峰型、孤岛型、平顶型、锯齿型。","answerText":"正常型、双峰型、孤岛型、平顶型、锯齿型。","blanks":["正常型","双峰型","孤岛型","平顶型","锯齿型"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-43","type":"blank","group":"填空题","number":43,"stem":"直方图与规格界限比较的几种典型状态","rawText":"直方图与规格界限比较的几种典型状态:理想型、偏心型、无富余型、能力富足型、能力不足型。","options":[],"answer":"理想型、偏心型、无富余型、能力富足型、能力不足型。","answerText":"理想型、偏心型、无富余型、能力富足型、能力不足型。","blanks":["理想型","偏心型","无富余型","能力富足型","能力不足型"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-44","type":"blank","group":"填空题","number":44,"stem":"散布图的应用","rawText":"散布图的应用:对照经典图法、简单象限法。","options":[],"answer":"对照经典图法、简单象限法。","answerText":"对照经典图法、简单象限法。","blanks":["对照经典图法","简单象限法"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-45","type":"blank","group":"填空题","number":45,"stem":"控制图的两种错误判断","rawText":"控制图的两种错误判断:虚发警报错误(第I类错误)、漏发警报错误(第Ⅱ类错误)。","options":[],"answer":"虚发警报错误(第I类错误)、漏发警报错误(第Ⅱ类错误)。","answerText":"虚发警报错误(第I类错误)、漏发警报错误(第Ⅱ类错误)。","blanks":["虚发警报错误(第I类错误)","漏发警报错误(第Ⅱ类错误)"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-46","type":"blank","group":"填空题","number":46,"stem":"质量检验的基本职能","rawText":"质量检验的基本职能:鉴别、把关、预防、报告。","options":[],"answer":"鉴别、把关、预防、报告。","answerText":"鉴别、把关、预防、报告。","blanks":["鉴别","把关","预防","报告"],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"blank-47","type":"blank","group":"填空题","number":47,"stem":"质量检验的程序","rawText":"质量检验的程序:检验的准备、检验、记录、比较和判断、确认和处置。","options":[],"answer":"检验的准备、检验、记录、比较和判断、确认和处置。","answerText":"检验的准备、检验、记录、比较和判断、确认和处置。","blanks":["检验的准备","检验","记录","比较和判断","确认和处置"],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"blank-48","type":"blank","group":"填空题","number":48,"stem":"质量检验制度","rawText":"质量检验制度:三检制(自检、互检、专检)、重要工序双岗制、留名制、追溯制。","options":[],"answer":"三检制(自检、互检、专检)、重要工序双岗制、留名制、追溯制。","answerText":"三检制(自检、互检、专检)、重要工序双岗制、留名制、追溯制。","blanks":["三检制(自检","互检","专检)","重要工序双岗制","留名制","追溯制"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-49","type":"blank","group":"填空题","number":49,"stem":"质量检验的主要指标","rawText":"质量检验的主要指标:原辅材料、感官指标、理化指标、微生物指标","options":[],"answer":"原辅材料、感官指标、理化指标、微生物指标","answerText":"原辅材料、感官指标、理化指标、微生物指标","blanks":["原辅材料","感官指标","理化指标","微生物指标"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-50","type":"blank","group":"填空题","number":50,"stem":"按照生产流程可以把质量检验分为","rawText":"按照生产流程可以把质量检验分为:进货检验、工序检验、最终检验；按照检验方法可以将质量检验分为理化检验、微生物检验、感官检验。","options":[],"answer":"进货检验、工序检验、最终检验；按照检验方法可以将质量检验分为理化检验、微生物检验、感官检验。","answerText":"进货检验、工序检验、最终检验；按照检验方法可以将质量检验分为理化检验、微生物检验、感官检验。","blanks":["进货检验","工序检验","最终检验","按照检验方法可以将质量检验分为理化检验","微生物检验","感官检验"],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"blank-51","type":"blank","group":"填空题","number":51,"stem":"抽样检验中常见参数","rawText":"抽样检验中常见参数:可接受质量水平(AQL)、批允许不合品率(LTPD)、平均抽样量、平均总检验量","options":[],"answer":"可接受质量水平(AQL)、批允许不合品率(LTPD)、平均抽样量、平均总检验量","answerText":"可接受质量水平(AQL)、批允许不合品率(LTPD)、平均抽样量、平均总检验量","blanks":["可接受质量水平(AQL)","批允许不合品率(LTPD)","平均抽样量","平均总检验量"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-52","type":"blank","group":"填空题","number":52,"stem":"获得随机数的方法","rawText":"获得随机数的方法:随机数表法、计算机程序法、掷骰子法、扑克牌法","options":[],"answer":"随机数表法、计算机程序法、掷骰子法、扑克牌法","answerText":"随机数表法、计算机程序法、掷骰子法、扑克牌法","blanks":["随机数表法","计算机程序法","掷骰子法","扑克牌法"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-53","type":"blank","group":"填空题","number":53,"stem":"随机抽样方法分类","rawText":"随机抽样方法分类:简单随机抽样法、分层随机抽样法、系统随机抽样法。","options":[],"answer":"简单随机抽样法、分层随机抽样法、系统随机抽样法。","answerText":"简单随机抽样法、分层随机抽样法、系统随机抽样法。","blanks":["简单随机抽样法","分层随机抽样法","系统随机抽样法"],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"blank-54","type":"blank","group":"填空题","number":54,"stem":"质量检验主要方法","rawText":"质量检验主要方法:抽样检验和计数统计检验","options":[],"answer":"抽样检验和计数统计检验","answerText":"抽样检验和计数统计检验","blanks":["抽样检验和计数统计检验"],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"blank-55","type":"blank","group":"填空题","number":55,"stem":"HACCP","rawText":"HACCP:危害分析及关键控制点","options":[],"answer":"危害分析及关键控制点","answerText":"危害分析及关键控制点","blanks":["危害分析及关键控制点"],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"blank-56","type":"blank","group":"填空题","number":56,"stem":"ISO","rawText":"ISO:国际标准化组织","options":[],"answer":"国际标准化组织","answerText":"国际标准化组织","blanks":["国际标准化组织"],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"essay-1","type":"essay","group":"简答/论述题","number":1,"stem":"简述食品的质量特性","options":[],"answer":"食品的质量特性可分为内在质量特性和外在质量特性。内在质量特性又称固有质量特性，包括产品的安全特性、感官特性、可靠性和便利性，外在质量特性也称非固有质量特性，包括生产系统特性、环境特性、市场特性。","answerText":"食品的质量特性可分为内在质量特性和外在质量特性。内在质量特性又称固有质量特性，包括产品的安全特性、感官特性、可靠性和便利性，外在质量特性也称非固有质量特性，包括生产系统特性、环境特性、市场特性。","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"essay-2","type":"essay","group":"简答/论述题","number":2,"stem":"影响食品质量的因素","options":[],"answer":"(1)动物生产条件 (2)动物的运输和屠宰条件 (3)果蔬产品的栽培和收获条件 (4)食品加工条件 (5)储存和销售条件","answerText":"(1)动物生产条件 (2)动物的运输和屠宰条件 (3)果蔬产品的栽培和收获条件 (4)食品加工条件 (5)储存和销售条件","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"essay-3","type":"essay","group":"简答/论述题","number":3,"stem":"影响食品安全的因素","options":[],"answer":"(1)生物源性危害因素:细菌、真菌、病毒、寄生虫 (2)化学源性危害因素:①天然存在的化学物质(生物毒素等) ②有意加入的化学物质(食品添加剂) ③无意或偶尔进入食品的化学物质(农药兽药残留、环境污染物、食品加工过程和包装材料产生的化学物质) (3)物理源性危害因素:食品放射性污染，杂物污染 *(食品的物理源危害是指食品在生产加工过程中，杂质超过规定的含量，或食品吸附、吸收外来的放射性核素所引起的食品污染。)","answerText":"(1)生物源性危害因素:细菌、真菌、病毒、寄生虫 (2)化学源性危害因素:①天然存在的化学物质(生物毒素等) ②有意加入的化学物质(食品添加剂) ③无意或偶尔进入食品的化学物质(农药兽药残留、环境污染物、食品加工过程和包装材料产生的化学物质) (3)物理源性危害因素:食品放射性污染，杂物污染 *(食品的物理源危害是指食品在生产加工过程中，杂质超过规定的含量，或食品吸附、吸收外来的放射性核素所引起的食品污染。)","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"essay-4","type":"essay","group":"简答/论述题","number":4,"stem":"简述食品安全风险分析的要素及其关系(1)要素:风险评估、风险管理、风险交流","options":[],"answer":"(2)关系:三部分是相互补充且必不可少的，是一个高度统一的整体。风险评估强调科学性、重点是科学，风险管理强调实用性、重点在政策，风险交流强调互动性和信息的交换","answerText":"(2)关系:三部分是相互补充且必不可少的，是一个高度统一的整体。风险评估强调科学性、重点是科学，风险管理强调实用性、重点在政策，风险交流强调互动性和信息的交换","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"essay-5","type":"essay","group":"简答/论述题","number":5,"stem":"影响食品安全的生物源性危害","options":[],"answer":"(1)细菌:沙门氏菌、副溶血性弧菌、肉毒梭状芽孢杆菌、金黄色葡萄球菌、李斯特氏菌、大肠埃希氏菌、志贺氏菌、阪崎肠杆菌、幽门螺旋杆菌、椰毒假单胞菌等 (2)霉菌与霉菌毒素:黄曲霉毒素、赭曲霉毒素、伏马毒素、玉米赤霉烯酮等 (3)病毒:朊病毒、禽流感病毒、肝炎病毒、诺瓦克病毒等 (4)寄生虫:囊虫、旋毛虫、华枝睾吸虫、广州管圆线虫、卫氏并殖吸虫、姜片虫、蛔虫等","answerText":"(1)细菌:沙门氏菌、副溶血性弧菌、肉毒梭状芽孢杆菌、金黄色葡萄球菌、李斯特氏菌、大肠埃希氏菌、志贺氏菌、阪崎肠杆菌、幽门螺旋杆菌、椰毒假单胞菌等 (2)霉菌与霉菌毒素:黄曲霉毒素、赭曲霉毒素、伏马毒素、玉米赤霉烯酮等 (3)病毒:朊病毒、禽流感病毒、肝炎病毒、诺瓦克病毒等 (4)寄生虫:囊虫、旋毛虫、华枝睾吸虫、广州管圆线虫、卫氏并殖吸虫、姜片虫、蛔虫等","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"essay-6","type":"essay","group":"简答/论述题","number":6,"stem":"影响食品安全的化学源性危害因素","options":[],"answer":"(1)食品中天然存在的有毒物质:动物源性食品中的天然有毒物质有河豚毒素、组胺、贝类和螺类毒素等，植物源性食品中的天然有毒物质有龙葵碱、秋水仙碱、棉酚、大麻酚、白果酸等，此外还有蕈菌毒素 (2)有意加入的化学危害:食品添加剂 (3)农药兽药残留 (4)环境污染:有害重金属(铅、汞、镉)、持续性有机污染物POPs(多氯联苯PCBs、二噁英) (5)食品加工中产生的化学危害物质:氯丙醇、N-亚硝基类化合物、多环芳烃类化合物PAHs (6)食品包装材料中的化学危害物质:例食品包装用纸中的荧光增白剂、重金属、甲醛、多氯联苯、二噁英、二苯甲酮、芳香族碳水化合物、防油剂等","answerText":"(1)食品中天然存在的有毒物质:动物源性食品中的天然有毒物质有河豚毒素、组胺、贝类和螺类毒素等，植物源性食品中的天然有毒物质有龙葵碱、秋水仙碱、棉酚、大麻酚、白果酸等，此外还有蕈菌毒素 (2)有意加入的化学危害:食品添加剂 (3)农药兽药残留 (4)环境污染:有害重金属(铅、汞、镉)、持续性有机污染物POPs(多氯联苯PCBs、二噁英) (5)食品加工中产生的化学危害物质:氯丙醇、N-亚硝基类化合物、多环芳烃类化合物PAHs (6)食品包装材料中的化学危害物质:例食品包装用纸中的荧光增白剂、重金属、甲醛、多氯联苯、二噁英、二苯甲酮、芳香族碳水化合物、防油剂等","blanks":[],"starLevel":1,"levelLabel":"★","isPriority":true,"sourcePriority":"star"},{"id":"essay-7","type":"essay","group":"简答/论述题","number":7,"stem":"预防食品中农药残留的措施","options":[],"answer":"①加强农药管理 ②合理安全使用农药 ③制定和完善农药残留限量标准 ④开发高效低毒低残留农药，推广应用生物农药 ⑤食品农药残留的消除","answerText":"①加强农药管理 ②合理安全使用农药 ③制定和完善农药残留限量标准 ④开发高效低毒低残留农药，推广应用生物农药 ⑤食品农药残留的消除","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"essay-8","type":"essay","group":"简答/论述题","number":8,"stem":"重金属的污染特点","options":[],"answer":"①来源广、残留时间长、能沿着食物链转移富集，有放大作用。 ②重金属离子在自然环境中不能被破坏。 ③水体中的某些重金属可在微生物作用下转化为毒性更强的金属化合物。 ④只要有微量重金属即可产生毒性效应。","answerText":"①来源广、残留时间长、能沿着食物链转移富集，有放大作用。 ②重金属离子在自然环境中不能被破坏。 ③水体中的某些重金属可在微生物作用下转化为毒性更强的金属化合物。 ④只要有微量重金属即可产生毒性效应。","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"essay-9","type":"essay","group":"简答/论述题","number":9,"stem":"常用食品包装材料和容器","options":[],"answer":"①纸和纸包装容器 ②塑料和塑料包装容器 ③金属和金属包装容器 ④复合材料及其包装容器 ⑤玻璃陶瓷容器 ⑥木质容器 ⑦其他:麻袋、布袋、草、竹等","answerText":"①纸和纸包装容器 ②塑料和塑料包装容器 ③金属和金属包装容器 ④复合材料及其包装容器 ⑤玻璃陶瓷容器 ⑥木质容器 ⑦其他:麻袋、布袋、草、竹等","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"essay-10","type":"essay","group":"简答/论述题","number":10,"stem":"塑料包装材料中有毒物质的来源","options":[],"answer":"①树脂本身具有一定毒性 ②塑料包装容器表面的微尘杂质及微生物污染 ③塑料制品在制作过程中添加的稳定剂、增稠剂、抗氧化剂、抗静电剂、着色剂等带来的危害 ④塑料回收再利用时附着的一些污染物和添加的色素可造成食品的污染 ⑤油墨污染 ⑥复合薄膜用黏合剂","answerText":"①树脂本身具有一定毒性 ②塑料包装容器表面的微尘杂质及微生物污染 ③塑料制品在制作过程中添加的稳定剂、增稠剂、抗氧化剂、抗静电剂、着色剂等带来的危害 ④塑料回收再利用时附着的一些污染物和添加的色素可造成食品的污染 ⑤油墨污染 ⑥复合薄膜用黏合剂","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"essay-11","type":"essay","group":"简答/论述题","number":11,"stem":"七大质量控制工具及其作用","options":[],"answer":"(1)调查表:收集数据 (2)分层法:把收集的数据分类汇总 (3)排列图:找出影响产品质量的主要问题，确定改进关键项目 (4)因果图:分析质量特性(结果)与可能影响质量特性的因素(原因) (5)直方图: 看问题的分布情况 (6)散布图:研究两组数据(两个因素)之间的相关关系 (7)控制图:对过程质量特性值进行监控和评估","answerText":"(1)调查表:收集数据 (2)分层法:把收集的数据分类汇总 (3)排列图:找出影响产品质量的主要问题，确定改进关键项目 (4)因果图:分析质量特性(结果)与可能影响质量特性的因素(原因) (5)直方图: 看问题的分布情况 (6)散布图:研究两组数据(两个因素)之间的相关关系 (7)控制图:对过程质量特性值进行监控和评估","blanks":[],"starLevel":2,"levelLabel":"★★","isPriority":true,"sourcePriority":"star"},{"id":"essay-12","type":"essay","group":"简答/论述题","number":12,"stem":"直方图的制作步骤","options":[],"answer":"①收集数据 ②计算数据的极差 ③确定组距 ④确定各组的边界值 ⑤绘制频数分布表 ⑥画直方图","answerText":"①收集数据 ②计算数据的极差 ③确定组距 ④确定各组的边界值 ⑤绘制频数分布表 ⑥画直方图","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"essay-13","type":"essay","group":"简答/论述题","number":13,"stem":"控制图的制作步骤","options":[],"answer":"①预备数据的获取:随机抽取k组②(20~25组)，样本量为n(常取5) ②计算统计量:先计算每组数据的平均值和极差，记入表中；再计算总平均值和极差平均值 ③计算控制界线、做控制图、打点判断:先计算R图，再计算x̄ 图","answerText":"①预备数据的获取:随机抽取k组②(20~25组)，样本量为n(常取5) ②计算统计量:先计算每组数据的平均值和极差，记入表中；再计算总平均值和极差平均值 ③计算控制界线、做控制图、打点判断:先计算R图，再计算x̄ 图","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"essay-14","type":"essay","group":"简答/论述题","number":14,"stem":"什么是工序能力？","options":[],"answer":"工序能力是指过程加工方面满足加工质量的能力，它是衡量加工内在一致性的、最稳态下的最小波动。过程处于稳态时，产品的质量特性值有99.73%散布在区间[μ-3σ，μ+3σ]，通常用±3σ表示过程能力，它的值越小越好。","answerText":"工序能力是指过程加工方面满足加工质量的能力，它是衡量加工内在一致性的、最稳态下的最小波动。过程处于稳态时，产品的质量特性值有99.73%散布在区间[μ-3σ，μ+3σ]，通常用±3σ表示过程能力，它的值越小越好。","blanks":[],"starLevel":2,"levelLabel":"★★","isPriority":true,"sourcePriority":"star"},{"id":"essay-15","type":"essay","group":"简答/论述题","number":15,"stem":"食品质量检验的基本功能有哪些？","options":[],"answer":"①鉴别:判定产品质量是否合规 ②把关:剔除不合格品 ③预防:质量控制 ④报告:信息反馈","answerText":"①鉴别:判定产品质量是否合规 ②把关:剔除不合格品 ③预防:质量控制 ④报告:信息反馈","blanks":[],"starLevel":2,"levelLabel":"★★","isPriority":true,"sourcePriority":"star"},{"id":"essay-16","type":"essay","group":"简答/论述题","number":16,"stem":"什么是抽样检验？抽样检验的两类风险？","options":[],"answer":"(1)抽样检验:按数理统计的方法，从一批待检产品中随机抽取一定数量的样本，并对样本进行全数检验，再根据样本的检验结果来判定整批产品的质量状况，并作出接收或拒收的结论。 (2)抽样检验的两类风险:①生产者风险: 设P0 是可接受的质量水平的上限(通常用AQL表示)，即批不合格品率P≤P0时，说明批质量是合格的，应100%接收。然而实际上当P=P0时，交验批只能以1-α的概率被接收。这种错判会使生产者受到损失。所以α被称为生产者风险。α=1-L(P0) ②使用者风险:设P1为可接受的极限不合格品率(通常用LTPD表示)，即如果批不合格品率P≥P1时，应该100%拒收。然而实际上当P=P1时，仍然有可能以β的概率被接收。这种错判会使使用者受到损失，所以β被称为使用者风险。","answerText":"(1)抽样检验:按数理统计的方法，从一批待检产品中随机抽取一定数量的样本，并对样本进行全数检验，再根据样本的检验结果来判定整批产品的质量状况，并作出接收或拒收的结论。 (2)抽样检验的两类风险:①生产者风险: 设P0 是可接受的质量水平的上限(通常用AQL表示)，即批不合格品率P≤P0时，说明批质量是合格的，应100%接收。然而实际上当P=P0时，交验批只能以1-α的概率被接收。这种错判会使生产者受到损失。所以α被称为生产者风险。α=1-L(P0) ②使用者风险:设P1为可接受的极限不合格品率(通常用LTPD表示)，即如果批不合格品率P≥P1时，应该100%拒收。然而实际上当P=P1时，仍然有可能以β的概率被接收。这种错判会使使用者受到损失，所以β被称为使用者风险。","blanks":[],"starLevel":2,"levelLabel":"★★","isPriority":true,"sourcePriority":"star"},{"id":"essay-17","type":"essay","group":"简答/论述题","number":17,"stem":"什么是抽样特性曲线？实际好的抽样特性曲线应具备哪些特点？","options":[],"answer":"(1)抽样特性曲线:对于一定的抽样方案(N，n，Ac)来说，每一个不同的P值(不合格品率)都对应着唯一的接收概率L(p)。当P值连续变化时，特定抽样方案的接收概率L(p)随p值的变化规律称为抽样特性。在直角坐标系中将这一规律用曲线描绘出来，就称为抽样特性曲线，简称OC曲线。 (2)实际好的抽样特性曲线的特点:①当这批质量较好时，即P≤P0时，应以高概率判定它合格。 ②当这批质量较差时，且已超过某个规定界限，如P≥P1时，应以高概率判定他不合格。 ③当产品质量在P0和P1之间时，接收概率应迅速减小。","answerText":"(1)抽样特性曲线:对于一定的抽样方案(N，n，Ac)来说，每一个不同的P值(不合格品率)都对应着唯一的接收概率L(p)。当P值连续变化时，特定抽样方案的接收概率L(p)随p值的变化规律称为抽样特性。在直角坐标系中将这一规律用曲线描绘出来，就称为抽样特性曲线，简称OC曲线。 (2)实际好的抽样特性曲线的特点:①当这批质量较好时，即P≤P0时，应以高概率判定它合格。 ②当这批质量较差时，且已超过某个规定界限，如P≥P1时，应以高概率判定他不合格。 ③当产品质量在P0和P1之间时，接收概率应迅速减小。","blanks":[],"starLevel":2,"levelLabel":"★★","isPriority":true,"sourcePriority":"star"},{"id":"essay-18","type":"essay","group":"简答/论述题","number":18,"stem":"SSOP八项内容","options":[],"answer":"①与食品接触的水(冰)的安全 ②与食品接触的表面清洁和卫生程度 ③预防交叉污染 ④洗手、手消毒和卫生间设施 ⑤防止污染物污染 ⑥有害化合物的存储、管理和使用 ⑦员工健康状况的控制 ⑧害虫的防治","answerText":"①与食品接触的水(冰)的安全 ②与食品接触的表面清洁和卫生程度 ③预防交叉污染 ④洗手、手消毒和卫生间设施 ⑤防止污染物污染 ⑥有害化合物的存储、管理和使用 ⑦员工健康状况的控制 ⑧害虫的防治","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"essay-19","type":"essay","group":"简答/论述题","number":19,"stem":"HACCP七大原理","options":[],"answer":"①危害分析(HA) ②确定关键控制点(CCP) ③建立关键限制(CL) ④建立(关键控制点的)监控程序 ⑤建立纠正措施程序(当监控表明某个CCP失控时) ⑥建立验证程序(证明HACCP体系运行有效) ⑦建立文件和记录的保持系统(关于所有适用程序、原理及其应用)","answerText":"①危害分析(HA) ②确定关键控制点(CCP) ③建立关键限制(CL) ④建立(关键控制点的)监控程序 ⑤建立纠正措施程序(当监控表明某个CCP失控时) ⑥建立验证程序(证明HACCP体系运行有效) ⑦建立文件和记录的保持系统(关于所有适用程序、原理及其应用)","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"},{"id":"essay-20","type":"essay","group":"简答/论述题","number":20,"stem":"什么是危害分析与关键控制点？","options":[],"answer":"危害分析是指分析会对食品产生潜在的健康危害的生物、化学或物理因素或状态。关键控制点是指能实施控制，从而对食品安全危害加以预防、消除、或把它降低到可接受水平的一个加工点、步骤或工序。","answerText":"危害分析是指分析会对食品产生潜在的健康危害的生物、化学或物理因素或状态。关键控制点是指能实施控制，从而对食品安全危害加以预防、消除、或把它降低到可接受水平的一个加工点、步骤或工序。","blanks":[],"starLevel":2,"levelLabel":"★★","isPriority":true,"sourcePriority":"star"},{"id":"essay-21","type":"essay","group":"简答/论述题","number":21,"stem":"建立和实施HACCP的步骤","options":[],"answer":"①组建HACCP工作小组 ②描述产品 ③确定预期用途 ④制作流程图 ⑤流程图的现场确认 ⑥列出所有潜在的危害并进行危害分析(HA) ⑦确定关键控制点(CCP) ⑧为各个关键控制点(CCP)建立关键限制(CL) ⑨为各个关键控制点(CCP)建立监控系统 ⑩为各个关键控制点(CCP)建立纠偏措施 ⑪建立验证程序 ⑫建立文件化和记录保持的程序","answerText":"①组建HACCP工作小组 ②描述产品 ③确定预期用途 ④制作流程图 ⑤流程图的现场确认 ⑥列出所有潜在的危害并进行危害分析(HA) ⑦确定关键控制点(CCP) ⑧为各个关键控制点(CCP)建立关键限制(CL) ⑨为各个关键控制点(CCP)建立监控系统 ⑩为各个关键控制点(CCP)建立纠偏措施 ⑪建立验证程序 ⑫建立文件化和记录保持的程序","blanks":[],"starLevel":2,"levelLabel":"★★","isPriority":true,"sourcePriority":"star"},{"id":"essay-22","type":"essay","group":"简答/论述题","number":22,"stem":"GMP/SSOP与HACCP的关系","options":[],"answer":"GMP-良好生产规范，是最基本条件、强制性。SSOP-卫生标准操作程序，为公司内部管理，没有GMP的强制性。HACCP-危害分析与关键控制点，建议在GMP和SSO报基础之上，有较强的针对性，重点控制食品安全方面的显著性危害。","answerText":"GMP-良好生产规范，是最基本条件、强制性。SSOP-卫生标准操作程序，为公司内部管理，没有GMP的强制性。HACCP-危害分析与关键控制点，建议在GMP和SSO报基础之上，有较强的针对性，重点控制食品安全方面的显著性危害。","blanks":[],"starLevel":2,"levelLabel":"★★","isPriority":true,"sourcePriority":"star"},{"id":"essay-23","type":"essay","group":"简答/论述题","number":23,"stem":"应用HACCP的优点","options":[],"answer":"①在问题出现之前就可采取纠正措施，因而是积极主动的控制 ②通过易于监视的特性(如时间、温度和外观)实时控制，方法简单、直观、可操作性强、快速。 ③由于控制集中于生产操作的关注点，就可以对每批样品采取更多的保证措施，使工厂重视工艺的改进，降低产品损耗。 ④与依靠化学分析、微生物检验进行控制相比，费用低廉 ⑤HACCP能用于潜在危害的预告，能及时纠错、迅速控制","answerText":"①在问题出现之前就可采取纠正措施，因而是积极主动的控制 ②通过易于监视的特性(如时间、温度和外观)实时控制，方法简单、直观、可操作性强、快速。 ③由于控制集中于生产操作的关注点，就可以对每批样品采取更多的保证措施，使工厂重视工艺的改进，降低产品损耗。 ④与依靠化学分析、微生物检验进行控制相比，费用低廉 ⑤HACCP能用于潜在危害的预告，能及时纠错、迅速控制","blanks":[],"starLevel":0,"levelLabel":"普通","isPriority":false,"sourcePriority":"normal"}];
+    const STORAGE_KEY = "fsqc-review-state-v1";
+    const GROUPS = ["选择题", "名词解释", "填空题", "简答/论述题"];
+    const SELF_LABELS = { mastered: "掌握", unfamiliar: "不熟悉" };
+
+    let state = loadState();
+    let mode = "type";
+    let selectedGroup = "选择题";
+    let selectedWrongGroup = "全部";
+    let selectedRange = "all";
+    let session = null;
+    let currentReview = null;
+    let currentIndex = 0;
+    let modalHandler = null;
+
+    const byId = Object.fromEntries(QUESTION_BANK.map(q => [q.id, q]));
+    const el = id => document.getElementById(id);
+
+    function defaultState() {
+      return { answers: {}, self: {}, wrong: {}, blankOverrides: {}, history: [] };
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? { ...defaultState(), ...JSON.parse(raw) } : defaultState();
+      } catch {
+        return defaultState();
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      renderStats();
+    }
+
+    function shuffle(list) {
+      const copy = [...list];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function questionLevelClass(q) {
+      if (q.starLevel === 2) return "double";
+      if (q.starLevel === 1) return "star";
+      return "";
+    }
+
+    function isChoice(q) {
+      return q.group === "选择题";
+    }
+
+    function getBlankList(q) {
+      return state.blankOverrides[q.id] || q.blanks || [];
+    }
+
+    function formatAnswer(q) {
+      if (isChoice(q)) {
+        if (q.answer.length === 1 && (q.answer[0] === "对" || q.answer[0] === "错")) return q.answer[0];
+        return q.answer.join("");
+      }
+      if (q.group === "填空题") {
+        return getBlankList(q).map((item, index) => `${index + 1}. ${item}`).join("\\n");
+      }
+      return q.answerText || q.answer || "";
+    }
+
+    function getQuestionUserAnswer(q) {
+      const saved = state.answers[q.id];
+      if (!saved) return "";
+      if (Array.isArray(saved.value)) return saved.value.join("");
+      return saved.value || "";
+    }
+
+    function answerSignature(answerData) {
+      return JSON.stringify({
+        value: answerData.value ?? "",
+        blankValues: answerData.blankValues || null,
+      });
+    }
+
+    function hasAnyAnswer(q, answerData) {
+      if (!answerData) return false;
+      if (isChoice(q)) return Array.isArray(answerData.value) && answerData.value.length > 0;
+      if (q.group === "填空题") return Array.isArray(answerData.blankValues) && answerData.blankValues.some(value => value.trim());
+      return !!String(answerData.value || "").trim();
+    }
+
+    function normalizedSelf(value) {
+      if (value === "mastered") return "mastered";
+      if (value === "unfamiliar" || value === "unsure" || value === "wrong") return "unfamiliar";
+      return "";
+    }
+
+    function isChoiceAnswerCorrect(q, answerData) {
+      const selected = [...(answerData.value || [])].sort();
+      const expected = [...q.answer].sort();
+      return selected.length === expected.length && selected.every((value, index) => value === expected[index]);
+    }
+
+    function evaluateSavedChoice(q, reason = "choice-wrong") {
+      if (!isChoice(q)) return;
+      const saved = state.answers[q.id];
+      if (!hasAnyAnswer(q, saved)) {
+        delete state.wrong[q.id];
+        return;
+      }
+      const correct = isChoiceAnswerCorrect(q, saved);
+      state.answers[q.id] = {
+        ...saved,
+        checked: true,
+        correct,
+        checkedAt: saved.checkedAt || new Date().toISOString(),
+      };
+      if (correct) delete state.wrong[q.id];
+      else state.wrong[q.id] = { reason, updatedAt: new Date().toISOString() };
+    }
+
+    function evaluateChoiceIds(ids, reason = "choice-wrong") {
+      ids.map(id => byId[id]).filter(Boolean).forEach(q => evaluateSavedChoice(q, reason));
+      saveState();
+    }
+
+    function saveDraftForQuestion(q) {
+      if (!q) return;
+      const answerData = collectAnswer(q);
+      const existing = state.answers[q.id];
+      if (!hasAnyAnswer(q, answerData)) {
+        if (isChoice(q)) delete state.wrong[q.id];
+        if (existing && existing.checked) {
+          state.answers[q.id] = { ...answerData, checked: false, draftAt: new Date().toISOString() };
+          saveState();
+        }
+        if (existing && !existing.checked) {
+          delete state.answers[q.id];
+          saveState();
+        }
+        return;
+      }
+      const existingSignature = existing ? answerSignature(existing) : "";
+      const nextSignature = answerSignature(answerData);
+      const record = existing && existingSignature === nextSignature
+        ? { ...existing, ...answerData, draftAt: new Date().toISOString() }
+        : { ...answerData, checked: false, draftAt: new Date().toISOString() };
+      state.answers[q.id] = record;
+      saveState();
+    }
+
+    function saveCurrentDraft() {
+      if (!session) return;
+      const q = byId[session.ids[currentIndex]];
+      if (q) saveDraftForQuestion(q);
+    }
+
+    function setMode(nextMode) {
+      mode = nextMode;
+      document.querySelectorAll("[data-mode]").forEach(button => button.classList.toggle("active", button.dataset.mode === mode));
+      el("practiceControls").classList.toggle("hidden", mode === "wrong" || mode === "search");
+      el("typeControls").classList.toggle("hidden", mode === "random");
+      el("wrongControls").classList.toggle("hidden", mode !== "wrong");
+      el("searchControls").classList.toggle("hidden", mode !== "search");
+      if (mode === "wrong") renderWrongList();
+      if (mode === "search") renderSearch();
+    }
+
+    function setRange(nextRange) {
+      selectedRange = nextRange;
+      document.querySelectorAll("[data-range]").forEach(button => button.classList.toggle("active", button.dataset.range === selectedRange));
+    }
+
+    function poolForCurrentControls(single = false) {
+      let pool = QUESTION_BANK;
+      if (mode === "type") pool = pool.filter(q => q.group === selectedGroup);
+      if (selectedRange === "priority") pool = pool.filter(q => q.isPriority);
+      pool = shuffle(pool);
+      return single ? pool.slice(0, 1) : pool;
+    }
+
+    function startSession(questions, title) {
+      if (session) saveCurrentDraft();
+      if (!questions.length) {
+        showEmpty("没有符合条件的题目。");
+        return;
+      }
+      session = {
+        title,
+        ids: questions.map(q => q.id),
+        startedAt: new Date().toISOString(),
+      };
+      currentReview = null;
+      currentIndex = 0;
+      renderCurrentQuestion();
+    }
+
+    function startPractice(single = false) {
+      const titleBase = mode === "random" ? "随机出题" : selectedGroup;
+      const rangeText = selectedRange === "priority" ? "重点题" : "全部题";
+      startSession(poolForCurrentControls(single), `${titleBase} · ${rangeText}`);
+    }
+
+    function startWrongPractice(showOnly = false) {
+      let wrongIds = Object.keys(state.wrong).filter(id => byId[id]);
+      if (selectedWrongGroup !== "全部") wrongIds = wrongIds.filter(id => byId[id].group === selectedWrongGroup);
+      const questions = shuffle(wrongIds.map(id => byId[id]));
+      if (showOnly) {
+        renderReview(questions.map(q => q.id), "错题本", { wrongBook: true });
+        return;
+      }
+      startSession(questions, `${selectedWrongGroup}错题重做`);
+    }
+
+    function updateNav() {
+      const hasSession = !!session;
+      el("prevBtn").disabled = !hasSession || currentIndex <= 0;
+      el("nextBtn").disabled = !hasSession || currentIndex >= session.ids.length - 1;
+      el("finishBtn").disabled = !hasSession;
+    }
+
+    function renderCurrentQuestion() {
+      if (!session) {
+        showEmpty("选择一种模式开始复习。");
+        return;
+      }
+      const q = byId[session.ids[currentIndex]];
+      el("viewTitle").textContent = session.title;
+      el("viewSubTitle").textContent = `第 ${currentIndex + 1} / ${session.ids.length} 题`;
+      updateNav();
+      el("stage").innerHTML = questionHtml(q);
+      bindQuestion(q);
+    }
+
+    function questionHtml(q) {
+      const saved = state.answers[q.id];
+      const showAnswer = !!(saved && saved.checked);
+      const self = state.self[q.id] || "";
+      const resultTag = saved && typeof saved.correct === "boolean"
+        ? `<span class="tag ${saved.correct ? "good" : "bad"}">${saved.correct ? "正确" : "错误"}</span>`
+        : "";
+      return `
+        <article class="question-card">
+          <div class="question-meta">
+            <span class="tag">${q.group} ${q.number}</span>
+            ${isChoice(q) ? `<span class="tag">${q.choiceKind || (q.type === "multiple" ? "多选" : "单选")}</span>` : ""}
+            <span class="tag ${questionLevelClass(q)}">${q.levelLabel}</span>
+            ${resultTag}
+          </div>
+          <h2 class="stem">${escapeHtml(q.stem)}</h2>
+          ${renderAnswerArea(q)}
+          <div class="actions">
+            <button id="checkAnswerBtn" class="primary">${isChoice(q) ? "提交并检查" : "查看答案"}</button>
+            ${q.group === "填空题" ? '<button id="editBlankBtn">编辑挖空</button>' : ""}
+            ${isChoice(q) ? '<button id="markWrongBtn">加入错题</button><button id="removeWrongBtn">移出错题</button>' : ""}
+          </div>
+          <div id="answerPanel" class="answer-panel ${showAnswer ? "" : "hidden"}">
+            ${renderAnswerPanel(q)}
+          </div>
+          ${isChoice(q) ? "" : renderSelfRow(q, self)}
+        </article>
+      `;
+    }
+
+    function renderAnswerArea(q) {
+      const saved = state.answers[q.id];
+      if (isChoice(q)) {
+        const selected = Array.isArray(saved?.value) ? saved.value : [];
+        const inputType = q.type === "multiple" ? "checkbox" : "radio";
+        return `<div class="options">
+          ${q.options.map(option => `
+            <label class="option">
+              <input type="${inputType}" name="choice-${q.id}" value="${escapeAttr(option.key)}" ${selected.includes(option.key) ? "checked" : ""}>
+              <span><strong>${escapeHtml(option.key)}.</strong>${escapeHtml(option.text)}</span>
+            </label>
+          `).join("")}
+        </div>`;
+      }
+      if (q.group === "填空题") {
+        const blanks = getBlankList(q);
+        const values = saved?.blankValues || [];
+        return `
+          <div class="tag">本题共 ${blanks.length} 空</div>
+          <div class="blank-grid">
+            ${blanks.map((_, index) => `
+              <label class="blank-input">
+                <span>第 ${index + 1} 空</span>
+                <input type="text" data-blank-index="${index}" value="${escapeAttr(values[index] || "")}" placeholder="填写答案">
+              </label>
+            `).join("")}
+          </div>`;
+      }
+      return `<textarea class="answer-input" id="textAnswer" placeholder="在这里写下自己的答案">${escapeHtml(saved?.value || "")}</textarea>`;
+    }
+
+    function renderAnswerPanel(q) {
+      const user = getQuestionUserAnswer(q);
+      return `
+        <h3>参考答案</h3>
+        <div class="answer-block">${escapeHtml(formatAnswer(q))}</div>
+        <h3>你的作答</h3>
+        <div class="answer-block">${escapeHtml(user || "尚未作答")}</div>
+      `;
+    }
+
+    function renderSelfRow(q, self) {
+      const normalized = normalizedSelf(self);
+      return `
+        <div class="self-row" data-self-row="${q.id}">
+          <button class="mastered ${normalized === "mastered" ? "active" : ""}" data-self="mastered">掌握</button>
+          <button class="unfamiliar ${normalized === "unfamiliar" ? "active" : ""}" data-self="unfamiliar">不熟悉</button>
+        </div>
+      `;
+    }
+
+    function bindQuestion(q) {
+      el("checkAnswerBtn").addEventListener("click", () => checkQuestion(q));
+      const markWrongBtn = el("markWrongBtn");
+      if (markWrongBtn) markWrongBtn.addEventListener("click", () => {
+        state.wrong[q.id] = { reason: "manual", updatedAt: new Date().toISOString() };
+        saveState();
+        renderCurrentQuestion();
+        toast("已加入错题本");
+      });
+      const removeWrongBtn = el("removeWrongBtn");
+      if (removeWrongBtn) removeWrongBtn.addEventListener("click", () => {
+        delete state.wrong[q.id];
+        saveState();
+        renderCurrentQuestion();
+        toast("已移出错题本");
+      });
+      const editBtn = el("editBlankBtn");
+      if (editBtn) editBtn.addEventListener("click", () => openBlankEditor(q));
+      document.querySelectorAll("[data-self]").forEach(button => {
+        button.addEventListener("click", () => setSelf(q, button.dataset.self));
+      });
+      document.querySelectorAll(`input[name="choice-${q.id}"]`).forEach(input => {
+        input.addEventListener("change", () => saveDraftForQuestion(q));
+      });
+      document.querySelectorAll("[data-blank-index]").forEach(input => {
+        input.addEventListener("input", () => saveDraftForQuestion(q));
+      });
+      const textAnswer = el("textAnswer");
+      if (textAnswer) textAnswer.addEventListener("input", () => saveDraftForQuestion(q));
+    }
+
+    function collectAnswer(q) {
+      if (isChoice(q)) {
+        const selected = Array.from(document.querySelectorAll(`input[name="choice-${q.id}"]:checked`)).map(input => input.value).sort();
+        return { value: selected };
+      }
+      if (q.group === "填空题") {
+        const values = Array.from(document.querySelectorAll("[data-blank-index]")).map(input => input.value.trim());
+        return { value: values.filter(Boolean).join("；"), blankValues: values };
+      }
+      return { value: el("textAnswer")?.value.trim() || "" };
+    }
+
+    function checkQuestion(q) {
+      const answerData = collectAnswer(q);
+      if (isChoice(q) && !hasAnyAnswer(q, answerData)) {
+        saveDraftForQuestion(q);
+        toast("请先选择答案");
+        return;
+      }
+      const record = {
+        ...answerData,
+        checked: true,
+        checkedAt: new Date().toISOString(),
+      };
+      if (isChoice(q)) {
+        record.correct = isChoiceAnswerCorrect(q, answerData);
+        if (record.correct) delete state.wrong[q.id];
+        else state.wrong[q.id] = { reason: "choice-wrong", updatedAt: new Date().toISOString() };
+      }
+      state.answers[q.id] = record;
+      state.history.unshift({ id: q.id, at: record.checkedAt, correct: record.correct ?? null });
+      state.history = state.history.slice(0, 300);
+      saveState();
+      renderCurrentQuestion();
+    }
+
+    function setSelf(q, value) {
+      state.self[q.id] = value;
+      if (value === "mastered") delete state.wrong[q.id];
+      if (value === "unfamiliar") state.wrong[q.id] = { reason: value, updatedAt: new Date().toISOString() };
+      saveState();
+      if (session) renderCurrentQuestion();
+      else if (currentReview) renderReview(currentReview.ids, currentReview.title, currentReview.options || {});
+      else renderAll();
+    }
+
+    function removeWrongFromReview(id) {
+      delete state.wrong[id];
+      saveState();
+      if (currentReview) {
+        const nextIds = (currentReview.options && currentReview.options.wrongBook)
+          ? currentReview.ids.filter(itemId => itemId !== id && state.wrong[itemId])
+          : currentReview.ids;
+        renderReview(nextIds, currentReview.title, currentReview.options || {});
+      }
+    }
+
+    function renderReview(ids, title = "本轮检查", options = {}) {
+      if (session) saveCurrentDraft();
+      if (options.evaluateChoices) evaluateChoiceIds(ids, "choice-wrong");
+      session = null;
+      currentReview = { ids: [...ids], title, options };
+      updateNav();
+      const questions = ids.map(id => byId[id]).filter(Boolean);
+      el("viewTitle").textContent = title;
+      el("viewSubTitle").textContent = `${questions.length} 道题`;
+      if (!questions.length) {
+        showEmpty("这里暂时没有题目。");
+        return;
+      }
+      el("stage").innerHTML = `<div class="review-list">
+        ${questions.map(q => {
+          const saved = state.answers[q.id];
+          const isWrong = !!state.wrong[q.id];
+          const result = saved && typeof saved.correct === "boolean"
+            ? `<span class="tag ${saved.correct ? "good" : "bad"}">${saved.correct ? "正确" : "错误"}</span>`
+            : "";
+          return `<article class="review-item ${isWrong ? "wrong-review" : ""}">
+            <div class="question-meta">
+              <span class="tag">${q.group} ${q.number}</span>
+              ${isChoice(q) ? `<span class="tag">${q.choiceKind || (q.type === "multiple" ? "多选" : "单选")}</span>` : ""}
+              <span class="tag ${questionLevelClass(q)}">${q.levelLabel}</span>
+              ${result}
+              ${state.wrong[q.id] ? '<span class="tag bad">错题</span>' : ""}
+            </div>
+            ${isWrong ? '<div class="wrong-banner">错题：建议重点复习并重做</div>' : ""}
+            <h3>${escapeHtml(q.stem)}</h3>
+            ${q.options && q.options.length ? `<div class="small">${q.options.map(o => `${escapeHtml(o.key)}. ${escapeHtml(o.text)}`).join("<br>")}</div>` : ""}
+            <div class="answer-panel">
+              <h3>你的作答</h3>
+              <div class="answer-block">${escapeHtml(getQuestionUserAnswer(q) || "尚未作答")}</div>
+              <h3>参考答案</h3>
+              <div class="answer-block">${escapeHtml(formatAnswer(q))}</div>
+              ${isChoice(q) || options.wrongBook ? "" : renderSelfRow(q, state.self[q.id] || "")}
+              ${options.wrongBook && state.wrong[q.id] ? `<div class="actions"><button data-remove-wrong="${q.id}">移出错题</button></div>` : ""}
+            </div>
+          </article>`;
+        }).join("")}
+      </div>`;
+      document.querySelectorAll("[data-self]").forEach(button => {
+        button.addEventListener("click", () => setSelf(byId[button.closest("[data-self-row]").dataset.selfRow], button.dataset.self));
+      });
+      document.querySelectorAll("[data-remove-wrong]").forEach(button => {
+        button.addEventListener("click", () => removeWrongFromReview(button.dataset.removeWrong));
+      });
+    }
+
+    function showEmpty(message) {
+      session = null;
+      currentReview = null;
+      updateNav();
+      el("stage").innerHTML = `<div class="empty">${escapeHtml(message)}</div>`;
+      el("viewTitle").textContent = "准备开始";
+      el("viewSubTitle").textContent = "选择一种模式开始复习。";
+    }
+
+    function renderStats() {
+      const answered = Object.keys(state.answers).length;
+      const wrong = Object.keys(state.wrong).filter(id => byId[id]).length;
+      const priority = QUESTION_BANK.filter(q => q.isPriority).length;
+      const mastered = Object.values(state.self).filter(v => v === "mastered").length;
+      el("stats").innerHTML = [
+        ["题库总数", QUESTION_BANK.length],
+        ["重点题", priority],
+        ["已检查", answered],
+        ["错题本", wrong],
+        ["主观掌握", mastered],
+      ].map(([label, value]) => `<div class="stat"><strong>${value}</strong><span>${label}</span></div>`).join("");
+    }
+
+    function renderTypeButtons() {
+      el("typeButtons").innerHTML = GROUPS.map(group => `<button data-group="${group}" class="${group === selectedGroup ? "active" : ""}">${group}</button>`).join("");
+      document.querySelectorAll("[data-group]").forEach(button => {
+        button.addEventListener("click", () => {
+          selectedGroup = button.dataset.group;
+          renderTypeButtons();
+        });
+      });
+      const wrongGroups = ["全部", ...GROUPS];
+      el("wrongTypeButtons").innerHTML = wrongGroups.map(group => `<button data-wrong-group="${group}" class="${group === selectedWrongGroup ? "active" : ""}">${group}</button>`).join("");
+      document.querySelectorAll("[data-wrong-group]").forEach(button => {
+        button.addEventListener("click", () => {
+          selectedWrongGroup = button.dataset.wrongGroup;
+          renderTypeButtons();
+          renderWrongList();
+        });
+      });
+    }
+
+    function renderBankSummary() {
+      const counts = GROUPS.map(group => `${group} ${QUESTION_BANK.filter(q => q.group === group).length}`).join("<br>");
+      const priority = QUESTION_BANK.filter(q => q.isPriority).length;
+      el("bankSummary").innerHTML = `${counts}<br>重点题 ${priority}<br><br>数据来自：食品安全与质量控制题型分类.docx`;
+    }
+
+    function renderWrongList() {
+      const ids = Object.keys(state.wrong).filter(id => byId[id]);
+      const filtered = selectedWrongGroup === "全部" ? ids : ids.filter(id => byId[id].group === selectedWrongGroup);
+      el("viewTitle").textContent = "错题本";
+      el("viewSubTitle").textContent = `${filtered.length} 道题`;
+      if (mode === "wrong") renderReview(filtered, "错题本", { wrongBook: true });
+    }
+
+    function renderSearch() {
+      const query = el("searchInput").value.trim().toLowerCase();
+      const results = query
+        ? QUESTION_BANK.filter(q => {
+            const haystack = `${q.group} ${q.number} ${q.stem} ${q.answerText || ""} ${(q.blanks || []).join(" ")}`.toLowerCase();
+            return haystack.includes(query);
+          }).slice(0, 80)
+        : [];
+      el("searchResults").innerHTML = results.map(q => `
+        <div class="mini-item" data-open-question="${q.id}">
+          <div class="mini-meta">
+            <span>${q.group} ${q.number}</span>
+            <span>${q.levelLabel}</span>
+          </div>
+          <div class="mini-stem">${escapeHtml(q.stem)}</div>
+        </div>
+      `).join("") || `<div class="small">${query ? "没有找到匹配题目。" : "输入关键词后显示结果。"}</div>`;
+      document.querySelectorAll("[data-open-question]").forEach(item => {
+        item.addEventListener("click", () => startSession([byId[item.dataset.openQuestion]], "搜索结果"));
+      });
+    }
+
+    function openBlankEditor(q) {
+      const blanks = getBlankList(q);
+      openModal("编辑挖空", `
+        <p class="small">每行一个空。保存后会影响本题显示的空数和参考答案。</p>
+        <textarea id="blankEditor">${escapeHtml(blanks.join("\\n"))}</textarea>
+      `, () => {
+        const next = el("blankEditor").value.split("\\n").map(line => line.trim()).filter(Boolean);
+        if (!next.length) {
+          toast("至少保留一个空");
+          return false;
+        }
+        state.blankOverrides[q.id] = next;
+        saveState();
+        renderCurrentQuestion();
+        toast("挖空已保存");
+        return true;
+      });
+    }
+
+    function openImportModal(text) {
+      openModal("导入学习数据", `
+        <p class="small">粘贴之前导出的 JSON，保存后会覆盖当前本地记录。</p>
+        <textarea id="importText">${escapeHtml(text || "")}</textarea>
+      `, () => {
+        try {
+          const data = JSON.parse(el("importText").value);
+          state = { ...defaultState(), ...data };
+          saveState();
+          renderAll();
+          toast("导入完成");
+          return true;
+        } catch {
+          toast("JSON 格式不正确");
+          return false;
+        }
+      });
+    }
+
+    function openModal(title, body, onSave) {
+      el("modalTitle").textContent = title;
+      el("modalBody").innerHTML = body;
+      modalHandler = onSave;
+      el("modalBackdrop").classList.add("open");
+    }
+
+    function closeModal() {
+      el("modalBackdrop").classList.remove("open");
+      modalHandler = null;
+    }
+
+    function exportData() {
+      const payload = JSON.stringify(state, null, 2);
+      const blob = new Blob([payload], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "食品安全与质量控制复习记录.json";
+      link.click();
+      URL.revokeObjectURL(url);
+      openModal("导出学习数据", `<p class="small">如果浏览器没有自动下载，也可以复制下面的 JSON。</p><textarea readonly>${escapeHtml(payload)}</textarea>`, () => true);
+    }
+
+    function resetData() {
+      if (!confirm("确定清空所有本地学习记录、错题和填空编辑吗？")) return;
+      state = defaultState();
+      saveState();
+      renderAll();
+      showEmpty("记录已清空，可以重新开始。");
+    }
+
+    function toast(message) {
+      el("toast").textContent = message;
+      el("toast").classList.add("show");
+      clearTimeout(toast.timer);
+      toast.timer = setTimeout(() => el("toast").classList.remove("show"), 1800);
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      }[char]));
+    }
+
+    function escapeAttr(value) {
+      return escapeHtml(value).replace(/`/g, "&#96;");
+    }
+
+    function bindGlobalEvents() {
+      document.querySelectorAll("[data-mode]").forEach(button => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      document.querySelectorAll("[data-range]").forEach(button => button.addEventListener("click", () => setRange(button.dataset.range)));
+      el("startBtn").addEventListener("click", () => startPractice(false));
+      el("oneRandomBtn").addEventListener("click", () => startPractice(true));
+      el("startWrongBtn").addEventListener("click", () => startWrongPractice(false));
+      el("showWrongBtn").addEventListener("click", () => startWrongPractice(true));
+      el("prevBtn").addEventListener("click", () => { if (session && currentIndex > 0) { saveCurrentDraft(); currentIndex--; renderCurrentQuestion(); } });
+      el("nextBtn").addEventListener("click", () => { if (session && currentIndex < session.ids.length - 1) { saveCurrentDraft(); currentIndex++; renderCurrentQuestion(); } });
+      el("finishBtn").addEventListener("click", () => { if (session) { saveCurrentDraft(); renderReview(session.ids, "本轮检查", { evaluateChoices: true }); } });
+      el("searchInput").addEventListener("input", renderSearch);
+      el("exportBtn").addEventListener("click", exportData);
+      el("importBtn").addEventListener("click", () => el("importFile").click());
+      el("importFile").addEventListener("change", event => {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => openImportModal(reader.result);
+        reader.readAsText(file);
+        event.target.value = "";
+      });
+      el("resetBtn").addEventListener("click", resetData);
+      el("modalCancel").addEventListener("click", closeModal);
+      el("modalBackdrop").addEventListener("click", event => {
+        if (event.target === el("modalBackdrop")) closeModal();
+      });
+      el("modalSave").addEventListener("click", () => {
+        if (!modalHandler || modalHandler() !== false) closeModal();
+      });
+    }
+
+    function renderAll() {
+      renderStats();
+      renderTypeButtons();
+      renderBankSummary();
+    }
+
+    bindGlobalEvents();
+    renderAll();
+    showEmpty("选择一种模式开始复习。");
+  </script>
+</body>
+</html>
