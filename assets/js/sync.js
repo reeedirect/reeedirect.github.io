@@ -1,6 +1,6 @@
 /* ============ Supabase 跨设备进度同步 ============ */
 (function () {
-  const URL = 'https://hskocxitnjovoixfpqe.supabase.co';
+  const URL = 'https://hskocxitnjovoixfpkqe.supabase.co';
   const KEY = 'sb_publishable_nlYvkeCpJWkXkv4KlgKR8g_12wLptcc';
   const TABLE = 'quiz_progress';
   const ROW_ID = 1;
