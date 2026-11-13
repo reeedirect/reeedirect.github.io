@@ -11,7 +11,18 @@
     return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
   }
   function session() { return App.store.get().paperSession; }
-  function saveSession(s) { App.store.get().paperSession = s; App.store.save(); }
+  function saveSession(s) {
+    const st = App.store.get();
+    st.paperSession = s;
+    st.paperDone = st.paperDone || {};
+    Object.keys(s.answers || {}).forEach(qid => {
+      const a = s.answers[qid];
+      if (a && (a.pick || (a.text && a.text.trim())) && !st.paperDone[qid]) {
+        st.paperDone[qid] = { at: new Date().toISOString(), pid: s.pid };
+      }
+    });
+    App.store.save();
+  }
 
   function paperQs(p) {
     const ids = [];
@@ -458,7 +469,7 @@
     const s = session(); if (!s || s.submitted) return;
     const qid = t.dataset.qid;
     s.answers[qid] = Object.assign({}, s.answers[qid], { text: t.value });
-    App.store.get().paperSession = s; App.store.save();
+    saveSession(s);
     const bar = document.querySelector('.exam-bar .pbar i');
     if (bar) {
       const answered = Object.keys(s.answers).filter(k => { const a = s.answers[k]; return a && (a.pick || (a.text && a.text.trim())); }).length;

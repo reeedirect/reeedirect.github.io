@@ -124,6 +124,15 @@
     });
   };
 
+  App.cardStats = function () {
+    let total = 0, done = 0;
+    DECKS.forEach(d => allItems(d.id).forEach(it => {
+      total++;
+      if (it.kind === 'c' ? App.mastery(it.id) > 0 : !!stateOf(it.key)) done++;
+    }));
+    return { total: total, done: done };
+  };
+
   App.view_cards = function (v, param) {
     const cs = App.cardsState;
     if (param === 'due') cs.scope = 'due';

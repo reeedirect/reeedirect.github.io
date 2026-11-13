@@ -61,14 +61,14 @@
   /* ---------- 存储 ---------- */
   const KEY = 'kb846:v1';
   const DEFAULT = {
-    mastery: {}, fav: [], notes: {}, drafts: {}, review: {}, attempts: {}, wrong: {},
+    mastery: {}, fav: [], notes: {}, drafts: {}, review: {}, attempts: {}, wrong: {}, paperDone: {},
     examDate: '', dailyLimit: 15, dailyNew: 10, lastChapter: 7, lastExport: '', createdAt: U.today(),
     paperSession: null, paperRecords: []
   };
   let state = null;
   const fresh = () => JSON.parse(JSON.stringify(DEFAULT));
   function normalize(st) {
-    ['mastery', 'notes', 'drafts', 'review', 'attempts', 'wrong'].forEach(k => {
+    ['mastery', 'notes', 'drafts', 'review', 'attempts', 'wrong', 'paperDone'].forEach(k => {
       if (!st[k] || typeof st[k] !== 'object' || Array.isArray(st[k])) st[k] = {};
     });
     ['fav', 'paperRecords', 'recentSearch'].forEach(k => {

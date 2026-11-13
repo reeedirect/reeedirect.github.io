@@ -19,6 +19,8 @@
     const wrong = wrongAll.filter(x => !x.w.resolved);
     const att = Object.keys(s.attempts);
     const okN = att.filter(k => s.attempts[k].ok).length;
+    const cardStats = App.cardStats ? App.cardStats() : { done: 0, total: 0 };
+    const paperDone = Object.keys(App.store.get().paperDone || {}).length;
     const chMeta = D.chapters.find(c => c.id === s.lastChapter) || D.chapters[6] || D.chapters[0];
 
     let days = null;
@@ -34,6 +36,8 @@
       '<div><b>' + D.questions.length + '</b><span>题库总题量</span></div>' +
       '<div><b>' + D.papers.length + '</b><span>套卷</span></div>' +
       '<div><b>' + mastered + '</b><span>已掌握节点</span></div>' +
+      '<div><b>' + cardStats.done + '</b><span>已复习卡片</span></div>' +
+      '<div><b>' + paperDone + '</b><span>已做试卷题</span></div>' +
       '<div><b>' + dueAll + '</b><span>今日到期</span></div>' +
       '</div></div>';
 
@@ -82,6 +86,11 @@
       '</div>';
 
     h += '<h2 class="sec"><span class="num">03</span>复习进度</h2>';
+    h += '<div class="grid g3" style="margin-bottom:12px">' +
+      '<div class="tile"><h4>知识地图掌握</h4><p style="font-family:var(--mono);font-size:18px;color:var(--ink);margin:0">' + mastered + ' / ' + total + '</p><div class="progress"><i style="width:' + U.pct(mastered, total) + '%"></i></div><span class="small muted">导图与列表同一套 mastery 数据，按“会/熟练”计</span></div>' +
+      '<div class="tile"><h4>卡片复习</h4><p style="font-family:var(--mono);font-size:18px;color:var(--ink);margin:0">' + cardStats.done + ' / ' + cardStats.total + '</p><div class="progress"><i style="width:' + U.pct(cardStats.done, cardStats.total) + '%"></i></div><span class="small muted">已翻过并记录过的卡片（四卡组合计）</span></div>' +
+      '<div class="tile"><h4>套卷已做</h4><p style="font-family:var(--mono);font-size:18px;color:var(--ink);margin:0">' + paperDone + ' 道</p><span class="small muted">套卷内已作答过的唯一题目，含选择/主观题</span></div>' +
+      '</div>';
     h += '<div class="card"><div class="spread" style="margin-bottom:12px">' +
       '<div><b style="font-family:var(--serif);font-size:15px">大纲覆盖与个人掌握</b>' +
       '<div class="small muted">“已掌握”指自评为“会”或“熟练”，与资料整理完整度是两件事。</div></div>' +
@@ -446,7 +455,7 @@
       '<button class="btn primary" data-act="save-settings">保存设置</button>' +
       '<button class="btn" data-act="export">导出学习记录</button>' +
       '<button class="btn" data-act="import">导入备份</button>' +
-      '<button class="btn" data-act="reset" style="margin-left:auto;color:var(--danger);border-color:#f0d3ce">清空本机记录</button>' +
+      '' +
       '</div><p class="small muted" style="margin-top:10px">记录保存在本机浏览器 localStorage。清理浏览器数据会丢失，建议每周导出一次 JSON 备份。' +
       (s.lastExport ? '上次导出：' + esc(s.lastExport) : '<b style="color:var(--warn)">尚未导出过备份</b>') + '</p></div>';
 

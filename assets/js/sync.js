@@ -27,10 +27,13 @@
 
   function ensureEl() {
     if (S.el) return;
-    const el = document.createElement('div');
+    const el = document.createElement('button');
+    el.type = 'button';
     el.id = 'syncStatus';
     el.className = 'sync-status';
     el.textContent = '本地保存';
+    el.title = '点击查看同步选项';
+    el.addEventListener('click', function (e) { e.stopPropagation(); openMenu(); });
     document.body.appendChild(el);
     S.el = el;
   }
@@ -74,6 +77,25 @@
       if (isFinite(d)) return d;
     }
     return 0;
+  }
+
+  function mergeState(local, cloud) {
+    local = local && typeof local === 'object' ? local : {};
+    cloud = cloud && typeof cloud === 'object' ? cloud : {};
+    const out = Object.assign({}, local, cloud);
+    ['mastery', 'review', 'attempts', 'wrong', 'notes', 'drafts', 'paperDone'].forEach(k => {
+      out[k] = Object.assign({}, local[k] || {}, cloud[k] || {});
+    });
+    const fav = (local.fav || []).concat(cloud.fav || []);
+    out.fav = fav.filter((x, i) => fav.indexOf(x) === i);
+    const recs = [];
+    (local.paperRecords || []).concat(cloud.paperRecords || []).forEach(r => {
+      if (!recs.some(x => x.at === r.at && x.pid === r.pid)) recs.push(r);
+    });
+    out.paperRecords = recs;
+    if (!cloud.paperSession && local.paperSession) out.paperSession = local.paperSession;
+    if (!cloud.bankSession && local.bankSession) out.bankSession = local.bankSession;
+    return out;
   }
 
   function applyCloud(data, ts) {
@@ -143,6 +165,43 @@
     schedulePush();
   }
 
+  let menuEl = null;
+  function closeMenu() {
+    if (menuEl) { menuEl.remove(); menuEl = null; document.removeEventListener('click', outsideMenu); }
+  }
+  function outsideMenu(e) {
+    if (menuEl && !menuEl.contains(e.target) && e.target !== S.el) closeMenu();
+  }
+  function openMenu() {
+    if (menuEl) { closeMenu(); return; }
+    menuEl = document.createElement('div');
+    menuEl.className = 'sync-menu';
+    menuEl.innerHTML = '<div class="sync-menu-hd">云端同步</div>' +
+      '<button type="button" data-sync="now">立即同步</button>' +
+      '<button type="button" class="danger" data-sync="clear">清空学习记录</button>';
+    menuEl.addEventListener('click', function (e) {
+      e.stopPropagation();
+      const b = e.target.closest('[data-sync]');
+      if (!b) return;
+      if (b.dataset.sync === 'now') {
+        closeMenu(); S.offline = false; status('同步中...', 'syncing', '手动上传本地进度'); push();
+      } else if (b.dataset.sync === 'clear') {
+        closeMenu();
+        if (!confirm('将清空本机与云端的掌握度、笔记、错题、复习与套卷记录，且不可恢复。建议先导出备份。确定继续？')) return;
+        App.store.reset();
+        setLocalTs(stamp());
+        App.store.save();
+        App.render();
+        S.offline = false;
+        status('同步中...', 'syncing', '正在上传清空后的状态');
+        push();
+        App.toast('已清空学习记录');
+      }
+    });
+    document.body.appendChild(menuEl);
+    setTimeout(function () { document.addEventListener('click', outsideMenu); }, 0);
+  }
+
   function boot() {
     if (!window.App || !App.store || !App.data || !App.data.questions || !App.data.questions.length) {
       setTimeout(boot, 120);
@@ -151,6 +210,13 @@
     if (S.ready) return;
     S.ready = true;
     ensureEl();
+    // 老版本没有本地时间戳：把现有进度视为“待合并”，避免云端空数据覆盖
+    if (!localTs()) {
+      const st = App.store.get();
+      const has = ['mastery', 'review', 'attempts', 'wrong', 'notes', 'drafts', 'paperDone'].some(k => st[k] && Object.keys(st[k]).length) ||
+        (st.paperRecords || []).length || (st.fav || []).length;
+      if (has) setLocalTs(stamp());
+    }
     status('正在连接云端...', 'syncing', '正在读取云端进度');
     if (navigator.onLine === false) {
       status('离线仅本地保存', 'offline', '浏览器当前离线');
@@ -166,11 +232,21 @@
       const row = Array.isArray(rows) ? rows[0] : null;
       const cloudTs = parseCloudTs(row);
       const lt = localTs();
+      S.offline = false;
       if (row && cloudTs > lt) {
-        applyCloud(row.data, cloudTs);
+        const cloudData = row.data && typeof row.data === 'string' ? JSON.parse(row.data) : row.data;
+        const localData = App.store.get();
+        const merged = mergeState(localData, cloudData || {});
+        const changed = JSON.stringify(merged) !== JSON.stringify(cloudData || {});
+        if (changed) {
+          // 云端较新，但本地有云端没有的进度：合并后回传，避免刷新丢卡
+          applyCloud(merged, Date.now());
+          push();
+        } else {
+          applyCloud(cloudData, cloudTs);
+        }
         return;
       }
-      S.offline = false;
       if (!row) {
         // 云端还没有记录：把本地进度作为第一份上传
         push();
