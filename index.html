@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>846 食品微生物学 · 复习工作台</title>
+<meta name="description" content="846 食品微生物学交互复习工作台：知识地图、真题训练、错题与间隔复习、原文定位。">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div class="app">
+
+  <aside class="rail" id="rail">
+    <div class="brand">
+      <div class="brand-mark">846</div>
+      <div class="brand-text">
+        <b>食品微生物学</b>
+        <span>复习工作台 · 上理 846</span>
+      </div>
+    </div>
+
+    <nav class="nav" id="nav">
+      <a href="#/home" data-route="home" data-act="nav">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
+        今日复习
+      </a>
+      <a href="#/map" data-route="map" data-act="nav">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6" cy="6" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="12" cy="18" r="2.4"/><path d="M8 7.2 10.6 16M16 7.2 13.4 16M8.4 6h7.2"/></svg>
+        知识地图
+      </a>
+      <a href="#/cards" data-route="cards" data-act="nav">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="3" y="6" width="13" height="15" rx="2"/><path d="M8 3h11a2 2 0 0 1 2 2v12"/></svg>
+        卡片复习 <span class="badge" id="badge-cards"></span>
+      </a>
+      <a href="#/bank" data-route="bank" data-act="nav">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="3.5" width="16" height="17" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+        题库训练 <span class="badge" id="badge-bank">0</span>
+      </a>
+      <a href="#/paper" data-route="paper" data-act="nav">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M9 8h5M9 12h6M9 16h4"/><path d="M16 3v4h4"/></svg>
+        套卷模考
+      </a>
+      <a href="#/tools" data-route="tools" data-act="nav">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4.5a4.5 4.5 0 0 0-5.9 5.9L4 15v5h5l4.6-4.6a4.5 4.5 0 0 0 5.9-5.9l-2.8 2.8-2.9-2.9z"/></svg>
+        专题工具
+      </a>
+      <a href="#/ask" data-route="ask" data-act="nav">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg>
+        问答
+      </a>
+      <a href="#/review" data-route="review" data-act="nav">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="9"/></svg>
+        错题与复习 <span class="badge" id="badge-wrong"></span>
+      </a>
+      <a href="#/sources" data-route="sources" data-act="nav">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M5 4h9l5 5v11H5z"/><path d="M14 4v5h5"/><path d="M8 13h8M8 16.5h5"/></svg>
+        资料原文
+      </a>
+    </nav>
+
+    <div class="rail-chapters" id="railChapters">
+      <h6>章节目录</h6>
+    </div>
+
+    <div class="rail-foot">
+      <b>本机保存</b><br>
+      掌握度、笔记与错题存于浏览器<br>
+      <span id="railDue"></span>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button class="icon-btn" id="btnMenu" aria-label="打开目录">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <div class="crumb" id="crumb"><b>今日复习</b></div>
+      <div class="top-actions">
+        <button class="btn" id="btnSearch">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
+          搜索 <span class="small muted mono" style="margin-left:2px">Ctrl K</span>
+        </button>
+        <button class="btn" id="btnExam">考试日期</button>
+      </div>
+    </header>
+
+    <div class="view" id="view"></div>
+  </main>
+
+  <aside class="panel" id="panel" aria-live="polite"></aside>
+</div>
+
+<div class="modal" id="modal" hidden></div>
+<div class="toast" id="toast"></div>
+
+<script src="data/chapters.js"></script>
+<script src="data/concepts-a.js"></script>
+<script src="data/concepts-b.js"></script>
+<script src="data/concepts-c.js"></script>
+<script src="data/questions-1.js"></script>
+<script src="data/questions-2.js"></script>
+<script src="data/questions-3.js"></script>
+<script src="data/questions-4.js"></script>
+<script src="data/questions-5.js"></script>
+<script src="data/questions-6.js"></script>
+<script src="data/questions-7.js"></script>
+<script src="data/questions-8.js"></script>
+<script src="data/questions-9.js"></script>
+<script src="data/questions-10.js"></script>
+<script src="data/questions-11.js"></script>
+<script src="data/questions-12.js"></script>
+<script src="data/papers.js"></script>
+<script src="data/nofix.js"></script>
+<script src="data/qpages.js"></script>
+<script src="data/qfig.js"></script>
+<script src="data/reader.js"></script>
+<script src="data/tools.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/sync.js"></script>
+<script src="assets/js/views.js"></script>
+<script src="assets/js/bank.js"></script>
+<script src="assets/js/paper.js"></script>
+<script src="assets/js/imgquiz.js"></script>
+<script src="assets/js/ask.js"></script>
+<script src="assets/js/cards.js"></script>
+<script src="assets/js/mindmap.js"></script>
+<script src="assets/js/tools.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
