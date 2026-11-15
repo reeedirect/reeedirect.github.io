@@ -181,9 +181,20 @@
         }
       }
     });
-    // 全库答案溯源：只有与原资料文本匹配（或手工确认）的答案才作为参考答案
+    // 全库答案溯源：846 真题一律用 data/source_answers.js 中的资料原文；
+    // 其他来源（练习题、期末 docx）沿用 KB_SOURCE_ANSWERS 白名单
     const verified = window.KB_SOURCE_ANSWERS || {};
-    raw.forEach(q => { if (verified[q.id]) q.answerSource = '原资料'; });
+    const verbatim = window.KB_SOURCE_TEXT || {};
+    raw.forEach(q => {
+      const v = verbatim[q.id];
+      if (v && v.t) {
+        q.answer = v.t;
+        q.answerSource = '原资料';
+        q.answerDoc = v.d || '';
+      } else if (verified[q.id]) {
+        q.answerSource = '原资料';
+      }
+    });
     raw.forEach(q => {
       if (['名词解释', '简答', '论述', '材料'].indexOf(q.type) >= 0 && q.answer && q.answerSource !== '原资料') {
         q.answerSummary = q.answer;
@@ -266,10 +277,17 @@
   const MASTERY_LABEL = ['未学', '模糊', '会', '熟练'];
   App.MASTERY_LABEL = MASTERY_LABEL;
   App.answerLabel = function (q) {
-    if (!q || !q.answer) return '资料未提供答案';
-    if (q.answerSource === '原资料') return '原资料答案';
+    if (!q) return '参考答案';
+    if (!q.answer) return '资料未提供答案';
+    if (q.answerSource === '原资料') return '参考答案（资料原文' + (q.answerDoc ? ' · ' + q.answerDoc : '') + '）';
     if (q.version === '整理版') return '参考答案（整理版摘要）';
     return '参考答案';
+  };
+  // 要点区永远是本页整理的答题要点，不是资料原文
+  App.pointsLabel = function (q) {
+    if (!q) return '答题要点';
+    if (q.pointsAuto) return '答题要点（按资料原文自动拆分，供自评核对）';
+    return '答题要点（本页整理，非资料原文，供自评核对）';
   };
   const DOC_FILE = {
     '教材考点精讲': '教材考点精讲.pdf', '教材考点精讲part2': '教材考点精讲.pdf',

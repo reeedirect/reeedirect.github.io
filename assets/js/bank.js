@@ -50,7 +50,7 @@
       st.session = { ids: [param.slice(8)], idx: 0, t0: Date.now(), answers: {} };
       st.concept = '';
     }
-    let h = '<h1 class="page-title">题库训练</h1><p class="page-sub">按年份、章节、题型、来源与校核状态筛选。答案默认折叠，按“提示 → 要点 → 完整答案”逐级展开；含冲突或数字待核的题不进入自动判分。</p>';
+    let h = '<h1 class="page-title">题库训练</h1><p class="page-sub">按年份、章节、题型、来源与校核状态筛选。答案默认折叠，按“提示 → 要点 → 答案”逐级展开；含冲突或数字待核的题不进入自动判分。</p>';
 
     h += App.bankFilters();
 
@@ -183,7 +183,7 @@
     if (q.table) h += App.matTable(q, ui);
 
     if (q.statusNote) h += '<div class="q-meta-note">校核说明：' + esc(q.statusNote) + '</div>';
-    if (isObj && !canAuto) h += '<div class="q-meta-note">本题因答案存疑不自动判分，可先作答，再点“完整答案”自行核对。</div>';
+    if (isObj && !canAuto) h += '<div class="q-meta-note">本题因答案存疑不自动判分，可先作答，再点“答案”自行核对。</div>';
 
     if (!isObj) {
       h += '<div style="margin-top:10px"><div class="small muted" style="margin-bottom:4px">先写下你的答案（自动保存，可留空直接看要点）</div>' +
@@ -210,7 +210,7 @@
     h += '<div class="ans-box' + (showBox ? '' : ' hidden') + '">';
     if (ui.hint && q.hint) h += '<div class="callout" style="margin-top:0"><b>提示：</b>' + esc(q.hint) + '</div>';
     if (ui.pts && q.points && q.points.length) {
-      h += '<div class="small muted" style="margin:8px 0 5px">' + (q.answerSource === '原资料' ? '参考要点（自评时逐条核对）' : q.pointsAuto ? '整理要点（自动拆分，非资料原文）' : '整理要点（非资料原文，仅辅助自评）') + '</div>' +
+      h += '<div class="small muted" style="margin:8px 0 5px">' + App.pointsLabel(q) + '</div>' +
         '<ol class="ans-block pts">' + q.points.map(p => '<li>' + esc(p) + '</li>').join('') + '</ol>';
     }
     if (ui.ans) {
@@ -220,8 +220,10 @@
         h += '<div class="small muted" style="margin:12px 0 5px">' + App.answerLabel(q) + '</div>';
         if (q.answer) {
           h += '<div class="ans-block">' + esc(q.answer) + '</div>';
+        } else if (q.source === '生成自测') {
+          h += '<div class="ans-block muted">本题是本页按考纲自拟的自测题，原资料中没有对应题目，因此不提供“资料原文答案”。答题要点见上方“要点”。</div>';
         } else {
-          h += '<div class="ans-block muted">资料未提供可核对的文字答案。请用上方“原卷 pXX”或“资料出处”查看原文。</div>';
+          h += '<div class="ans-block muted">原卷与三本资料里都未找到这道题的文字答案。可点上方“原卷 pXX”核对原卷，或到资料页检索相关章节。</div>';
         }
       }
       if (q.explain) h += '<div class="callout" style="margin-top:10px"><b>解析：</b>' + esc(q.explain) + '</div>';

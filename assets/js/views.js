@@ -81,7 +81,7 @@
     h += '<div class="grid g4">' +
       '<div class="tile clickable" data-act="map-mode-x"><h4><span class="ico">1</span>先回忆</h4><p>在知识地图打开本章，用背诵模式遮挡定义与要点，逐条自述。</p><div class="go">去知识地图</div></div>' +
       '<div class="tile clickable" data-act="map-mode-y"><h4><span class="ico">2</span>再核对</h4><p>打开知识卡对照要点与对比表，必要时查看资料原页与手写笔记。</p><div class="go">看知识卡</div></div>' +
-      '<div class="tile clickable" data-act="home-drill"><h4><span class="ico">3</span>做关联题</h4><p>按考点筛题，先答再看“提示 → 要点 → 完整答案”，不提前泄题。</p><div class="go">开始做题</div></div>' +
+      '<div class="tile clickable" data-act="home-drill"><h4><span class="ico">3</span>做关联题</h4><p>按考点筛题，先答再看“提示 → 要点 → 答案”，不提前泄题。</p><div class="go">开始做题</div></div>' +
       '<div class="tile clickable" data-act="home-wrong"><h4><span class="ico">4</span>记错因</h4><p>把错误归为概念混淆、漏要点等具体原因，排入下一次复习。</p><div class="go">去错题本</div></div>' +
       '</div>';
 
@@ -254,7 +254,26 @@
       '<div class="tile"><h4>期末原页</h4><p class="mono" style="font-size:18px;color:var(--ink)">' + qpQm + ' / ' + qm.length + '</p><span class="small muted">docx 无 PDF 页，改用题号定位</span></div>' +
       '<div class="tile"><h4>全库原页</h4><p class="mono" style="font-size:18px;color:var(--ink)">' + Object.keys(window.KB_QPAGES || {}).length + ' / ' + qAll.length + '</p><span class="small muted">' + pct(Object.keys(window.KB_QPAGES || {}).length, qAll.length) + '% · 未命中不猜页码</span></div>' +
       '</div>';
-    out += '<div class="callout warn"><b>缺口说明：</b>真题 14 套已全部 have=want；仍未覆盖的是练习题中“答案不可靠/依赖原图/无法可靠切分”的部分（约 1/4），以及期末 docx 没有 PDF 物理页可链。手写笔记 86 页只挂了 5 页图，属于抽样使用，不是全部数字化。字段侧：127 题暂无可靠关联概念（不硬凑）；313 题无原卷号，用卷面顺序兜底；113 题无分值，已按题型默认；74 道名解/主观题已用答案自动拆分要点，并标注“自动拆分，仅供自评”。</div>';
+    out += '<div class="callout warn"><b>缺口说明：</b>真题 14 套已全部 have=want；仍未覆盖的是练习题中“答案不可靠/依赖原图/无法可靠切分”的部分（约 1/4），以及期末 docx 没有 PDF 物理页可链。手写笔记 86 页只挂了 5 页图，属于抽样使用，不是全部数字化。字段侧：127 题暂无可靠关联概念（不硬凑）；313 题无原卷号，用卷面顺序兜底；113 题无分值，已按题型默认。</div>';
+
+    // 答案溯源：参考答案只放资料原文，要点是本页整理
+    const subAll = qAll.filter(q => ['名词解释', '简答', '论述', '材料'].indexOf(q.type) >= 0);
+    const withSrc = subAll.filter(q => q.answer && q.answerSource === '原资料');
+    const noSrc = subAll.filter(q => !q.answer);
+    const sub846 = subAll.filter(q => q.source === '846真题');
+    const sub846src = sub846.filter(q => q.answer && q.answerSource === '原资料');
+    const docCount = {};
+    withSrc.forEach(q => { const k = q.answerDoc || (q.source === '校内期末' ? '期末 docx 答案' : '练习题原答案'); docCount[k] = (docCount[k] || 0) + 1; });
+    const docRows = Object.keys(docCount).sort((a, b) => docCount[b] - docCount[a]).map(k => '<tr><td>' + esc(k) + '</td><td class="mono">' + docCount[k] + '</td></tr>').join('');
+    out += '<h3 class="sub">参考答案溯源</h3>' +
+      '<div class="callout" style="margin-bottom:10px"><b>规则：</b>“参考答案”只放资料原文（真题答案区 / 知识点总结 / 复习讲义 / 练习题 / 期末 docx），不改写、不缩写；“答题要点”才是本页整理，用于自评核对。找不到资料原文的题，答案区留空并说明，不拿整理稿冒充参考答案。</div>' +
+      '<div class="grid g4" style="margin-bottom:10px">' +
+      '<div class="tile"><h4>主观题</h4><p class="mono" style="font-size:18px;color:var(--ink)">' + subAll.length + '</p><span class="small muted">名解 164 · 简答 92 · 论述 36 · 材料 3</span></div>' +
+      '<div class="tile"><h4>有资料原文答案</h4><p class="mono" style="font-size:18px;color:var(--ink)">' + withSrc.length + ' / ' + subAll.length + '</p><span class="small muted">' + pct(withSrc.length, subAll.length) + '% · 逐题对过原文</span></div>' +
+      '<div class="tile"><h4>846 真题主观题</h4><p class="mono" style="font-size:18px;color:var(--ink)">' + sub846src.length + ' / ' + sub846.length + '</p><span class="small muted">14 套答案区逐题回填</span></div>' +
+      '<div class="tile"><h4>无原文（自测题）</h4><p class="mono" style="font-size:18px;color:var(--ink)">' + noSrc.length + '</p><span class="small muted">本页自拟，只有要点</span></div>' +
+      '</div>' +
+      '<div class="scroll"><table class="cmp-table" style="font-size:12px"><thead><tr><th>答案出处</th><th>题数</th></tr></thead><tbody>' + docRows + '</tbody></table></div>';
 
     out += '<h3 class="sub">按年份看真题</h3><div class="scroll"><table class="cmp-table" style="font-size:12px"><thead><tr><th>年份</th><th>题量</th><th>原页</th><th>待核/冲突</th><th>标签</th></tr></thead><tbody>';
     for (let y = 2012; y <= 2025; y++) {

@@ -298,9 +298,11 @@
       }
       if (!q.options || !q.options.length) {
         h += '<div class="ans-compare"><div><div class="small muted">你的作答</div><div class="ans-block">' + (a.text ? esc(a.text) : '<span class="muted">未作答</span>') + '</div></div>' +
-          '<div><div class="small muted">参考答案</div><div class="ans-block">' + esc(q.answer || '（无参考答案）') + '</div></div></div>';
+          '<div><div class="small muted">' + App.answerLabel(q) + '</div><div class="ans-block">' +
+          (q.answer ? esc(q.answer) : '<span class="muted">' + (q.source === '生成自测' ? '本页自拟题，原资料无对应题' : '资料未提供文字答案') + '</span>') +
+          '</div></div></div>';
         if (q.points && q.points.length) {
-          h += '<div class="small muted" style="margin-top:8px">' + (q.answerSource === '原资料' ? '参考要点（自评时逐条核对）' : q.pointsAuto ? '整理要点（自动拆分，非资料原文）' : '整理要点（非资料原文，仅辅助自评）') + '</div>' +
+          h += '<div class="small muted" style="margin-top:8px">' + App.pointsLabel(q) + '</div>' +
             '<ol class="ans-block pts">' + q.points.slice(0, 10).map(p => '<li>' + esc(p) + '</li>').join('') + '</ol>';
         }
       }
