@@ -181,6 +181,15 @@
         }
       }
     });
+    // 全库答案溯源：只有与原资料文本匹配（或手工确认）的答案才作为参考答案
+    const verified = window.KB_SOURCE_ANSWERS || {};
+    raw.forEach(q => { if (verified[q.id]) q.answerSource = '原资料'; });
+    raw.forEach(q => {
+      if (['名词解释', '简答', '论述', '材料'].indexOf(q.type) >= 0 && q.answer && q.answerSource !== '原资料') {
+        q.answerSummary = q.answer;
+        q.answer = '';
+      }
+    });
     D.questions = raw;
     D.byCid = {}; D.byQid = {}; D.byChapter = {};
     D.concepts.forEach(c => { D.byCid[c.id] = c; (D.byChapter[c.ch] = D.byChapter[c.ch] || []).push(c); });
@@ -256,6 +265,12 @@
   /* ---------- 掌握度与复习 ---------- */
   const MASTERY_LABEL = ['未学', '模糊', '会', '熟练'];
   App.MASTERY_LABEL = MASTERY_LABEL;
+  App.answerLabel = function (q) {
+    if (!q || !q.answer) return '资料未提供答案';
+    if (q.answerSource === '原资料') return '原资料答案';
+    if (q.version === '整理版') return '参考答案（整理版摘要）';
+    return '参考答案';
+  };
   const DOC_FILE = {
     '教材考点精讲': '教材考点精讲.pdf', '教材考点精讲part2': '教材考点精讲.pdf',
     '复习讲义': '复习讲义.pdf', '知识点总结': '知识点总结.pdf',

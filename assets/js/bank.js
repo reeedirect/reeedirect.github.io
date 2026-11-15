@@ -203,23 +203,26 @@
     const rbtn = (sec, label, open, show) => show ? '<button class="btn sm' + (open ? ' on' : '') + '" data-act="reveal" data-qid="' + q.id + '" data-sec="' + sec + '" aria-expanded="' + (open ? 'true' : 'false') + '" title="点击展开／收起">' + label + (open ? ' ↑' : ' ↓') + '</button>' : '';
     h += rbtn('hint', '提示', ui.hint, !!q.hint) +
       rbtn('pts', '要点', ui.pts, !!(q.points && q.points.length)) +
-      rbtn('ans', '完整答案', ui.ans, true) +
+      rbtn('ans', '答案', ui.ans, true) +
       '</div>';
 
     const showBox = ui.hint || ui.pts || ui.ans;
     h += '<div class="ans-box' + (showBox ? '' : ' hidden') + '">';
     if (ui.hint && q.hint) h += '<div class="callout" style="margin-top:0"><b>提示：</b>' + esc(q.hint) + '</div>';
     if (ui.pts && q.points && q.points.length) {
-      h += '<div class="small muted" style="margin:8px 0 5px">' + (q.pointsAuto ? '参考要点（自动拆分，仅供自评）' : '参考要点（自评时逐条核对）') + '</div>' +
+      h += '<div class="small muted" style="margin:8px 0 5px">' + (q.answerSource === '原资料' ? '参考要点（自评时逐条核对）' : q.pointsAuto ? '整理要点（自动拆分，非资料原文）' : '整理要点（非资料原文，仅辅助自评）') + '</div>' +
         '<ol class="ans-block pts">' + q.points.map(p => '<li>' + esc(p) + '</li>').join('') + '</ol>';
     }
-    if (ui.ans && q.answer) {
+    if (ui.ans) {
       if (isObj) {
         h += '<div class="ans-block"><b>正确答案：</b>' + esc(q.type === '判断' ? (q.correct === 'T' ? '正确' : q.correct === 'F' ? '错误' : '待核') : (q.correct || '待核')) + '</div>';
-      }
-      if (!isObj) {
-        h += '<div class="small muted" style="margin:12px 0 5px">完整参考答案</div>' +
-          '<div class="ans-block">' + esc(q.answer) + '</div>';
+      } else {
+        h += '<div class="small muted" style="margin:12px 0 5px">' + App.answerLabel(q) + '</div>';
+        if (q.answer) {
+          h += '<div class="ans-block">' + esc(q.answer) + '</div>';
+        } else {
+          h += '<div class="ans-block muted">资料未提供可核对的文字答案。请用上方“原卷 pXX”或“资料出处”查看原文。</div>';
+        }
       }
       if (q.explain) h += '<div class="callout" style="margin-top:10px"><b>解析：</b>' + esc(q.explain) + '</div>';
       if (q.refTitle) h += '<div class="small muted" style="margin-top:8px">参考回答与 ' + q.refYear + ' 年「' + esc(App.stripLen(q.refTitle, 28)) + '」同源，可对照表述差异。</div>';
